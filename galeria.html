@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.png" type="image/x-icon">
     <title>Mamako Loko Shop | Galeria de Imagens Dinâmica</title>
     <!-- Tailwind CSS CDN para renderização moderna e leve -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -69,7 +70,7 @@
         class="sticky top-0 z-50 bg-brand-dark/95 backdrop-blur-md border-b border-brand-border h-20 px-6 flex items-center justify-between">
         <a href="index.html" class="flex items-center space-x-3">
             <div class="w-12 h-12 rounded-full overflow-hidden shadow-lg shadow-brand-orange/20">
-                <img src="https://simp6.cuckcapital.cr/images4/AA5AbUBpVdSBqvvBp2kcKLIbKz6GwG_eEvxNc8DHoKVk14En6GaEiEKmPlCr7qaKl_trsy4gXF9GmKC6ASeuDWVbonMFuWjDHhQE2RodKNiVFqwGpWfYC9zsIqMjvCPIDgS603HIrnhDXQxK9K9XZezP9E-G8oPNV1gH10kjSAaMk_iX88Lo3D3e8749fb9f26430ab7.png"
+                <img src="logo.png"
                     alt="Mamako Loko" class="w-full h-full object-cover">
             </div>
             <div>
@@ -279,7 +280,7 @@
                                 level: row.level ? row.level.trim() : '',
                                 // Listas de heróis e fotos separadas por vírgulas
                                 miticos: row.miticos ? row.miticos.split(',') : [],
-                                vazio_lendarios: row.vazio_lendarios ? row.vazio_lendarios.split(',') : [],
+                                principais_lendarios: row.principais_lendarios ? row.principais_lendarios.split(',') : [],
                                 outros_lendarios: row.outros_lendarios ? row.outros_lendarios.split(',') : [],
                                 prints: row.prints ? row.prints.split(',').map(s => s.trim()) : []
                             };
@@ -363,7 +364,7 @@
 
             const sectionsToBuild = [
                 { title: 'Heróis Míticos', icon: 'fa-star', color: 'text-amber-500', data: accountInfo.miticos },
-                { title: 'Lendários do Vazio', icon: 'fa-gem', color: 'text-purple-500', data: accountInfo.vazio_lendarios },
+                { title: 'Lendários Principais', icon: 'fa-gem', color: 'text-purple-500', data: accountInfo.principais_lendarios },
                 { title: 'Lendários Destaque', icon: 'fa-crown', color: 'text-yellow-500', data: accountInfo.outros_lendarios }
             ];
 
