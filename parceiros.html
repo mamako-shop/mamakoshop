@@ -194,43 +194,49 @@
         let currentCurrency = 'BRL';
 
         async function fetchSheetData() {
-            try {
-                const response = await fetch(googleSheetCsvUrl);
-                const csvText = await response.text();
+    try {
+        const response = await fetch(googleSheetCsvUrl);
+        const csvText = await response.text();
 
-                Papa.parse(csvText, {
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: function (results) {
-                        accountsData = results.data.map(row => ({
-                            id: row.id ? row.id.trim() : '',
-                            title: row.title ? row.title.trim() : '',
-                            power: row.power ? row.power.trim() : '',
-                            tagline: row.tagline ? row.tagline.trim() : '',
-                            image: row.image ? row.image.trim() : '',
-                            priceBrl: parseFloat(row.priceBrl) || 0,
-                            priceUsd: parseFloat(row.priceUsd) || 0,
-                            label: row.label ? row.label.trim() : '',
-                            status: row.status ? row.status.trim().toUpperCase() : 'DISPONÍVEL',
-                            // Novas propriedades mapeadas do Sheets:
-                            vendedor: row.vendedor ? row.vendedor.trim() : 'Parceiro',
-                            whatsapp: row.whatsapp ? row.whatsapp.trim().replace(/\D/g, '') : '5561993935402' // Fallback caso esqueça de preencher
-                        }));
-
-                        document.getElementById('loading').classList.add('hidden');
-                        document.getElementById('accountsContainer').classList.remove('hidden');
-                        renderAccounts();
-                    },
-                    error: function (err) {
-                        console.error("Erro ao processar o CSV: ", err);
-                        fallbackToDefault();
-                    }
+        Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function (results) {
+                // FILTRO AQUI: Filtra a lista para incluir APENAS quem tem o tipo 'parceiro'
+                const apenasParceiros = results.data.filter(row => {
+                    const tipoConta = row.tipo ? row.tipo.trim().toLowerCase() : '';
+                    return tipoConta === 'parceiro';
                 });
-            } catch (error) {
-                console.error("Erro ao buscar planilha: ", error);
+
+                // Mapeia apenas os dados filtrados
+                accountsData = apenasParceiros.map(row => ({
+                    id: row.id ? row.id.trim() : '',
+                    title: row.title ? row.title.trim() : '',
+                    power: row.power ? row.power.trim() : '',
+                    tagline: row.tagline ? row.tagline.trim() : '',
+                    image: row.image ? row.image.trim() : '',
+                    priceBrl: parseFloat(row.priceBrl) || 0,
+                    priceUsd: parseFloat(row.priceUsd) || 0,
+                    label: row.label ? row.label.trim() : '',
+                    status: row.status ? row.status.trim().toUpperCase() : 'DISPONÍVEL',
+                    vendedor: row.vendedor ? row.vendedor.trim() : 'Parceiro',
+                    whatsapp: row.whatsapp ? row.whatsapp.trim().replace(/\D/g, '') : '5561993935402'
+                }));
+
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('accountsContainer').classList.remove('hidden');
+                renderAccounts();
+            },
+            error: function (err) {
+                console.error("Erro ao processar o CSV: ", err);
                 fallbackToDefault();
             }
-        }
+        });
+    } catch (error) {
+        console.error("Erro ao buscar planilha: ", error);
+        fallbackToDefault();
+    }
+}
 
         function fallbackToDefault() {
             accountsData = [
