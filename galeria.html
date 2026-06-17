@@ -53,12 +53,27 @@
         .lightbox-img-wrap.no-transition img {
             transition: none;
         }
+
+        /* Estilização personalizada para a barra de rolagem dos Detalhes da Conta */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #0F0F12;
+            border-radius: 0 16px 16px 0;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #1e1e24;
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #E65C00;
+        }
     </style>
 </head>
 
 <body class="bg-brand-dark text-gray-100 font-inter antialiased min-h-screen">
 
-    <!-- BARRA DE NAVEGAÇÃO -->
     <nav class="sticky top-0 z-50 bg-brand-dark/95 backdrop-blur-md border-b border-brand-border h-20 px-6 flex items-center justify-between">
         <a href="index.html" class="flex items-center space-x-3">
             <div class="w-12 h-12 rounded-full overflow-hidden shadow-lg shadow-brand-orange/20">
@@ -75,13 +90,11 @@
         </a>
     </nav>
 
-    <!-- LOADING SCREEN -->
     <div id="galleryLoading" class="text-center py-24">
         <i class="fas fa-spinner animate-spin text-brand-orange text-4xl mb-4"></i>
         <p class="text-gray-400">A processar galeria de prints...</p>
     </div>
 
-    <!-- ERROR SCREEN -->
     <div id="galleryError" class="hidden text-center py-24 max-w-md mx-auto">
         <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
         <h2 class="text-xl font-bold font-cinzel text-white">Conta não Encontrada</h2>
@@ -89,67 +102,60 @@
         <a href="index.html" class="mt-6 inline-block bg-brand-orange text-white text-xs font-bold px-6 py-2.5 rounded-xl uppercase">Voltar ao Catálogo</a>
     </div>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main id="galleryContent" class="hidden max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+    <main id="galleryContent" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
 
-        <!-- CABEÇALHO DA CONTA -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-                <div class="flex items-center gap-2 mb-1">
-                    <span id="pageCodeHeader" class="text-gray-500 text-xs font-mono bg-white/5 border border-brand-border px-2.5 py-1 rounded-full">Cód: 000</span>
-                    <span id="availabilityBadge" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-full">DISPONÍVEL</span>
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-[#0e0e11] border border-brand-border p-6 rounded-2xl">
+                <div class="flex items-center space-x-2 mb-6">
+                    <span class="bg-brand-orange/15 border border-brand-orange/30 text-brand-gold text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">
+                        <i class="fas fa-image mr-1"></i> Galeria de Prints
+                    </span>
+                    <span id="pageCodeHeader" class="text-gray-500 text-xs font-mono">Cód: 000</span>
                 </div>
-                <h1 id="pageTitle" class="font-cinzel font-black text-2xl sm:text-3xl text-white">CONTA DO...</h1>
-            </div>
-            <div class="text-right shrink-0">
-                <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Investimento</p>
-                <p id="priceLabel" class="text-3xl font-black text-white font-cinzel">R$ 0</p>
+                <h1 id="pageTitle" class="font-cinzel font-black text-2xl sm:text-3xl text-white mb-6">CONTA DO...</h1>
+
+                <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    </div>
             </div>
         </div>
 
-        <!-- FICHA TÉCNICA HORIZONTAL -->
-        <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-xl">
-            <div class="bg-gradient-to-r from-neutral-950 to-amber-950/20 px-5 py-3 border-b border-brand-border flex items-center gap-2">
-                <i class="fas fa-scroll text-brand-gold text-xs"></i>
-                <h3 id="cardHeaderTitle" class="font-cinzel text-brand-gold font-bold text-xs tracking-widest uppercase">Ficha Técnica</h3>
-            </div>
-            <div class="p-5 space-y-5">
-                <!-- Pílulas de Status em linha -->
-                <div id="statusPillsArea" class="flex flex-wrap gap-2">
+        <div class="space-y-6 lg:sticky lg:top-24">
+            <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-2xl lg:max-h-[calc(100vh-140px)] flex flex-col">
+                <div class="bg-gradient-to-br from-neutral-950 to-amber-950/20 p-5 border-b border-brand-border flex-shrink-0">
+                    <p class="text-[9px] font-bold text-gray-500 tracking-wider uppercase mb-1">Ficha Técnica</p>
+                    <h3 id="cardHeaderTitle" class="font-cinzel text-brand-gold font-bold text-sm tracking-wide">DETALHES DA CONTA</h3>
                 </div>
 
-                <!-- Secções de heróis + recursos em grid responsivo -->
-                <div id="detailsSections" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                </div>
+                <div class="p-5 space-y-6 overflow-y-auto custom-scroll flex-1">
 
-                <!-- Botão de compra -->
-                <div class="flex flex-col sm:flex-row gap-3 pt-2 border-t border-brand-border">
+                    <div id="statusPillsArea" class="grid grid-cols-2 gap-2 text-center">
+                        </div>
+
+                    <div id="detailsSections" class="space-y-6">
+                        </div>
+
+                    <div class="bg-brand-orange/5 border border-brand-orange/25 p-4 rounded-xl flex items-center justify-between">
+                        <div>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Investimento</p>
+                            <p id="priceLabel" class="text-2xl font-black text-white font-cinzel mt-1">R$ 0</p>
+                        </div>
+                        <span id="availabilityBadge" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded">DISPONÍVEL</span>
+                    </div>
+
                     <a id="buyCtaBtn" href="#" target="_blank"
-                        class="flex-1 inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md active:scale-95 duration-200">
+                        class="w-full inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-md active:scale-95 duration-200">
                         <i class="fab fa-whatsapp text-lg"></i>
                         <span>Comprar via WhatsApp</span>
                     </a>
-                    <p class="text-[10px] text-gray-500 self-center text-center sm:text-right leading-relaxed">
-                        Conta autenticada e gerida de forma segura.<br>Entrega rápida e vinculação acompanhada.
+
+                    <p class="text-[10px] text-gray-500 text-center leading-relaxed">
+                        Conta autenticada e gerida de forma segura.<br>Entrega rápida e acompanhamento total do processo de vinculação.
                     </p>
                 </div>
             </div>
         </div>
-
-        <!-- GALERIA DE PRINTS (largura total) -->
-        <div class="bg-[#0e0e11] border border-brand-border p-6 rounded-2xl">
-            <div class="flex items-center space-x-2 mb-5">
-                <span class="bg-brand-orange/15 border border-brand-orange/30 text-brand-gold text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">
-                    <i class="fas fa-image mr-1"></i> Galeria de Prints
-                </span>
-            </div>
-            <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            </div>
-        </div>
-
     </main>
 
-    <!-- FOOTER BANNER -->
     <div class="max-w-4xl mx-auto px-4 pb-16 text-center">
         <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá Mamako! Vi o catálogo e quero negociar uma conta." target="_blank"
             class="block rounded-3xl overflow-hidden shadow-2xl hover:scale-[1.01] transition-transform duration-300">
@@ -157,7 +163,6 @@
         </a>
     </div>
 
-    <!-- LIGHTBOX -->
     <div id="lightbox" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-4 backdrop-blur-md">
         <button id="lbClose" class="fixed top-5 right-5 w-11 h-11 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center hover:bg-white/20 transition-colors z-50">
             <i class="fas fa-times text-lg"></i>
@@ -182,13 +187,8 @@
 
     <script>
         // ── CONFIGURAÇÃO CENTRAL ─────────────────────────────────────
-        // Mesma URL do index.html — altere apenas aqui se mudar a planilha
         const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGMz9XAk5spv5FFN585VM6g6toC79iulNUFqYB76MQmRTuhjnyTjRSybOuyhZ5FImNompOX0eFjZI0/pub?output=csv";
 
-        // ── MAPEAMENTO DE COLUNAS DA PLANILHA ───────────────────────
-        // Aqui ficam TODOS os campos lidos do Sheets.
-        // Para adicionar uma nova coluna, basta adicionar uma linha aqui
-        // e usar o campo em buildDynamicPage() abaixo.
         function mapRow(row) {
             return {
                 id:                  safeStr(row.id),
@@ -203,8 +203,7 @@
                 links_status:        safeStr(row.links_status),
                 promo_code:          safeStr(row.promo_code),
                 level:               safeStr(row.level),
-                recursos:            safeStr(row.recursos),   // ← COLUNA R (corrigido)
-                // Listas separadas por vírgula:
+                recursos:            safeStr(row.recursos),
                 miticos:             splitList(row.miticos),
                 principais_lendarios: splitList(row.principais_lendarios),
                 outros_lendarios:    splitList(row.outros_lendarios),
@@ -212,12 +211,9 @@
             };
         }
 
-        // Helpers
-        // Remove a aspa simples que o Sheets pode gravar para forçar formato texto (ex: '001 → 001)
-        function safeStr(val) { return val ? String(val).replace(/^'/, '').trim() : ''; }
+        function safeStr(val) { return val ? String(val).trim() : ''; }
         function splitList(val) { return val ? val.split(',').map(s => s.trim()).filter(Boolean) : []; }
 
-        // ── ESTADO GLOBAL ────────────────────────────────────────────
         let accountInfo = null;
         let images = [];
         let currentImageIndex = 0;
@@ -230,7 +226,6 @@
             return results ? decodeURIComponent(results[1]) : null;
         }
 
-        // ── BUSCAR DADOS DO SHEETS ───────────────────────────────────
         async function fetchAccountDetails() {
             const urlId = getUrlParameter('id');
             if (!urlId) { showError(); return; }
@@ -265,18 +260,15 @@
             document.getElementById('galleryError').classList.remove('hidden');
         }
 
-        // ── CONSTRUÇÃO DA PÁGINA ─────────────────────────────────────
         function buildDynamicPage() {
             document.getElementById('galleryLoading').classList.add('hidden');
             document.getElementById('galleryContent').classList.remove('hidden');
 
-            // Textos principais
             document.getElementById('pageCodeHeader').textContent = `Código: ${accountInfo.id}`;
             document.getElementById('pageTitle').textContent = accountInfo.title;
             document.getElementById('cardHeaderTitle').textContent = `CONTA COD: ${accountInfo.id}`;
             document.getElementById('priceLabel').textContent = `R$ ${accountInfo.priceBrl.toLocaleString('pt-BR')}`;
 
-            // Pílulas de status
             const pills = [
                 { label: 'E-mail',      value: accountInfo.email_status,  color: 'text-emerald-400' },
                 { label: 'Vínculos',    value: accountInfo.links_status,   color: 'text-emerald-400' },
@@ -287,13 +279,12 @@
             pillsArea.innerHTML = pills
                 .filter(p => p.value)
                 .map(p => `
-                    <div class="bg-white/5 border border-brand-border px-3 py-2 rounded-lg flex items-center gap-2">
-                        <span class="text-[8px] text-gray-500 uppercase tracking-widest font-bold whitespace-nowrap">${p.label}:</span>
-                        <span class="${p.color} text-xs font-bold">${p.value}</span>
+                    <div class="bg-white/5 border border-brand-border p-2.5 rounded-lg">
+                        <p class="text-[8px] text-gray-500 uppercase tracking-widest font-bold">${p.label}</p>
+                        <p class="${p.color} text-xs font-bold mt-1">${p.value}</p>
                     </div>`)
                 .join('');
 
-            // Status de disponibilidade
             const isSold = accountInfo.status === 'VENDIDO';
             const badge = document.getElementById('availabilityBadge');
             const ctaBtn = document.getElementById('buyCtaBtn');
@@ -309,43 +300,39 @@
                 ctaBtn.href = `https://api.whatsapp.com/send?phone=5561993935402&text=${msg}`;
             }
 
-            // Listas de heróis
             const detailsArea = document.getElementById('detailsSections');
             const heroSections = [
-                { title: 'Heróis Míticos',        icon: 'fa-star',  color: 'text-amber-500',  data: accountInfo.miticos },
-                { title: 'Lendários Principais',   icon: 'fa-gem',   color: 'text-purple-500', data: accountInfo.principais_lendarios },
+                { title: 'Heróis Míticos',        icon: 'fa-star',  color: 'text-red-500',  data: accountInfo.miticos },
+                { title: 'Lendários Principais',   icon: 'fa-gem',   color: 'text-orange-500', data: accountInfo.principais_lendarios },
                 { title: 'Lendários Destaque',     icon: 'fa-crown', color: 'text-yellow-500', data: accountInfo.outros_lendarios },
             ];
-            // Cada secção de heróis vira um card no grid horizontal
             detailsArea.innerHTML = heroSections
                 .filter(s => s.data.length > 0)
                 .map(s => `
-                    <div class="bg-black/30 border border-brand-border rounded-xl p-4 space-y-2">
-                        <h4 class="text-[10px] font-bold uppercase tracking-widest ${s.color} flex items-center space-x-1.5 pb-2 border-b border-brand-border/60">
+                    <div class="space-y-2 border-t border-brand-border pt-4">
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest ${s.color} flex items-center space-x-1.5">
                             <i class="fas ${s.icon}"></i><span>${s.title}</span>
                         </h4>
-                        <ul class="space-y-1.5">
+                        <ul class="space-y-1.5 pl-1">
                             ${s.data.map(item => `
                                 <li class="flex items-start space-x-2 text-xs text-gray-300">
-                                    <span class="text-brand-orange select-none mt-0.5">•</span>
+                                    <span class="text-brand-orange select-none">•</span>
                                     <span class="leading-relaxed">${item}</span>
                                 </li>`).join('')}
                         </ul>
                     </div>`)
                 .join('');
 
-            // Recursos (coluna R) — ocupa largura total se existir
             if (accountInfo.recursos) {
                 detailsArea.innerHTML += `
-                    <div class="sm:col-span-2 lg:col-span-3 bg-sky-950/20 border border-sky-800/30 rounded-xl p-4 space-y-2">
-                        <h4 class="text-[10px] font-bold uppercase tracking-widest text-sky-400 flex items-center space-x-1.5 pb-2 border-b border-sky-800/30">
+                    <div class="space-y-2 border-t border-brand-border pt-4">
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest text-sky-400 flex items-center space-x-1.5">
                             <i class="fas fa-boxes-stacked"></i><span>Recursos & Itens</span>
                         </h4>
                         <p class="text-xs text-gray-300 leading-relaxed whitespace-pre-line">${accountInfo.recursos}</p>
                     </div>`;
             }
 
-            // Galeria de thumbnails
             images = accountInfo.prints;
             const grid = document.getElementById('galleryGrid');
             grid.innerHTML = '';
@@ -370,7 +357,6 @@
             }
         }
 
-        // ── LIGHTBOX ─────────────────────────────────────────────────
         const lb    = document.getElementById('lightbox');
         const lbImg = document.getElementById('lbImg');
         const lbWrap  = document.getElementById('lbWrap');
@@ -454,7 +440,6 @@
             if (Math.abs(diff) > 50) diff > 0 ? nextImage() : prevImage();
         });
 
-        // Inicializar
         window.onload = fetchAccountDetails;
     </script>
 </body>
