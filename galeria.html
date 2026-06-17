@@ -208,6 +208,8 @@
                 principais_lendarios: splitList(row.principais_lendarios),
                 outros_lendarios:    splitList(row.outros_lendarios),
                 prints:              splitList(row.prints),
+                whatsapp:            safeStr(row.whatsapp), // Nova coluna capturada
+                vendedor:            safeStr(row.vendedor), // Nova coluna capturada
             };
         }
 
@@ -270,11 +272,17 @@
             document.getElementById('priceLabel').textContent = `R$ ${accountInfo.priceBrl.toLocaleString('pt-BR')}`;
 
             const pills = [
-                { label: 'E-mail',      value: accountInfo.email_status,  color: 'text-emerald-400' },
+                { label: 'E-mail',     value: accountInfo.email_status,  color: 'text-emerald-400' },
                 { label: 'Vínculos',    value: accountInfo.links_status,   color: 'text-emerald-400' },
                 { label: 'Promo Code',  value: accountInfo.promo_code,     color: 'text-emerald-400' },
                 { label: 'Nível',       value: accountInfo.level,          color: 'text-brand-gold'  },
             ];
+            
+            // Adiciona o pill do vendedor de forma dinâmica caso exista um parceiro dono
+            if (accountInfo.vendedor) {
+                pills.push({ label: 'Vendedor', value: accountInfo.vendedor, color: 'text-orange-400' });
+            }
+
             const pillsArea = document.getElementById('statusPillsArea');
             pillsArea.innerHTML = pills
                 .filter(p => p.value)
@@ -296,8 +304,25 @@
                 ctaBtn.innerHTML = `<i class="fas fa-ban"></i> <span>Vendida</span>`;
                 ctaBtn.href = "#";
             } else {
-                const msg = encodeURIComponent(`Olá Mamako! Gostaria de fechar negócio na conta [Código ${accountInfo.id}] - ${accountInfo.title} (${accountInfo.tagline}) no valor de R$ ${accountInfo.priceBrl}. Ainda está disponível?`);
-                ctaBtn.href = `https://api.whatsapp.com/send?phone=5561993935402&text=${msg}`;
+                // LÓGICA DE DIRECIONAMENTO DE WHATSAPP (SISTEMA DE PARCEIROS)
+                let numWhats = "5561993935402"; // Seu número padrão
+                let nomeVendedor = "Mamako";    // Nome padrão para a mensagem
+
+                if (accountInfo.whatsapp && accountInfo.whatsapp.trim() !== "") {
+                    // Remove tudo o que não for número (parênteses, traços, espaços)
+                    numWhats = accountInfo.whatsapp.replace(/\D/g, "");
+                    // Se o parceiro esqueceu de botar o 55 mas botou o DDD de 2 dígitos, adiciona o 55 automaticamente
+                    if (numWhats.length === 11 || numWhats.length === 10) {
+                        numWhats = "55" + numWhats;
+                    }
+                }
+
+                if (accountInfo.vendedor && accountInfo.vendedor.trim() !== "") {
+                    nomeVendedor = accountInfo.vendedor.trim();
+                }
+
+                const msg = encodeURIComponent(`Olá ${nomeVendedor}! Gostaria de fechar negócio na conta [Código ${accountInfo.id}] - ${accountInfo.title} (${accountInfo.tagline}) no valor de R$ ${accountInfo.priceBrl}. Ainda está disponível?`);
+                ctaBtn.href = `https://api.whatsapp.com/send?phone=${numWhats}&text=${msg}`;
             }
 
             const detailsArea = document.getElementById('detailsSections');
