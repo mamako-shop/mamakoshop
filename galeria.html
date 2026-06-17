@@ -90,69 +90,63 @@
     </div>
 
     <!-- CONTEÚDO PRINCIPAL -->
-    <main id="galleryContent" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+    <main id="galleryContent" class="hidden max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
 
-        <!-- COLUNA DA ESQUERDA: GRELHA DE PRINTS -->
-        <div class="lg:col-span-2 space-y-6">
-            <div class="bg-[#0e0e11] border border-brand-border p-6 rounded-2xl">
-                <div class="flex items-center space-x-2 mb-6">
-                    <span class="bg-brand-orange/15 border border-brand-orange/30 text-brand-gold text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">
-                        <i class="fas fa-image mr-1"></i> Galeria de Prints
-                    </span>
-                    <span id="pageCodeHeader" class="text-gray-500 text-xs font-mono">Cód: 000</span>
+        <!-- CABEÇALHO DA CONTA -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <span id="pageCodeHeader" class="text-gray-500 text-xs font-mono bg-white/5 border border-brand-border px-2.5 py-1 rounded-full">Cód: 000</span>
+                    <span id="availabilityBadge" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-full">DISPONÍVEL</span>
                 </div>
-                <h1 id="pageTitle" class="font-cinzel font-black text-2xl sm:text-3xl text-white mb-6">CONTA DO...</h1>
-
-                <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <!-- Gerados via JS -->
-                </div>
+                <h1 id="pageTitle" class="font-cinzel font-black text-2xl sm:text-3xl text-white">CONTA DO...</h1>
+            </div>
+            <div class="text-right shrink-0">
+                <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Investimento</p>
+                <p id="priceLabel" class="text-3xl font-black text-white font-cinzel">R$ 0</p>
             </div>
         </div>
 
-        <!-- COLUNA DA DIREITA: DETALHES DA CONTA -->
-        <div class="space-y-6 lg:sticky lg:top-24">
-            <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-2xl">
-                <!-- Cabeçalho do Card -->
-                <div class="bg-gradient-to-br from-neutral-950 to-amber-950/20 p-5 border-b border-brand-border">
-                    <p class="text-[9px] font-bold text-gray-500 tracking-wider uppercase mb-1">Ficha Técnica</p>
-                    <h3 id="cardHeaderTitle" class="font-cinzel text-brand-gold font-bold text-sm tracking-wide">DETALHES DA CONTA</h3>
+        <!-- FICHA TÉCNICA HORIZONTAL -->
+        <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-neutral-950 to-amber-950/20 px-5 py-3 border-b border-brand-border flex items-center gap-2">
+                <i class="fas fa-scroll text-brand-gold text-xs"></i>
+                <h3 id="cardHeaderTitle" class="font-cinzel text-brand-gold font-bold text-xs tracking-widest uppercase">Ficha Técnica</h3>
+            </div>
+            <div class="p-5 space-y-5">
+                <!-- Pílulas de Status em linha -->
+                <div id="statusPillsArea" class="flex flex-wrap gap-2">
                 </div>
 
-                <!-- Corpo do Card -->
-                <div class="p-5 space-y-6">
+                <!-- Secções de heróis + recursos em grid responsivo -->
+                <div id="detailsSections" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                </div>
 
-                    <!-- Pílulas de Status -->
-                    <div id="statusPillsArea" class="grid grid-cols-2 gap-2 text-center">
-                        <!-- Gerado via JS -->
-                    </div>
-
-                    <!-- Secções Dinâmicas de Heróis -->
-                    <div id="detailsSections" class="space-y-6">
-                        <!-- Gerado via JS -->
-                    </div>
-
-                    <!-- Bloco de Preço -->
-                    <div class="bg-brand-orange/5 border border-brand-orange/25 p-4 rounded-xl flex items-center justify-between">
-                        <div>
-                            <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Investimento</p>
-                            <p id="priceLabel" class="text-2xl font-black text-white font-cinzel mt-1">R$ 0</p>
-                        </div>
-                        <span id="availabilityBadge" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded">DISPONÍVEL</span>
-                    </div>
-
-                    <!-- Botão de Comprar -->
+                <!-- Botão de compra -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-2 border-t border-brand-border">
                     <a id="buyCtaBtn" href="#" target="_blank"
-                        class="w-full inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-md active:scale-95 duration-200">
+                        class="flex-1 inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md active:scale-95 duration-200">
                         <i class="fab fa-whatsapp text-lg"></i>
                         <span>Comprar via WhatsApp</span>
                     </a>
-
-                    <p class="text-[10px] text-gray-500 text-center leading-relaxed">
-                        Conta autenticada e gerida de forma segura.<br>Entrega rápida e acompanhamento total do processo de vinculação.
+                    <p class="text-[10px] text-gray-500 self-center text-center sm:text-right leading-relaxed">
+                        Conta autenticada e gerida de forma segura.<br>Entrega rápida e vinculação acompanhada.
                     </p>
                 </div>
             </div>
         </div>
+
+        <!-- GALERIA DE PRINTS (largura total) -->
+        <div class="bg-[#0e0e11] border border-brand-border p-6 rounded-2xl">
+            <div class="flex items-center space-x-2 mb-5">
+                <span class="bg-brand-orange/15 border border-brand-orange/30 text-brand-gold text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">
+                    <i class="fas fa-image mr-1"></i> Galeria de Prints
+                </span>
+            </div>
+            <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            </div>
+        </div>
+
     </main>
 
     <!-- FOOTER BANNER -->
@@ -219,7 +213,8 @@
         }
 
         // Helpers
-        function safeStr(val) { return val ? String(val).trim() : ''; }
+        // Remove a aspa simples que o Sheets pode gravar para forçar formato texto (ex: '001 → 001)
+        function safeStr(val) { return val ? String(val).replace(/^'/, '').trim() : ''; }
         function splitList(val) { return val ? val.split(',').map(s => s.trim()).filter(Boolean) : []; }
 
         // ── ESTADO GLOBAL ────────────────────────────────────────────
@@ -292,9 +287,9 @@
             pillsArea.innerHTML = pills
                 .filter(p => p.value)
                 .map(p => `
-                    <div class="bg-white/5 border border-brand-border p-2.5 rounded-lg">
-                        <p class="text-[8px] text-gray-500 uppercase tracking-widest font-bold">${p.label}</p>
-                        <p class="${p.color} text-xs font-bold mt-1">${p.value}</p>
+                    <div class="bg-white/5 border border-brand-border px-3 py-2 rounded-lg flex items-center gap-2">
+                        <span class="text-[8px] text-gray-500 uppercase tracking-widest font-bold whitespace-nowrap">${p.label}:</span>
+                        <span class="${p.color} text-xs font-bold">${p.value}</span>
                     </div>`)
                 .join('');
 
@@ -317,33 +312,33 @@
             // Listas de heróis
             const detailsArea = document.getElementById('detailsSections');
             const heroSections = [
-                { title: 'Heróis Míticos',        icon: 'fa-star',  color: 'text-red-500',  data: accountInfo.miticos },
-                { title: 'Lendários Principais',   icon: 'fa-gem',   color: 'text-orange-500', data: accountInfo.principais_lendarios },
+                { title: 'Heróis Míticos',        icon: 'fa-star',  color: 'text-amber-500',  data: accountInfo.miticos },
+                { title: 'Lendários Principais',   icon: 'fa-gem',   color: 'text-purple-500', data: accountInfo.principais_lendarios },
                 { title: 'Lendários Destaque',     icon: 'fa-crown', color: 'text-yellow-500', data: accountInfo.outros_lendarios },
             ];
+            // Cada secção de heróis vira um card no grid horizontal
             detailsArea.innerHTML = heroSections
                 .filter(s => s.data.length > 0)
                 .map(s => `
-                    <div class="space-y-2 border-t border-brand-border pt-4">
-                        <h4 class="text-[10px] font-bold uppercase tracking-widest ${s.color} flex items-center space-x-1.5">
+                    <div class="bg-black/30 border border-brand-border rounded-xl p-4 space-y-2">
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest ${s.color} flex items-center space-x-1.5 pb-2 border-b border-brand-border/60">
                             <i class="fas ${s.icon}"></i><span>${s.title}</span>
                         </h4>
-                        <ul class="space-y-1.5 pl-1">
+                        <ul class="space-y-1.5">
                             ${s.data.map(item => `
                                 <li class="flex items-start space-x-2 text-xs text-gray-300">
-                                    <span class="text-brand-orange select-none">•</span>
+                                    <span class="text-brand-orange select-none mt-0.5">•</span>
                                     <span class="leading-relaxed">${item}</span>
                                 </li>`).join('')}
                         </ul>
                     </div>`)
                 .join('');
 
-            // ── BLOCO DE RECURSOS (Coluna R) ──────────────────────────
-            // Exibe o campo "recursos" como uma secção dedicada se existir
+            // Recursos (coluna R) — ocupa largura total se existir
             if (accountInfo.recursos) {
                 detailsArea.innerHTML += `
-                    <div class="space-y-2 border-t border-brand-border pt-4">
-                        <h4 class="text-[10px] font-bold uppercase tracking-widest text-sky-400 flex items-center space-x-1.5">
+                    <div class="sm:col-span-2 lg:col-span-3 bg-sky-950/20 border border-sky-800/30 rounded-xl p-4 space-y-2">
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest text-sky-400 flex items-center space-x-1.5 pb-2 border-b border-sky-800/30">
                             <i class="fas fa-boxes-stacked"></i><span>Recursos & Itens</span>
                         </h4>
                         <p class="text-xs text-gray-300 leading-relaxed whitespace-pre-line">${accountInfo.recursos}</p>
