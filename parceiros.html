@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link class="rounded-full" rel="icon" href="favicon.png" type="image/x-icon">
+    <title>Mamako Loko Shop | Vendedores Parceiros</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Ícones Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PapaParse para ler o Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            gold: '#FFD700',
+                            orange: '#E65C00',
+                            dark: '#070708',
+                            card: '#0F0F12',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glow-gold:hover {
+            box-shadow: 0 0 25px rgba(230, 92, 0, 0.5);
+        }
+        .hero-banner {
+            position: relative;
+            background-image: linear-gradient(180deg, rgba(7, 7, 8, 0.3) 0%, rgba(7, 7, 8, 0.95) 100%), url('banner.png');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body class="bg-brand-dark text-gray-100 font-inter antialiased">
+
+    <!-- BARRA DE NAVEGAÇÃO -->
+    <nav class="sticky top-0 z-50 bg-brand-dark/95 backdrop-blur-md border-b border-neutral-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logótipo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-full overflow-hidden shadow-lg shadow-brand-orange/20">
+                        <img src="logo.png" alt="Mamako Loko" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <span class="font-cinzel font-black text-xl tracking-wider bg-gradient-to-r from-brand-gold via-brand-orange to-red-500 bg-clip-text text-transparent">MAMAKO LOKO</span>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest -mt-1">Parceiros</p>
+                    </div>
+                </div>
+
+                <!-- Ligações (Desktop) -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#catalogo" class="text-gray-300 hover:text-brand-gold transition-colors font-medium">Contas Parceiras</a>
+                    <a href="#faq" class="text-gray-300 hover:text-brand-gold transition-colors font-medium">Aviso Legal</a>
+
+                    <div class="flex bg-neutral-900 border border-neutral-800 rounded-full p-1 text-sm font-semibold">
+                        <button id="btn-brl" class="px-3 py-1 rounded-full bg-brand-orange text-white transition-all">R$</button>
+                        <button id="btn-usd" class="px-3 py-1 rounded-full text-gray-400 hover:text-white transition-all">US$</button>
+                    </div>
+                </div>
+
+                <!-- Botão Suporte Geral (Seu WhatsApp para dúvidas sobre a página) -->
+                <div class="flex items-center space-x-4">
+                    <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá! Tenho uma dúvida sobre a página de vendedores parceiros."
+                        target="_blank"
+                        class="hidden sm:inline-flex items-center space-x-2 bg-neutral-800 border border-neutral-700 text-white font-bold px-5 py-2.5 rounded-full hover:scale-105 transition-transform duration-200">
+                        <i class="fab fa-whatsapp text-lg text-emerald-400"></i>
+                        <span>Suporte Geral</span>
+                    </a>
+
+                    <button id="hamburgerBtn" class="md:hidden text-gray-400 hover:text-white focus:outline-none p-2 rounded-lg border border-neutral-700">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENU MOBILE DROPDOWN -->
+        <div id="mobileMenu" class="hidden md:hidden bg-brand-card border-b border-neutral-800 px-4 pt-2 pb-6 space-y-4">
+            <a href="#catalogo" id="menu-link-catalogo" class="block text-gray-300 hover:text-brand-gold font-semibold py-2 border-b border-neutral-900">Contas Parceiras</a>
+            <a href="#faq" id="menu-link-faq" class="block text-gray-300 hover:text-brand-gold font-semibold py-2 border-b border-neutral-900">Como Funciona</a>
+
+            <div class="flex items-center justify-between pt-2">
+                <span class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Moeda:</span>
+                <div class="flex bg-neutral-900 border border-neutral-800 rounded-full p-1 text-xs font-semibold">
+                    <button id="btn-brl-mob" class="px-4 py-1.5 rounded-full bg-brand-orange text-white transition-all">R$</button>
+                    <button id="btn-usd-mob" class="px-4 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">US$</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SECÇÃO PRINCIPAL -->
+    <header class="hero-banner w-full flex items-center justify-center text-center h-[180px] sm:h-[260px] md:h-[320px] lg:h-[375px]">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <h1 class="font-cinzel font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white leading-tight tracking-wide drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)]">
+                Contas de Vendedores<br>
+                <span class="bg-gradient-to-r from-brand-gold via-brand-orange to-red-500 bg-clip-text text-transparent">Parceiros de Confiança</span>
+            </h1>
+        </div>
+    </header>
+
+    <!-- BANNER DE AVISO (Para deixar bem claro ao cliente) -->
+    <section class="bg-amber-500/10 border-b border-amber-500/20 py-4 text-center px-4">
+        <div class="max-w-3xl mx-auto flex items-center justify-center space-x-3 text-amber-400 text-xs sm:text-sm">
+            <i class="fas fa-excursi-sign fas fa-shield-alt text-lg"></i>
+            <p><strong>Aviso:</strong> As contas listadas abaixo pertencem a terceiros validados. A negociação e entrega serão feitas <strong>diretamente</strong> com o vendedor responsável ao clicar no botão do card.</p>
+        </div>
+    </section>
+
+    <!-- GRELHA DE CONTAS DO CATÁLOGO -->
+    <section id="catalogo" class="py-16 bg-brand-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div id="loading" class="text-center py-12">
+                <i class="fas fa-spinner animate-spin text-brand-orange text-4xl mb-4"></i>
+                <p class="text-gray-400">A carregar catálogo de parceiros...</p>
+            </div>
+
+            <div id="accountsContainer" class="grid md:grid-cols-2 gap-8 hidden">
+                <!-- Cartões preenchidos dinamicamente via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SECÇÃO FAQ / AVISO -->
+    <section id="faq" class="py-16 bg-brand-dark border-t border-neutral-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="font-cinzel font-black text-2xl text-white tracking-wider">Perguntas Frequentes & Termos</h2>
+                <div class="h-1 w-16 bg-brand-orange mx-auto my-3 rounded-full"></div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-brand-card border border-neutral-800/80 rounded-xl overflow-hidden">
+                    <button class="faq-btn w-full flex items-center justify-between p-5 font-semibold text-left text-white hover:bg-neutral-900 transition-colors">
+                        <span>Quem garante a segurança da conta?</span>
+                        <i class="faq-icon fas fa-chevron-down text-brand-orange transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-ans max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                        <div class="p-5 border-t border-neutral-800/60 text-sm text-gray-400 leading-relaxed bg-neutral-950/45">
+                            Nós apenas anunciamos vendedores que possuem excelente reputação e histórico comprovado no mercado de Raid. No entanto, o pagamento, dados de acesso e suporte pós-venda são gerenciados inteiramente pelo vendedor parceiro indicado no card da conta.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOTÃO FLUTUANTE (Seu WhatsApp para intermediação/dúvidas gerais) -->
+    <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá! Estou na página de parceiros e tenho uma dúvida geral."
+        target="_blank"
+        class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 bg-neutral-800 border border-neutral-700 text-white rounded-full shadow-2xl hover:scale-110 transition-all duration-200"
+        title="Dúvidas sobre os Parceiros">
+        <i class="fab fa-whatsapp text-3xl text-emerald-400"></i>
+    </a>
+
+    <!-- RODAPÉ -->
+    <footer class="bg-neutral-950 border-t border-neutral-900 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-gray-500">
+            <p class="font-cinzel font-bold text-sm tracking-wider text-brand-gold mb-2">MAMAKO LOKO SHOP | PARCEIROS</p>
+            <p>&copy; 2026. Esta é uma vitrine de anúncios para vendedores terceiros licenciados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // COLOQUE AQUI O LINK DO SEU NOVO GOOGLE SHEETS COM AS COLUNAS 'vendedor' e 'whatsapp'
+        const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGMz9XAk5spv5FFN585VM6g6toC79iulNUFqYB76MQmRTuhjnyTjRSybOuyhZ5FImNompOX0eFjZI0/pub?output=csv";
+
+        let accountsData = [];
+        let currentCurrency = 'BRL';
+
+        async function fetchSheetData() {
+            try {
+                const response = await fetch(googleSheetCsvUrl);
+                const csvText = await response.text();
+
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function (results) {
+                        accountsData = results.data.map(row => ({
+                            id: row.id ? row.id.trim() : '',
+                            title: row.title ? row.title.trim() : '',
+                            power: row.power ? row.power.trim() : '',
+                            tagline: row.tagline ? row.tagline.trim() : '',
+                            image: row.image ? row.image.trim() : '',
+                            priceBrl: parseFloat(row.priceBrl) || 0,
+                            priceUsd: parseFloat(row.priceUsd) || 0,
+                            label: row.label ? row.label.trim() : '',
+                            status: row.status ? row.status.trim().toUpperCase() : 'DISPONÍVEL',
+                            // Novas propriedades mapeadas do Sheets:
+                            vendedor: row.vendedor ? row.vendedor.trim() : 'Parceiro',
+                            whatsapp: row.whatsapp ? row.whatsapp.trim().replace(/\D/g, '') : '5561993935402' // Fallback caso esqueça de preencher
+                        }));
+
+                        document.getElementById('loading').classList.add('hidden');
+                        document.getElementById('accountsContainer').classList.remove('hidden');
+                        renderAccounts();
+                    },
+                    error: function (err) {
+                        console.error("Erro ao processar o CSV: ", err);
+                        fallbackToDefault();
+                    }
+                });
+            } catch (error) {
+                console.error("Erro ao buscar planilha: ", error);
+                fallbackToDefault();
+            }
+        }
+
+        function fallbackToDefault() {
+            accountsData = [
+                {
+                    id: "001",
+                    title: "Conta Void Premium (Exemplo)",
+                    power: "7.1M",
+                    tagline: "Embrys, Mikage, Yumeko e +++",
+                    image: "https://simp6.cuckcapital.cr/images4/imagef1c3452b07898ab2.png",
+                    priceBrl: 1000,
+                    priceUsd: 200,
+                    label: "Cód: 001",
+                    status: "DISPONÍVEL",
+                    vendedor: "Sérgio Galdino",
+                    whatsapp: "5561993935402"
+                }
+            ];
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('accountsContainer').classList.remove('hidden');
+            renderAccounts();
+        }
+
+        // ── Menu Mobile ──────────────────────────────────────────────
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        hamburgerBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+        // ── Seletor de Moeda ─────────────────────────────────────────
+        function setCurrency(curr) {
+            currentCurrency = curr;
+            const btnBrl = document.getElementById('btn-brl');
+            const btnUsd = document.getElementById('btn-usd');
+            const active = ['bg-brand-orange', 'text-white'];
+            const inactive = ['text-gray-400', 'hover:text-white'];
+
+            if (curr === 'BRL') {
+                btnBrl.classList.add(...active); btnBrl.classList.remove(...inactive);
+                btnUsd.classList.remove(...active); btnUsd.classList.add(...inactive);
+            } else {
+                btnUsd.classList.add(...active); btnUsd.classList.remove(...inactive);
+                btnBrl.classList.remove(...active); btnBrl.classList.add(...inactive);
+            }
+            renderAccounts();
+        }
+
+        document.getElementById('btn-brl').addEventListener('click', () => setCurrency('BRL'));
+        document.getElementById('btn-usd').addEventListener('click', () => setCurrency('USD'));
+
+        // ── Renderização Dinâmica com o Whatsapp Variável ────────────────
+        function renderAccounts() {
+            const container = document.getElementById('accountsContainer');
+            container.innerHTML = '';
+
+            accountsData.forEach(acc => {
+                const priceFormatted = currentCurrency === 'BRL'
+                    ? `R$ ${acc.priceBrl.toLocaleString('pt-BR')}`
+                    : `US$ ${acc.priceUsd.toLocaleString('en-US')}`;
+
+                const printsLink = `galeria.html?id=${acc.id}`;
+
+                // Mensagem customizada contendo o nome do vendedor para controle
+                const encodedMessage = encodeURIComponent(
+                    `Olá! Vi o anúncio da conta [Código ${acc.id}] na página de parceiros do Mamako Loko e gostaria de negociar.`
+                );
+                
+                // AQUI A MÁGICA ACONTECE: O número muda dinamicamente baseado no dado da planilha (acc.whatsapp)
+                const whatsappLink = `https://api.whatsapp.com/send?phone=${acc.whatsapp}&text=${encodedMessage}`;
+
+                const isSold = acc.status === 'VENDIDO';
+                const statusBadge = isSold
+                    ? `<span class="bg-red-500/15 border border-red-500/30 text-red-400 text-[10px] font-bold px-2.5 py-1 rounded">VENDIDO</span>`
+                    : `<span class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded">DISPONÍVEL</span>`;
+
+                const clickAction = isSold ? '#' : whatsappLink;
+
+                const card = `
+                    <div class="bg-brand-card border border-neutral-800/80 rounded-2xl overflow-hidden shadow-xl hover:scale-[1.02] hover:border-brand-orange/40 transition-all duration-300 flex flex-col justify-between group ${isSold ? 'opacity-65 grayscale' : ''}">
+                        
+                        <div class="relative h-72 flex items-center justify-center overflow-hidden border-b border-neutral-900 bg-black">
+                            <img src="${acc.image}" alt="${acc.title}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent z-10"></div>
+                            
+                            <!-- Código da Conta -->
+                            <span class="absolute top-3 left-3 bg-brand-orange/20 border border-brand-orange/50 text-brand-gold text-[10px] font-bold font-mono px-3 py-1 rounded-full shadow-lg z-20 backdrop-blur-sm">
+                                ${acc.label}
+                            </span>
+
+                            <!-- DONO DA CONTA (Selo de Vendedor) -->
+                            <span class="absolute top-3 right-3 bg-black/60 border border-neutral-700 text-gray-300 text-[10px] font-semibold px-3 py-1 rounded-full shadow-lg z-20 backdrop-blur-sm">
+                                <i class="fas fa-user text-brand-orange mr-1"></i>Vendedor: ${acc.vendedor}
+                            </span>
+                        </div>
+
+                        <div class="p-6 space-y-5 flex-1 flex flex-col justify-between bg-[#0e0e11]">
+                            <div class="space-y-4">
+                                <div class="space-y-1">
+                                    <h3 class="font-cinzel text-brand-gold font-black text-lg tracking-wide uppercase transition-colors group-hover:text-white">${acc.title}</h3>
+                                    <p class="text-gray-400 text-xs font-semibold">${acc.tagline}</p>
+                                </div>
+
+                                <div class="flex items-center justify-between text-xs bg-black/60 p-2.5 rounded-lg border border-neutral-900">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-chart-line text-brand-orange"></i>
+                                        <span class="text-gray-400">Poder de Conta:</span>
+                                    </div>
+                                    <span class="font-bold text-white font-mono">${acc.power}</span>
+                                </div>
+
+                                <a href="${printsLink}" class="w-full inline-flex items-center justify-center space-x-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800/80 hover:border-brand-orange/30 text-gray-300 hover:text-white text-xs font-bold py-2.5 px-4 rounded-xl transition-all">
+                                    <i class="fas fa-images text-brand-orange"></i>
+                                    <span>Veja todos os prints</span>
+                                </a>
+                            </div>
+
+                            <div class="pt-5 border-t border-neutral-900 mt-2">
+                                <div class="flex items-end justify-between mb-4">
+                                    <div>
+                                        <p class="text-[9px] text-gray-500 uppercase tracking-widest font-semibold">Valor do Investimento</p>
+                                        <p class="text-2xl font-black text-white font-cinzel mt-0.5">${priceFormatted}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        ${statusBadge}
+                                    </div>
+                                </div>
+
+                                <!-- Botão de ação que direciona para o dono da conta -->
+                                <a href="${clickAction}" 
+                                   target="${isSold ? '' : '_blank'}"
+                                   class="w-full inline-flex items-center justify-center space-x-2 bg-gradient-to-r ${isSold ? 'from-neutral-700 to-neutral-800 cursor-not-allowed' : 'from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500'} text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-md active:scale-95 duration-200">
+                                    <i class="${isSold ? 'fas fa-ban' : 'fab fa-whatsapp'} text-base"></i>
+                                    <span>${isSold ? 'Vendida' : 'Comprar com ' + acc.vendedor}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        // ── FAQ Accordion ─────────────────────────────────────────────
+        document.querySelectorAll('.faq-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const ans = this.nextElementSibling;
+                const icon = this.querySelector('.faq-icon');
+                const isOpen = ans.style.maxHeight && ans.style.maxHeight !== '0px';
+
+                document.querySelectorAll('.faq-ans').forEach(a => a.style.maxHeight = '0px');
+                document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
+
+                if (!isOpen) {
+                    ans.style.maxHeight = ans.scrollHeight + 'px';
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+
+        window.onload = fetchSheetData;
+    </script>
+</body>
+</html>
