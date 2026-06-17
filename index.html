@@ -6,17 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="favicon.png" type="image/x-icon">
     <title>Mamako Loko Shop | Contas de Raid Shadow Legends</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <!-- Ícones Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- PapaParse para ler o Google Sheets de forma segura e sem erros de vírgula -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
     <script>
@@ -58,15 +54,13 @@
             scroll-behavior: smooth;
         }
     </style>
-</head>
+</head> head
 
 <body class="bg-brand-dark text-gray-100 font-inter antialiased">
 
-    <!-- BARRA DE NAVEGAÇÃO -->
     <nav class="sticky top-0 z-50 bg-brand-dark/95 backdrop-blur-md border-b border-neutral-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- Logótipo -->
                 <div class="flex items-center space-x-3">
                     <div class="w-12 h-12 rounded-full overflow-hidden shadow-lg shadow-brand-orange/20">
                         <img src="logo.png"
@@ -80,12 +74,14 @@
                     </div>
                 </div>
 
-                <!-- Ligações de Navegação e Seletor de Moeda (Desktop) -->
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#catalogo"
                         class="text-gray-300 hover:text-brand-gold transition-colors font-medium">Catálogo</a>
-                    <a href="#faq" class="text-gray-300 hover:text-brand-gold transition-colors font-medium">Como
-                        Funciona</a>
+                    <a href="parceiros.html" 
+                        class="text-gray-300 hover:text-brand-gold transition-colors font-medium flex items-center space-x-1">
+                        <i class="fas fa-handshake text-brand-orange text-xs mr-1"></i>Contas Parceiros
+                    </a>
+                    <a href="#faq" class="text-gray-300 hover:text-brand-gold transition-colors font-medium">Como Funciona</a>
 
                     <div class="flex bg-neutral-900 border border-neutral-800 rounded-full p-1 text-sm font-semibold">
                         <button id="btn-brl"
@@ -95,7 +91,6 @@
                     </div>
                 </div>
 
-                <!-- Botões de Ação / Hambúrguer no Mobile -->
                 <div class="flex items-center space-x-4">
                     <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá Mamako! Acessei o catálogo e gostaria de falar com você sobre as contas."
                         target="_blank"
@@ -104,7 +99,6 @@
                         <span>Tirar Dúvidas</span>
                     </a>
 
-                    <!-- Botão Hambúrguer -->
                     <button id="hamburgerBtn"
                         class="md:hidden text-gray-400 hover:text-white focus:outline-none p-2 rounded-lg border border-neutral-700">
                         <i class="fas fa-bars text-xl"></i>
@@ -113,14 +107,16 @@
             </div>
         </div>
 
-        <!-- MENU MOBILE DROPDOWN -->
         <div id="mobileMenu"
             class="hidden md:hidden bg-brand-card border-b border-neutral-800 px-4 pt-2 pb-6 space-y-4">
             <a href="#catalogo" id="menu-link-catalogo"
                 class="block text-gray-300 hover:text-brand-gold font-semibold py-2 border-b border-neutral-900">Catálogo</a>
+            <a href="parceiros.html"
+                class="block text-gray-300 hover:text-brand-gold font-semibold py-2 border-b border-neutral-900 flex items-center">
+                <i class="fas fa-handshake text-brand-orange mr-2"></i>Contas de Parceiros
+            </a>
             <a href="#faq" id="menu-link-faq"
-                class="block text-gray-300 hover:text-brand-gold font-semibold py-2 border-b border-neutral-900">Como
-                Funciona</a>
+                class="block text-gray-300 hover:text-brand-gold font-semibold py-2 border-b border-neutral-900">Como Funciona</a>
 
             <div class="flex items-center justify-between pt-2">
                 <span class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Moeda de Exibição:</span>
@@ -141,7 +137,6 @@
         </div>
     </nav>
 
-    <!-- SECÇÃO PRINCIPAL (CABEÇALHO) -->
     <header
         class="hero-banner w-full flex items-center justify-center text-center h-[180px] sm:h-[260px] md:h-[320px] lg:h-[375px]">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
@@ -155,7 +150,6 @@
         </div>
     </header>
 
-    <!-- SECÇÃO DE SUPORTE E CONVERSÃO -->
     <section class="bg-gradient-to-b from-brand-dark to-neutral-950 py-8 border-b border-neutral-900">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
@@ -203,30 +197,25 @@
         </div>
     </section>
 
-    <!-- GRELHA DE CONTAS DO CATÁLOGO -->
     <section id="catalogo" class="py-16 bg-brand-dark">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12">
-                <h2 class="font-cinzel font-black text-2xl sm:text-3xl text-white tracking-wider">ESTOQUE ATUALIZADO
-                </h2>
+                <h2 class="font-cinzel font-black text-2xl sm:text-3xl text-white tracking-wider">ESTOQUE ATUALIZADO</h2>
                 <div class="h-1 w-20 bg-brand-orange mx-auto my-3 rounded-full"></div>
                 <p class="text-gray-400 text-sm">Contas premium e exclusivas com envio imediato. Toque na conta
                     pretendida para fechar negócio diretamente através do WhatsApp.</p>
             </div>
 
-            <!-- Efeito de Loading Visual enquanto lê os dados do Google Sheets -->
             <div id="loading" class="text-center py-12">
                 <i class="fas fa-spinner animate-spin text-brand-orange text-4xl mb-4"></i>
                 <p class="text-gray-400">A carregar catálogo em tempo real...</p>
             </div>
 
             <div id="accountsContainer" class="grid md:grid-cols-2 gap-8 hidden">
-                <!-- Cartões preenchidos dinamicamente via JavaScript -->
-            </div>
+                </div>
         </div>
     </section>
 
-    <!-- SECÇÃO FAQ -->
     <section id="faq" class="py-16 bg-brand-dark border-t border-neutral-900">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
@@ -247,8 +236,7 @@
                             class="p-5 border-t border-neutral-800/60 text-xs sm:text-sm text-gray-400 leading-relaxed bg-neutral-950/45">
                             A entrega é feita de forma prática através do WhatsApp. Enviamos as credenciais necessárias
                             (Plarium ID ou e-mail atual da conta e palavra-passe). Prestamos suporte passo a passo para
-                            a
-                            vinculação do seu próprio e-mail e alteração da palavra-passe para garantir segurança total.
+                            a vinculação do seu próprio e-mail e alteração da palavra-passe para garantir segurança total.
                         </div>
                     </div>
                 </div>
@@ -281,8 +269,7 @@
                         <div
                             class="p-5 border-t border-neutral-800/60 text-xs sm:text-sm text-gray-400 leading-relaxed bg-neutral-950/45">
                             A Mamako Loko Shop possuí diversas referências em vendas de contas pelos grupos de Raid BR
-                            através do seu criador Sergio Galdino.
-                            Todas as contas são validadas antes da venda e oferecemos suporte total pós-compra.
+                            através do seu criador Sergio Galdino. Todas as contas são validadas antes da venda e oferecemos suporte total pós-compra.
                         </div>
                     </div>
                 </div>
@@ -290,7 +277,35 @@
         </div>
     </section>
 
-    <!-- BOTÃO FLUTUANTE DO WHATSAPP -->
+    <section class="py-12 bg-gradient-to-b from-brand-dark to-neutral-950 border-t border-neutral-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative bg-gradient-to-r from-neutral-900 via-brand-card to-neutral-900 border border-neutral-800 p-8 sm:p-10 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 group hover:border-brand-orange/40 transition-all duration-300">
+                <div class="absolute -right-16 -bottom-16 w-44 h-44 bg-brand-orange/10 rounded-full blur-3xl group-hover:bg-brand-orange/20 transition-all duration-500"></div>
+                
+                <div class="space-y-3 text-center md:text-left z-10">
+                    <span class="bg-brand-orange/10 border border-brand-orange/30 text-brand-gold text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">
+                        Estoque Cooperativo
+                    </span>
+                    <h3 class="font-cinzel text-xl sm:text-2xl font-black text-white tracking-wide">
+                        Procurando mais opções?<br>
+                        <span class="bg-gradient-to-r from-brand-gold to-brand-orange bg-clip-text text-transparent">Explore as contas dos nossos parceiros</span>
+                    </h3>
+                    <p class="text-xs text-gray-400 max-w-md leading-relaxed">
+                        Trabalhamos com fornecedores e jogadores selecionados para trazer ainda mais diversidade ao catálogo. Segurança total garantida e intermediada por nós!
+                    </p>
+                </div>
+
+                <div class="w-full md:w-auto text-center z-10 shrink-0">
+                    <a href="parceiros.html" 
+                       class="inline-flex items-center space-x-2 bg-gradient-to-r from-brand-orange to-red-600 hover:scale-105 text-white text-sm font-bold px-6 py-3.5 rounded-xl shadow-lg shadow-brand-orange/20 transition-all duration-200 w-full sm:w-auto justify-center">
+                        <span>Ver Contas Parceiros</span>
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá Mamako! Gostaria de consultar contas disponíveis para o Raid."
         target="_blank"
         class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-200 glow-gold"
@@ -298,7 +313,6 @@
         <i class="fab fa-whatsapp text-3xl"></i>
     </a>
 
-    <!-- RODAPÉ -->
     <footer class="bg-neutral-950 border-t border-neutral-900 pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
 
@@ -316,53 +330,54 @@
                     <span>&copy; 2026. Todos os direitos reservados.</span>
                 </div>
                 <div>
-                    <span class="text-gray-400 text-[10px]">Raid: Shadow Legends é uma marca registada da Plarium Global
-                        Ltd.</span>
+                    <span class="text-gray-400 text-[10px]">Raid: Shadow Legends é uma marca registada da Plarium Global Ltd.</span>
                 </div>
             </div>
         </div>
     </footer>
 
     <script>
-        // LINK PÚBLICO DO GOOGLE SHEETS EM FORMATO CSV (Substitua pela sua planilha publicada)
-        // Como obter: No Google Sheets, clique em Ficheiro -> Partilhar -> Publicar na Web. Escolha "Documento Inteiro" e o formato "Valores separados por vírgulas (.csv)". Copie o link gerado e cole aqui!
         const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGMz9XAk5spv5FFN585VM6g6toC79iulNUFqYB76MQmRTuhjnyTjRSybOuyhZ5FImNompOX0eFjZI0/pub?output=csv";
 
         let accountsData = [];
         let currentCurrency = 'BRL';
 
-        // Carregar dados de forma assíncrona do Google Sheets
+        // Carregar dados do Google Sheets filtrando por 'propria'
         async function fetchSheetData() {
             try {
                 const response = await fetch(googleSheetCsvUrl);
                 const csvText = await response.text();
 
-                // Parser robusto com o PapaParse que suporta quebras de linha e vírgulas no meio das células
                 Papa.parse(csvText, {
                     header: true,
                     skipEmptyLines: true,
                     complete: function (results) {
-                        accountsData = results.data.map(row => ({
-                            id: row.id.trim(),
-                            title: row.title.trim(),
-                            power: row.power.trim(),
-                            tagline: row.tagline.trim(),
-                            image: row.image.trim(),
+                        // FILTRO INVERSO: Só exibe se tipo for 'propria' (ou caso esteja em branco, assumindo como sua)
+                        const apenasMinhas = results.data.filter(row => {
+                            const tipoConta = row.tipo ? row.tipo.trim().toLowerCase() : '';
+                            return tipoConta === 'propria' || tipoConta === '';
+                        });
+
+                        accountsData = apenasMinhas.map(row => ({
+                            id: row.id ? row.id.trim() : '',
+                            title: row.title ? row.title.trim() : '',
+                            power: row.power ? row.power.trim() : '',
+                            tagline: row.tagline ? row.tagline.trim() : '',
+                            image: row.image ? row.image.trim() : '',
                             priceBrl: parseFloat(row.priceBrl) || 0,
                             priceUsd: parseFloat(row.priceUsd) || 0,
-                            label: row.label.trim(),
+                            label: row.label ? row.label.trim() : '',
                             status: row.status ? row.status.trim().toUpperCase() : 'DISPONÍVEL',
-                            recursos: row.recursos.trim(),
+                            recursos: row.recursos ? row.recursos.trim() : ''
                         }));
 
-                        // Oculta loading e renderiza as contas na tela
                         document.getElementById('loading').classList.add('hidden');
                         document.getElementById('accountsContainer').classList.remove('hidden');
                         renderAccounts();
                     },
                     error: function (err) {
                         console.error("Erro ao processar o CSV: ", err);
-                        fallbackToDefault(); // Se falhar, usa os dados estáticos antigos
+                        fallbackToDefault();
                     }
                 });
             } catch (error) {
@@ -371,7 +386,6 @@
             }
         }
 
-        // Fallback de segurança caso a planilha fique offline ou o link esteja errado
         function fallbackToDefault() {
             accountsData = [
                 {
@@ -391,7 +405,7 @@
             renderAccounts();
         }
 
-        // ── Menu Mobile ──────────────────────────────────────────────
+        // Menu Mobile Toggle
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const mobileMenu = document.getElementById('mobileMenu');
 
@@ -406,7 +420,7 @@
             mobileMenu.classList.add('hidden');
         });
 
-        // ── Seletor de Moeda ─────────────────────────────────────────
+        // Seletor de Moeda
         function setCurrency(curr) {
             currentCurrency = curr;
 
@@ -438,7 +452,7 @@
         document.getElementById('btn-brl-mob').addEventListener('click', () => setCurrency('BRL'));
         document.getElementById('btn-usd-mob').addEventListener('click', () => setCurrency('USD'));
 
-        // ── Renderização dos Cartões ──────────────────────────────────
+        // Renderização dos Cartões
         function renderAccounts() {
             const container = document.getElementById('accountsContainer');
             container.innerHTML = '';
@@ -448,7 +462,6 @@
                     ? `R$ ${acc.priceBrl.toLocaleString('pt-BR')}`
                     : `US$ ${acc.priceUsd.toLocaleString('en-US')}`;
 
-                // Link DINÂMICO para a página única de galeria de prints passando o ID como parâmetro
                 const printsLink = `galeria.html?id=${acc.id}`;
 
                 const encodedMessage = encodeURIComponent(
@@ -456,15 +469,12 @@
                 );
                 const whatsappLink = `https://api.whatsapp.com/send?phone=5561993935402&text=${encodedMessage}`;
 
-                // Trata visualmente se a conta foi vendida
                 const isSold = acc.status === 'VENDIDO';
                 const statusBadge = isSold
                     ? `<span class="bg-red-500/15 border border-red-500/30 text-red-400 text-[10px] font-bold px-2.5 py-1 rounded">VENDIDO</span>`
                     : `<span class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded">DISPONÍVEL</span>`;
 
-                const clickAction = isSold
-                    ? '#'
-                    : whatsappLink;
+                const clickAction = isSold ? '#' : whatsappLink;
 
                 const card = `
                     <div class="bg-brand-card border border-neutral-800/80 rounded-2xl overflow-hidden shadow-xl hover:scale-[1.02] hover:border-brand-orange/40 transition-all duration-300 flex flex-col justify-between group ${isSold ? 'opacity-65 grayscale' : ''}">
@@ -492,7 +502,6 @@
                                     <span class="font-bold text-white font-mono">${acc.power}</span>
                                 </div>
 
-                                <!-- Direciona para a galeria unificada e dinâmica de imagens -->
                                 <a href="${printsLink}" 
                                    class="w-full inline-flex items-center justify-center space-x-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800/80 hover:border-brand-orange/30 text-gray-300 hover:text-white text-xs font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm">
                                     <i class="fas fa-images text-brand-orange"></i>
@@ -525,7 +534,7 @@
             });
         }
 
-        // ── FAQ ───────────────────────────────────────────────────────
+        // FAQ Eventos
         document.querySelectorAll('.faq-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 const ans = this.nextElementSibling;
@@ -542,7 +551,6 @@
             });
         });
 
-        // Inicializar lendo do Google Sheets
         window.onload = fetchSheetData;
     </script>
 </body>
