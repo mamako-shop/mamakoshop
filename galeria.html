@@ -11,7 +11,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
     <script>
@@ -28,186 +27,423 @@
                             orange: '#E65C00',
                             dark: '#070708',
                             card: '#0F0F12',
+                            border: '#1e1e24',
                         }
                     }
                 }
             }
         }
     </script>
+    <style>
+        .thumb {
+            aspect-ratio: 16/10;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+        .thumb:hover {
+            border-color: #E65C00;
+            transform: scale(1.03);
+            box-shadow: 0 0 20px rgba(230, 92, 0, 0.3);
+        }
+        .lightbox-img-wrap img {
+            will-change: transform;
+            transition: transform 0.15s ease-out;
+        }
+        .lightbox-img-wrap.no-transition img {
+            transition: none;
+        }
+    </style>
 </head>
 
-<body class="bg-brand-dark text-gray-100 font-inter antialiased min-h-screen flex flex-col justify-between">
+<body class="bg-brand-dark text-gray-100 font-inter antialiased min-h-screen">
 
-    <nav class="bg-brand-dark border-b border-neutral-800 py-4 px-6 sticky top-0 z-40 backdrop-blur-md bg-brand-dark/95">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="index.html" class="flex items-center space-x-3 hover:opacity-90 transition-opacity">
-                <i class="fas fa-arrow-left text-brand-orange text-xl"></i>
-                <span class="font-cinzel font-black text-lg tracking-wider bg-gradient-to-r from-brand-gold via-brand-orange to-red-500 bg-clip-text text-transparent">VOLTAR AO CATÁLOGO</span>
-            </a>
-        </div>
+    <!-- BARRA DE NAVEGAÇÃO -->
+    <nav class="sticky top-0 z-50 bg-brand-dark/95 backdrop-blur-md border-b border-brand-border h-20 px-6 flex items-center justify-between">
+        <a href="index.html" class="flex items-center space-x-3">
+            <div class="w-12 h-12 rounded-full overflow-hidden shadow-lg shadow-brand-orange/20">
+                <img src="logo.png" alt="Mamako Loko" class="w-full h-full object-cover">
+            </div>
+            <div>
+                <span class="font-cinzel font-black text-xl tracking-wider bg-gradient-to-r from-brand-gold via-brand-orange to-red-500 bg-clip-text text-transparent">MAMAKO LOKO</span>
+                <p class="text-[9px] text-gray-400 uppercase tracking-widest -mt-1">Raid Store</p>
+            </div>
+        </a>
+        <a href="index.html" class="flex items-center space-x-2 text-gray-400 hover:text-brand-gold transition-colors text-sm font-semibold border border-brand-border px-4 py-2 rounded-full">
+            <i class="fas fa-arrow-left"></i>
+            <span>Ver Catálogo</span>
+        </a>
     </nav>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-8">
-        <div class="mb-8">
-            <h1 id="accountTitle" class="font-cinzel font-black text-xl sm:text-2xl md:text-3xl text-brand-gold tracking-wide uppercase">Carregando conta...</h1>
-            <p id="accountTagline" class="text-gray-400 text-xs sm:text-sm mt-1">Buscando detalhes na planilha...</p>
-        </div>
+    <!-- LOADING SCREEN -->
+    <div id="galleryLoading" class="text-center py-24">
+        <i class="fas fa-spinner animate-spin text-brand-orange text-4xl mb-4"></i>
+        <p class="text-gray-400">A processar galeria de prints...</p>
+    </div>
 
-        <div id="loading" class="text-center py-20">
-            <i class="fas fa-spinner animate-spin text-brand-orange text-5xl mb-4"></i>
-            <p class="text-gray-400">A carregar os prints oficiais da conta...</p>
-        </div>
+    <!-- ERROR SCREEN -->
+    <div id="galleryError" class="hidden text-center py-24 max-w-md mx-auto">
+        <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
+        <h2 class="text-xl font-bold font-cinzel text-white">Conta não Encontrada</h2>
+        <p class="text-gray-400 mt-2 text-sm">O código desta conta não existe ou os dados da galeria ainda estão a ser atualizados.</p>
+        <a href="index.html" class="mt-6 inline-block bg-brand-orange text-white text-xs font-bold px-6 py-2.5 rounded-xl uppercase">Voltar ao Catálogo</a>
+    </div>
 
-        <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 hidden">
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main id="galleryContent" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+
+        <!-- COLUNA DA ESQUERDA: GRELHA DE PRINTS -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-[#0e0e11] border border-brand-border p-6 rounded-2xl">
+                <div class="flex items-center space-x-2 mb-6">
+                    <span class="bg-brand-orange/15 border border-brand-orange/30 text-brand-gold text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">
+                        <i class="fas fa-image mr-1"></i> Galeria de Prints
+                    </span>
+                    <span id="pageCodeHeader" class="text-gray-500 text-xs font-mono">Cód: 000</span>
+                </div>
+                <h1 id="pageTitle" class="font-cinzel font-black text-2xl sm:text-3xl text-white mb-6">CONTA DO...</h1>
+
+                <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <!-- Gerados via JS -->
+                </div>
             </div>
+        </div>
+
+        <!-- COLUNA DA DIREITA: DETALHES DA CONTA -->
+        <div class="space-y-6 lg:sticky lg:top-24">
+            <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-2xl">
+                <!-- Cabeçalho do Card -->
+                <div class="bg-gradient-to-br from-neutral-950 to-amber-950/20 p-5 border-b border-brand-border">
+                    <p class="text-[9px] font-bold text-gray-500 tracking-wider uppercase mb-1">Ficha Técnica</p>
+                    <h3 id="cardHeaderTitle" class="font-cinzel text-brand-gold font-bold text-sm tracking-wide">DETALHES DA CONTA</h3>
+                </div>
+
+                <!-- Corpo do Card -->
+                <div class="p-5 space-y-6">
+
+                    <!-- Pílulas de Status -->
+                    <div id="statusPillsArea" class="grid grid-cols-2 gap-2 text-center">
+                        <!-- Gerado via JS -->
+                    </div>
+
+                    <!-- Secções Dinâmicas de Heróis -->
+                    <div id="detailsSections" class="space-y-6">
+                        <!-- Gerado via JS -->
+                    </div>
+
+                    <!-- Bloco de Preço -->
+                    <div class="bg-brand-orange/5 border border-brand-orange/25 p-4 rounded-xl flex items-center justify-between">
+                        <div>
+                            <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Investimento</p>
+                            <p id="priceLabel" class="text-2xl font-black text-white font-cinzel mt-1">R$ 0</p>
+                        </div>
+                        <span id="availabilityBadge" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded">DISPONÍVEL</span>
+                    </div>
+
+                    <!-- Botão de Comprar -->
+                    <a id="buyCtaBtn" href="#" target="_blank"
+                        class="w-full inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-md active:scale-95 duration-200">
+                        <i class="fab fa-whatsapp text-lg"></i>
+                        <span>Comprar via WhatsApp</span>
+                    </a>
+
+                    <p class="text-[10px] text-gray-500 text-center leading-relaxed">
+                        Conta autenticada e gerida de forma segura.<br>Entrega rápida e acompanhamento total do processo de vinculação.
+                    </p>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <div id="lightbox" class="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center hidden">
-        <button id="lbClose" class="absolute top-4 right-4 text-white text-3xl hover:text-brand-orange transition-colors z-50 p-2">
-            <i class="fas fa-times"></i>
+    <!-- FOOTER BANNER -->
+    <div class="max-w-4xl mx-auto px-4 pb-16 text-center">
+        <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá Mamako! Vi o catálogo e quero negociar uma conta." target="_blank"
+            class="block rounded-3xl overflow-hidden shadow-2xl hover:scale-[1.01] transition-transform duration-300">
+            <img src="https://simp6.cuckcapital.cr/images4/aaaa6d6ec5adc6ba3d07.png" alt="Fale com o Mamako no WhatsApp" class="w-full h-auto">
+        </a>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div id="lightbox" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-4 backdrop-blur-md">
+        <button id="lbClose" class="fixed top-5 right-5 w-11 h-11 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center hover:bg-white/20 transition-colors z-50">
+            <i class="fas fa-times text-lg"></i>
         </button>
-
-        <div class="relative max-w-5xl max-h-[80vh] w-full h-full flex items-center justify-center px-4">
-            <button id="lbPrev" class="hidden md:flex absolute left-4 text-white hover:text-brand-orange text-4xl p-4 transition-all"><i class="fas fa-chevron-left"></i></button>
-            <img id="lbImg" src="" alt="Print" class="max-w-full max-h-full object-contain rounded shadow-2xl">
-            <button id="lbNext" class="hidden md:flex absolute right-4 text-white hover:text-brand-orange text-4xl p-4 transition-all"><i class="fas fa-chevron-right"></i></button>
-        </div>
-
-        <div class="flex md:hidden items-center space-x-12 mt-6 z-50 bg-neutral-900/80 px-6 py-2.5 rounded-full border border-neutral-800">
-            <button id="lbPrev2" class="text-white hover:text-brand-orange text-2xl p-2"><i class="fas fa-chevron-left"></i></button>
-            <span id="lbCounter" class="text-xs font-mono text-gray-400">0 / 0</span>
-            <button id="lbNext2" class="text-white hover:text-brand-orange text-2xl p-2"><i class="fas fa-chevron-right"></i></button>
+        <button id="lbPrev" class="fixed left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/5 border border-white/10 hover:border-brand-orange hover:bg-brand-orange/20 text-white flex items-center justify-center z-40 transition-colors">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="lbNext" class="fixed right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/5 border border-white/10 hover:border-brand-orange hover:bg-brand-orange/20 text-white flex items-center justify-center z-40 transition-colors">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <div class="max-w-5xl w-full flex flex-col items-center space-y-4">
+            <div id="lbWrap" class="relative w-full rounded-2xl overflow-hidden border border-brand-border bg-black max-h-[75vh] flex items-center justify-center touch-action-none">
+                <img id="lbImg" src="" alt="Print em tamanho grande" class="max-h-[75vh] w-full object-contain cursor-grab active:cursor-grabbing">
+            </div>
+            <div class="flex items-center space-x-6 z-10">
+                <button id="lbPrev2" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-white flex items-center justify-center"><i class="fas fa-chevron-left"></i></button>
+                <span id="lbCounter" class="text-xs font-mono text-gray-400">1 / 1</span>
+                <button id="lbNext2" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-white flex items-center justify-center"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Mesma URL utilizada na Home
+        // ── CONFIGURAÇÃO CENTRAL ─────────────────────────────────────
+        // Mesma URL do index.html — altere apenas aqui se mudar a planilha
         const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGMz9XAk5spv5FFN585VM6g6toC79iulNUFqYB76MQmRTuhjnyTjRSybOuyhZ5FImNompOX0eFjZI0/pub?output=csv";
 
+        // ── MAPEAMENTO DE COLUNAS DA PLANILHA ───────────────────────
+        // Aqui ficam TODOS os campos lidos do Sheets.
+        // Para adicionar uma nova coluna, basta adicionar uma linha aqui
+        // e usar o campo em buildDynamicPage() abaixo.
+        function mapRow(row) {
+            return {
+                id:                  safeStr(row.id),
+                title:               safeStr(row.title),
+                power:               safeStr(row.power),
+                tagline:             safeStr(row.tagline),
+                priceBrl:            parseFloat(row.priceBrl) || 0,
+                priceUsd:            parseFloat(row.priceUsd) || 0,
+                label:               safeStr(row.label),
+                status:              safeStr(row.status).toUpperCase() || 'DISPONÍVEL',
+                email_status:        safeStr(row.email_status),
+                links_status:        safeStr(row.links_status),
+                promo_code:          safeStr(row.promo_code),
+                level:               safeStr(row.level),
+                recursos:            safeStr(row.recursos),   // ← COLUNA R (corrigido)
+                // Listas separadas por vírgula:
+                miticos:             splitList(row.miticos),
+                principais_lendarios: splitList(row.principais_lendarios),
+                outros_lendarios:    splitList(row.outros_lendarios),
+                prints:              splitList(row.prints),
+            };
+        }
+
+        // Helpers
+        function safeStr(val) { return val ? String(val).trim() : ''; }
+        function splitList(val) { return val ? val.split(',').map(s => s.trim()).filter(Boolean) : []; }
+
+        // ── ESTADO GLOBAL ────────────────────────────────────────────
+        let accountInfo = null;
         let images = [];
         let currentImageIndex = 0;
+        let scale = 1, isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+        let initialDistance = null, initialScale = 1;
 
-        // Captura o ID passado na URL (?id=001)
-        const urlParams = new URLSearchParams(window.location.search);
-        const accountId = urlParams.get('id');
+        function getUrlParameter(name) {
+            const results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+            return results ? decodeURIComponent(results[1]) : null;
+        }
 
-        async function fetchGalleryData() {
-            if (!accountId) {
-                document.getElementById('accountTitle').innerText = "Conta não especificada";
-                document.getElementById('loading').classList.add('hidden');
-                return;
-            }
+        // ── BUSCAR DADOS DO SHEETS ───────────────────────────────────
+        async function fetchAccountDetails() {
+            const urlId = getUrlParameter('id');
+            if (!urlId) { showError(); return; }
 
             try {
                 const response = await fetch(googleSheetCsvUrl);
+                if (!response.ok) throw new Error('Falha na rede: ' + response.status);
                 const csvText = await response.text();
 
                 Papa.parse(csvText, {
                     header: true,
                     skipEmptyLines: true,
                     complete: function (results) {
-                        // Encontra a conta correspondente ao ID passado por parâmetro
-                        const account = results.data.find(row => row.id && row.id.trim() === accountId.trim());
-
-                        if (account) {
-                            document.getElementById('accountTitle').innerText = account.title || `Conta Cód: ${accountId}`;
-                            document.getElementById('accountTagline').innerText = account.tagline || '';
-
-                            // Trata a string de prints separando-as por vírgula
-                            if (account.prints && account.prints.trim() !== '') {
-                                images = account.prints.split(',').map(img => img.trim()).filter(img => img !== '');
-                            }
-
-                            renderGrid();
+                        const rawRow = results.data.find(r => safeStr(r.id) === urlId.trim());
+                        if (rawRow) {
+                            accountInfo = mapRow(rawRow);
+                            buildDynamicPage();
                         } else {
-                            document.getElementById('accountTitle').innerText = "Conta não encontrada";
-                            document.getElementById('accountTagline').innerText = "Verifique se o ID está correto na planilha.";
-                            document.getElementById('loading').classList.add('hidden');
+                            showError();
                         }
                     },
-                    error: function (err) {
-                        console.error("Erro ao processar o CSV da galeria: ", err);
-                        document.getElementById('loading').innerText = "Erro ao carregar os dados da galeria.";
-                    }
+                    error: function () { showError(); }
                 });
             } catch (error) {
-                console.error("Erro na requisição da galeria: ", error);
-                document.getElementById('loading').innerText = "Erro ao conectar com a nuvem.";
+                console.error('Erro ao buscar planilha:', error);
+                showError();
             }
         }
 
-        function renderGrid() {
+        function showError() {
+            document.getElementById('galleryLoading').classList.add('hidden');
+            document.getElementById('galleryError').classList.remove('hidden');
+        }
+
+        // ── CONSTRUÇÃO DA PÁGINA ─────────────────────────────────────
+        function buildDynamicPage() {
+            document.getElementById('galleryLoading').classList.add('hidden');
+            document.getElementById('galleryContent').classList.remove('hidden');
+
+            // Textos principais
+            document.getElementById('pageCodeHeader').textContent = `Código: ${accountInfo.id}`;
+            document.getElementById('pageTitle').textContent = accountInfo.title;
+            document.getElementById('cardHeaderTitle').textContent = `CONTA COD: ${accountInfo.id}`;
+            document.getElementById('priceLabel').textContent = `R$ ${accountInfo.priceBrl.toLocaleString('pt-BR')}`;
+
+            // Pílulas de status
+            const pills = [
+                { label: 'E-mail',      value: accountInfo.email_status,  color: 'text-emerald-400' },
+                { label: 'Vínculos',    value: accountInfo.links_status,   color: 'text-emerald-400' },
+                { label: 'Promo Code',  value: accountInfo.promo_code,     color: 'text-emerald-400' },
+                { label: 'Nível',       value: accountInfo.level,          color: 'text-brand-gold'  },
+            ];
+            const pillsArea = document.getElementById('statusPillsArea');
+            pillsArea.innerHTML = pills
+                .filter(p => p.value)
+                .map(p => `
+                    <div class="bg-white/5 border border-brand-border p-2.5 rounded-lg">
+                        <p class="text-[8px] text-gray-500 uppercase tracking-widest font-bold">${p.label}</p>
+                        <p class="${p.color} text-xs font-bold mt-1">${p.value}</p>
+                    </div>`)
+                .join('');
+
+            // Status de disponibilidade
+            const isSold = accountInfo.status === 'VENDIDO';
+            const badge = document.getElementById('availabilityBadge');
+            const ctaBtn = document.getElementById('buyCtaBtn');
+
+            if (isSold) {
+                badge.className = "bg-red-500/15 border border-red-500/30 text-red-400 text-[10px] font-bold px-2.5 py-1 rounded";
+                badge.textContent = "VENDIDO";
+                ctaBtn.className = "w-full inline-flex items-center justify-center space-x-2 bg-neutral-700 text-white font-bold py-4 px-4 rounded-xl cursor-not-allowed";
+                ctaBtn.innerHTML = `<i class="fas fa-ban"></i> <span>Vendida</span>`;
+                ctaBtn.href = "#";
+            } else {
+                const msg = encodeURIComponent(`Olá Mamako! Gostaria de fechar negócio na conta [Código ${accountInfo.id}] - ${accountInfo.title} (${accountInfo.tagline}) no valor de R$ ${accountInfo.priceBrl}. Ainda está disponível?`);
+                ctaBtn.href = `https://api.whatsapp.com/send?phone=5561993935402&text=${msg}`;
+            }
+
+            // Listas de heróis
+            const detailsArea = document.getElementById('detailsSections');
+            const heroSections = [
+                { title: 'Heróis Míticos',        icon: 'fa-star',  color: 'text-amber-500',  data: accountInfo.miticos },
+                { title: 'Lendários Principais',   icon: 'fa-gem',   color: 'text-purple-500', data: accountInfo.principais_lendarios },
+                { title: 'Lendários Destaque',     icon: 'fa-crown', color: 'text-yellow-500', data: accountInfo.outros_lendarios },
+            ];
+            detailsArea.innerHTML = heroSections
+                .filter(s => s.data.length > 0)
+                .map(s => `
+                    <div class="space-y-2 border-t border-brand-border pt-4">
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest ${s.color} flex items-center space-x-1.5">
+                            <i class="fas ${s.icon}"></i><span>${s.title}</span>
+                        </h4>
+                        <ul class="space-y-1.5 pl-1">
+                            ${s.data.map(item => `
+                                <li class="flex items-start space-x-2 text-xs text-gray-300">
+                                    <span class="text-brand-orange select-none">•</span>
+                                    <span class="leading-relaxed">${item}</span>
+                                </li>`).join('')}
+                        </ul>
+                    </div>`)
+                .join('');
+
+            // ── BLOCO DE RECURSOS (Coluna R) ──────────────────────────
+            // Exibe o campo "recursos" como uma secção dedicada se existir
+            if (accountInfo.recursos) {
+                detailsArea.innerHTML += `
+                    <div class="space-y-2 border-t border-brand-border pt-4">
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest text-sky-400 flex items-center space-x-1.5">
+                            <i class="fas fa-boxes-stacked"></i><span>Recursos & Itens</span>
+                        </h4>
+                        <p class="text-xs text-gray-300 leading-relaxed whitespace-pre-line">${accountInfo.recursos}</p>
+                    </div>`;
+            }
+
+            // Galeria de thumbnails
+            images = accountInfo.prints;
             const grid = document.getElementById('galleryGrid');
-            const loading = document.getElementById('loading');
             grid.innerHTML = '';
 
-            if (images.length === 0) {
-                loading.innerHTML = `<p class="text-gray-500 text-sm"><i class="fas fa-image-slash block text-3xl mb-2 text-neutral-700"></i>Nenhum print cadastrado para esta conta.</p>`;
-                return;
+            if (images.length > 0) {
+                images.forEach((imgUrl, idx) => {
+                    const thumb = document.createElement('div');
+                    thumb.className = 'thumb relative bg-[#111] rounded-xl overflow-hidden border border-neutral-900 group';
+                    thumb.innerHTML = `
+                        <img src="${imgUrl}" loading="lazy" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i class="fas fa-expand text-white text-lg"></i>
+                        </div>
+                        <span class="absolute bottom-2 right-2 bg-black/75 text-[9px] font-mono font-bold text-gray-400 px-2 py-0.5 rounded">
+                            ${idx + 1} / ${images.length}
+                        </span>`;
+                    thumb.addEventListener('click', () => openLightbox(idx));
+                    grid.appendChild(thumb);
+                });
+            } else {
+                grid.innerHTML = `<p class="col-span-full text-center text-gray-500 text-sm py-12">Nenhum print adicional foi adicionado para esta conta.</p>`;
             }
-
-            images.forEach((imgUrl, index) => {
-                const item = document.createElement('div');
-                item.className = "relative aspect-[4/3] bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden cursor-pointer group hover:border-brand-orange/50 transition-all";
-                item.innerHTML = `
-                    <img src="${imgUrl}" alt="Print ${index + 1}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy">
-                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <i class="fas fa-search-plus text-white text-xl"></i>
-                    </div>
-                `;
-                item.addEventListener('click', () => openLightbox(index));
-                grid.appendChild(item);
-            });
-
-            loading.classList.add('hidden');
-            grid.classList.remove('hidden');
         }
 
-        // ── CONTROLES DO LIGHTBOX ──────────────────────────────────────
-        const lb = document.getElementById('lightbox');
+        // ── LIGHTBOX ─────────────────────────────────────────────────
+        const lb    = document.getElementById('lightbox');
         const lbImg = document.getElementById('lbImg');
-        const lbCounter = document.getElementById('lbCounter');
+        const lbWrap  = document.getElementById('lbWrap');
+        const lbCount = document.getElementById('lbCounter');
 
-        function openLightbox(index) {
-            currentImageIndex = index;
-            lb.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Trava o scroll de fundo
+        function openLightbox(i) {
+            currentImageIndex = i;
+            resetZoom();
             updateLightbox();
+            lb.classList.remove('hidden');
+            lb.classList.add('flex');
+            document.body.style.overflow = 'hidden';
         }
-
         function closeLightbox() {
             lb.classList.add('hidden');
-            document.body.style.overflow = ''; // Destrava o scroll
+            lb.classList.remove('flex');
+            document.body.style.overflow = '';
+            resetZoom();
         }
-
         function updateLightbox() {
-            if (images.length === 0) return;
             lbImg.src = images[currentImageIndex];
-            lbCounter.innerText = `${currentImageIndex + 1} / ${images.length}`;
+            lbCount.textContent = `${currentImageIndex + 1} / ${images.length}`;
         }
+        function prevImage() { currentImageIndex = (currentImageIndex - 1 + images.length) % images.length; resetZoom(); updateLightbox(); }
+        function nextImage() { currentImageIndex = (currentImageIndex + 1) % images.length; resetZoom(); updateLightbox(); }
 
-        function nextImage() {
-            currentImageIndex = (currentImageIndex + 1) % images.length;
-            updateLightbox();
-        }
+        function resetZoom() { scale = 1; translateX = 0; translateY = 0; applyTransform(); }
+        function applyTransform() { lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`; }
 
-        function prevImage() {
-            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-            updateLightbox();
-        }
+        lbWrap.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            let newScale = scale + (Math.sign(e.deltaY) * -0.15 * scale);
+            scale = Math.min(5, Math.max(1, newScale));
+            if (scale === 1) { translateX = 0; translateY = 0; }
+            applyTransform();
+        }, { passive: false });
 
-        // Eventos dos botões
+        lbWrap.addEventListener('pointerdown', (e) => {
+            if (scale > 1) { isDragging = true; lbWrap.classList.add('no-transition'); startX = e.clientX - translateX; startY = e.clientY - translateY; }
+        });
+        window.addEventListener('pointermove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            applyTransform();
+        });
+        window.addEventListener('pointerup', () => { isDragging = false; lbWrap.classList.remove('no-transition'); });
+
+        lbWrap.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) { e.preventDefault(); isDragging = false; initialDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); initialScale = scale; }
+        }, { passive: false });
+        lbWrap.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+                scale = Math.min(5, Math.max(1, initialScale * (d / initialDistance)));
+                if (scale === 1) { translateX = 0; translateY = 0; }
+                applyTransform();
+            }
+        }, { passive: false });
+
         document.getElementById('lbClose').addEventListener('click', closeLightbox);
-        document.getElementById('lbOriginalClose')?.addEventListener('click', closeLightbox);
         document.getElementById('lbPrev').addEventListener('click', prevImage);
         document.getElementById('lbNext').addEventListener('click', nextImage);
         document.getElementById('lbPrev2').addEventListener('click', prevImage);
         document.getElementById('lbNext2').addEventListener('click', nextImage);
-
-        // Fechar clicando fora da imagem
-        lb.addEventListener('click', e => { if (e.target === lb || e.target === lbImg.parentElement) closeLightbox(); });
-
-        // Atalhos de teclado
+        lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
         document.addEventListener('keydown', e => {
             if (lb.classList.contains('hidden')) return;
             if (e.key === 'Escape') closeLightbox();
@@ -215,18 +451,16 @@
             if (e.key === 'ArrowRight') nextImage();
         });
 
-        // Suporte a gestos Swipe (arrastar pro lado no mobile)
         let touchStartX = 0;
         lb.addEventListener('touchstart', e => { if (e.touches.length === 1) touchStartX = e.changedTouches[0].clientX; });
         lb.addEventListener('touchend', e => {
-            if (e.changedTouches.length !== 1) return;
+            if (scale > 1 || e.changedTouches.length !== 1) return;
             const diff = touchStartX - e.changedTouches[0].clientX;
             if (Math.abs(diff) > 50) diff > 0 ? nextImage() : prevImage();
         });
 
-        // Inicializa buscando dados da planilha pública
-        window.onload = fetchGalleryData;
+        // Inicializar
+        window.onload = fetchAccountDetails;
     </script>
 </body>
-
 </html>
