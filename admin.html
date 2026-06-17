@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="favicon.png" type="image/x-icon">
     <title>Painel Administrativo V2 | Mamako Loko Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,7 +23,7 @@
         <div class="flex items-center justify-between border-b border-neutral-800 pb-6 mb-8">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-full overflow-hidden border border-brand-orange">
-                    <img src="logo.png" class="w-full h-full object-cover">
+                    <img src="https://simp6.cuckcapital.cr/images4/AA5AbUBpVdSBqvvBp2kcKLIbKz6GwG_eEvxNc8DHoKVk14En6GaEiEKmPlCr7qaKl_trsy4gXF9GmKC6ASeuDWVbonMFuWjDHhQE2RodKNiVFqwGpWfYC9zsIqMjvCPIDgS603HIrnhDXQxK9K9XZezP9E-G8oPNV1gH10kjSAaMk_iX88Lo3D3e8749fb9f26430ab7.png" class="w-full h-full object-cover">
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-white">Gerenciador do Catálogo <span class="text-brand-orange text-sm">V2</span></h1>
@@ -70,11 +69,7 @@
                     </div>
                     <div class="md:col-span-3">
                         <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Descrição Curta (Tagline)</label>
-                        <input type="text" id="accTagline" placeholder="Resumo rápido dos principais campeões da conta..." class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
-                    </div>
-                    <div class="md:col-span-4">
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Recursos da conta</label>
-                        <input type="text" id="accRecursos" placeholder="Todos os recursos importantes..." class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
+                        <input type="text" id="accTagline" placeholder="Resumo rápido para os cards da vitrine..." class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
                     </div>
                 </div>
 
@@ -246,8 +241,7 @@
                 email_status: document.getElementById('accEmailStatus').value.trim(),
                 links_status: document.getElementById('accLinksStatus').value.trim(),
                 promo_code: document.getElementById('accPromoCode').value.trim(),
-                level: document.getElementById('accLevel').value.trim(),
-                recursos: document.getElementById('accRecursos').value.trim()
+                level: document.getElementById('accLevel').value.trim()
             };
 
             try {
