@@ -351,7 +351,8 @@
                             priceBrl: parseFloat(row.priceBrl) || 0,
                             priceUsd: parseFloat(row.priceUsd) || 0,
                             label: row.label.trim(),
-                            status: row.status ? row.status.trim().toUpperCase() : 'DISPONÍVEL'
+                            status: row.status ? row.status.trim().toUpperCase() : 'DISPONÍVEL',
+                            recursos: row.recursos.trim(),
                         }));
 
                         // Oculta loading e renderiza as contas na tela
