@@ -15,10 +15,15 @@
             }
         }
     </script>
+    <style>
+        /* Bloqueia a visualização do painel até que a senha seja validada */
+        #protectedContent { display: none; }
+    </style>
 </head>
 <body class="bg-brand-dark text-gray-100 min-h-screen flex flex-col justify-between font-sans">
 
-    <div class="max-w-5xl w-full mx-auto px-4 py-8">
+    <!-- Conteúdo Protegido -->
+    <div id="protectedContent" class="max-w-5xl w-full mx-auto px-4 py-8">
         <div class="flex items-center justify-between border-b border-neutral-800 pb-6 mb-8">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-full overflow-hidden border border-brand-orange">
@@ -50,6 +55,25 @@
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Etiqueta Exibida (Label)</label>
                         <input type="text" id="accLabel" placeholder="Ex: Cód: 001" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
+                    </div>
+                </div>
+
+                <!-- SEÇÃO ADICIONADA: Vendedor e Atendimento -->
+                <div class="space-y-4 bg-brand-orange/5 p-4 rounded-xl border border-brand-orange/20">
+                    <h3 class="text-sm font-bold text-brand-orange uppercase tracking-wider border-l-2 border-brand-gold pl-2">Atribuição e Contato</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Vendedor responsável</label>
+                            <input type="text" id="accVendedor" placeholder="Ex: Gabriel Leal" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">WhatsApp do Vendedor</label>
+                            <input type="text" id="accWhatsapp" placeholder="Ex: 41999999999" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Tipo de Conta / Categoria</label>
+                            <input type="text" id="accTipo" placeholder="Ex: End Game, Inicial, Farm" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
+                        </div>
                     </div>
                 </div>
 
@@ -149,6 +173,27 @@
     </div>
 
     <script>
+        // ── CONFIGURAÇÃO DE SEGURANÇA (ALTERE SUA SENHA AQUI) ─────────
+        const ADMIN_PASSWORD = "admin123";
+
+        // Executa imediatamente ao carregar a página
+        (function verificarAcesso() {
+            const senhaDigitada = prompt("Digite a senha do Painel Administrativo:");
+            if (senhaDigitada === ADMIN_PASSWORD) {
+                document.getElementById('protectedContent').style.display = 'block';
+            } else {
+                alert("Senha incorreta ou acesso cancelado!");
+                document.body.innerHTML = `
+                    <div class="min-h-screen flex flex-col items-center justify-center bg-brand-dark p-4 text-center">
+                        <i class="fas fa-lock text-red-500 text-5xl mb-4"></i>
+                        <h1 class="text-2xl font-bold text-white mb-2">Acesso Negado</h1>
+                        <p class="text-gray-400 text-sm mb-4">Você não tem permissão para visualizar este painel.</p>
+                        <button onclick="location.reload()" class="bg-brand-orange text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-orange-600 transition-all">Tentar Novamente</button>
+                    </div>
+                `;
+            }
+        })();
+
         // ── CONFIGURAÇÕES DOS ENDPOINTS ──────────────────────────────
         const IMGBB_API_KEY = "25454de698b208b18802361e068be106"; 
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywI1pkvR1RLxXiYFVKnfpDjjIcdVP6WCJLT7P_DkX94pnPKvX-IF2cGUzU9LXUDw/exec";
@@ -224,10 +269,13 @@
 
             statusBox.innerHTML = `<i class="fas fa-database animate-pulse"></i> <span>Sincronizando todas as colunas com o Sheets...</span>`;
             
-            // Montagem exata do Payload para o Sheets incluir 'recursos' (Coluna R)
+            // Montagem atualizada do Payload incluindo novos campos
             const payload = {
                 action: action,
                 id: accIdInput.value.trim(),
+                vendedor: document.getElementById('accVendedor').value.trim(),
+                whatsapp: document.getElementById('accWhatsapp').value.trim(),
+                tipo: document.getElementById('accTipo').value.trim(),
                 title: document.getElementById('accTitle').value.trim(),
                 power: document.getElementById('accPower').value.trim(),
                 tagline: document.getElementById('accTagline').value.trim(),
@@ -244,7 +292,7 @@
                 links_status: document.getElementById('accLinksStatus').value.trim(),
                 promo_code: document.getElementById('accPromoCode').value.trim(),
                 level: document.getElementById('accLevel').value.trim(),
-                recursos: document.getElementById('accRecursos').value.trim() // Envia o valor digitado no textarea
+                recursos: document.getElementById('accRecursos').value.trim()
             };
 
             try {
@@ -256,7 +304,7 @@
                 });
 
                 statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400";
-                statusBox.innerHTML = `<i class="fas fa-check-circle"></i> <span>Sucesso completo! Planilha atualizada de A até R mantendo formatação de texto.</span>`;
+                statusBox.innerHTML = `<i class="fas fa-check-circle"></i> <span>Sucesso completo! Planilha e novos campos atualizados.</span>`;
                 form.reset();
 
             } catch (error) {
