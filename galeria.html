@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="favicon.png" type="image/x-icon">
     <title>Mamako Loko Shop | Galeria de Imagens Dinâmica</title>
-    <!-- Tailwind CSS CDN para renderização moderna e leve -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +13,6 @@
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- PapaParse para ler a mesma planilha do Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
     <script>
@@ -65,13 +63,11 @@
 
 <body class="bg-brand-dark text-gray-100 font-inter antialiased min-h-screen">
 
-    <!-- BARRA DE NAVEGAÇÃO -->
     <nav
         class="sticky top-0 z-50 bg-brand-dark/95 backdrop-blur-md border-b border-brand-border h-20 px-6 flex items-center justify-between">
         <a href="index.html" class="flex items-center space-x-3">
             <div class="w-12 h-12 rounded-full overflow-hidden shadow-lg shadow-brand-orange/20">
-                <img src="logo.png"
-                    alt="Mamako Loko" class="w-full h-full object-cover">
+                <img src="logo.png" alt="Mamako Loko" class="w-full h-full object-cover">
             </div>
             <div>
                 <span
@@ -87,13 +83,11 @@
         </a>
     </nav>
 
-    <!-- LOADING SCREEN -->
     <div id="galleryLoading" class="text-center py-24">
         <i class="fas fa-spinner animate-spin text-brand-orange text-4xl mb-4"></i>
         <p class="text-gray-400">A processar galeria de prints...</p>
     </div>
 
-    <!-- ERROR SCREEN -->
     <div id="galleryError" class="hidden text-center py-24 max-w-md mx-auto">
         <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
         <h2 class="text-xl font-bold font-cinzel text-white">Conta não Encontrada</h2>
@@ -104,11 +98,9 @@
             ao Catálogo</a>
     </div>
 
-    <!-- CONTEÚDO PRINCIPAL (Dinamizado via URL Parameter) -->
     <main id="galleryContent"
         class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
 
-        <!-- COLUNA DA ESQUERDA: GRELHA DE PRINTS -->
         <div class="lg:col-span-2 space-y-6">
             <div class="bg-[#0e0e11] border border-brand-border p-6 rounded-2xl">
                 <div class="flex items-center space-x-2 mb-6">
@@ -120,37 +112,27 @@
                 </div>
                 <h1 id="pageTitle" class="font-cinzel font-black text-2xl sm:text-3xl text-white mb-6">CONTA DO...</h1>
 
-                <!-- Grelha onde entram os thumbnails -->
                 <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <!-- Gerados via JS -->
-                </div>
+                    </div>
             </div>
         </div>
 
-        <!-- COLUNA DA DIREITA: DETALHES DINÂMICOS DA CONTA -->
         <div class="space-y-6 lg:sticky lg:top-24">
             <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-2xl">
-                <!-- Cabeçalho do Card -->
                 <div class="bg-gradient-to-br from-neutral-950 to-amber-950/20 p-5 border-b border-brand-border">
                     <p class="text-[9px] font-bold text-gray-500 tracking-wider uppercase mb-1">Ficha Técnica</p>
                     <h3 id="cardHeaderTitle" class="font-cinzel text-brand-gold font-bold text-sm tracking-wide">
                         DETALHES DA CONTA</h3>
                 </div>
 
-                <!-- Corpo do Card -->
                 <div class="p-5 space-y-6">
 
-                    <!-- Pílulas de Status Dinâmicas (Antes eram estáticas) -->
                     <div id="statusPillsArea" class="grid grid-cols-2 gap-2 text-center">
-                        <!-- Gerado dinamicamente via JS -->
-                    </div>
+                        </div>
 
-                    <!-- Secções Dinâmicas de Heróis (Míticos, Lendários Vazio, Outros) -->
                     <div id="detailsSections" class="space-y-6">
-                        <!-- Gerado dinamicamente caso o Sheets tenha essa informação -->
-                    </div>
+                        </div>
 
-                    <!-- Bloco de Preço -->
                     <div
                         class="bg-brand-orange/5 border border-brand-orange/25 p-4 rounded-xl flex items-center justify-between">
                         <div>
@@ -163,7 +145,6 @@
                         </span>
                     </div>
 
-                    <!-- Botão de Comprar no WhatsApp -->
                     <a id="buyCtaBtn" href="#" target="_blank"
                         class="w-full inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-md active:scale-95 duration-200">
                         <i class="fab fa-whatsapp text-lg"></i>
@@ -179,7 +160,6 @@
         </div>
     </main>
 
-    <!-- FOOTER BANNER (Igual ao Index para manter consistência) -->
     <div class="max-w-4xl mx-auto px-4 pb-16 text-center">
         <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá Mamako! Vi o catálogo e quero negociar uma conta."
             target="_blank"
@@ -189,7 +169,6 @@
         </a>
     </div>
 
-    <!-- LIGHTBOX INTEGRA COM ZOOM & PAN TOTAL -->
     <div id="lightbox" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-4 backdrop-blur-md">
         <button id="lbClose"
             class="fixed top-5 right-5 w-11 h-11 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center hover:bg-white/20 transition-colors z-50">
@@ -225,14 +204,12 @@
     </div>
 
     <script>
-        // Use EXATAMENTE a mesma URL do Google Sheets configurada no index.html
         const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGMz9XAk5spv5FFN585VM6g6toC79iulNUFqYB76MQmRTuhjnyTjRSybOuyhZ5FImNompOX0eFjZI0/pub?output=csv";
 
         let accountInfo = null;
         let images = [];
         let currentImageIndex = 0;
 
-        // Variáveis do Zoom/Pan (Lightbox)
         let scale = 1;
         let isDragging = false;
         let startX, startY;
@@ -240,7 +217,6 @@
         let initialDistance = null;
         let initialScale = 1;
 
-        // Capturar o "ID" da conta que foi passado no URL (?id=001)
         function getUrlParameter(name) {
             const results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
             return results ? decodeURIComponent(results[1]) : null;
@@ -269,17 +245,16 @@
                                 title: row.title.trim(),
                                 power: row.power.trim(),
                                 tagline: row.tagline.trim(),
-                                recursos: row.recursos.trim(),
                                 priceBrl: parseFloat(row.priceBrl) || 0,
                                 priceUsd: parseFloat(row.priceUsd) || 0,
                                 label: row.label.trim(),
                                 status: row.status ? row.status.trim().toUpperCase() : 'DISPONÍVEL',
-                                // Se estiver vazio no Sheets, guarda como string vazia em vez de usar padrão fixo
                                 email_status: row.email_status ? row.email_status.trim() : '',
                                 links_status: row.links_status ? row.links_status.trim() : '',
                                 promo_code: row.promo_code ? row.promo_code.trim() : '',
                                 level: row.level ? row.level.trim() : '',
-                                // Listas de heróis e fotos separadas por vírgulas
+                                // Ajustado para evitar erros caso venha formatado diferente
+                                recursos: row.recursos && row.recursos.trim() !== "" ? row.recursos.split(',') : [],
                                 miticos: row.miticos ? row.miticos.split(',') : [],
                                 principais_lendarios: row.principais_lendarios ? row.principais_lendarios.split(',') : [],
                                 outros_lendarios: row.outros_lendarios ? row.outros_lendarios.split(',') : [],
@@ -307,17 +282,13 @@
             document.getElementById('galleryError').classList.remove('hidden');
         }
 
-        // Constrói a página dinamicamente com base nas informações do Google Sheets
         function buildDynamicPage() {
             document.getElementById('galleryLoading').classList.add('hidden');
             document.getElementById('galleryContent').classList.remove('hidden');
 
-            // Preencher Textos Principais
             document.getElementById('pageCodeHeader').textContent = `Código: ${accountInfo.id}`;
             document.getElementById('pageTitle').innerHTML = `${accountInfo.title}`;
             document.getElementById('cardHeaderTitle').textContent = `CONTA COD: ${accountInfo.id}`;
-
-            // Tratamento de Moeda Padrão BRL
             document.getElementById('priceLabel').textContent = `R$ ${accountInfo.priceBrl.toLocaleString('pt-BR')}`;
 
             const statusPillsArea = document.getElementById('statusPillsArea');
@@ -341,7 +312,6 @@
                 }
             });
 
-            // Tratar Status de Estoque
             const isSold = accountInfo.status === 'VENDIDO';
             const badge = document.getElementById('availabilityBadge');
             const ctaBtn = document.getElementById('buyCtaBtn');
@@ -359,15 +329,15 @@
                 ctaBtn.href = `https://api.whatsapp.com/send?phone=5561993935402&text=${encodedMessage}`;
             }
 
-            // Gerar as Listas Dinâmicas de Heróis na Direita
             const detailsArea = document.getElementById('detailsSections');
             detailsArea.innerHTML = '';
 
+            // Array de seções corrigido com vírgula e estilização customizada para Recursos
             const sectionsToBuild = [
                 { title: 'Heróis Míticos', icon: 'fa-star', color: 'text-red-500', data: accountInfo.miticos },
                 { title: 'Lendários Principais', icon: 'fa-gem', color: 'text-orange-500', data: accountInfo.principais_lendarios },
-                { title: 'Lendários Destaque', icon: 'fa-crown', color: 'text-yellow-500', data: accountInfo.outros_lendarios }
-                { title: 'Recursos', icon: 'fa-money', color: 'text-white-500', data: accountInfo.recursos }
+                { title: 'Lendários Destaque', icon: 'fa-crown', color: 'text-yellow-500', data: accountInfo.outros_lendarios },
+                { title: 'Recursos da Conta', icon: 'fa-coins', color: 'text-cyan-400', data: accountInfo.recursos }
             ];
 
             sectionsToBuild.forEach(sec => {
@@ -397,7 +367,6 @@
                 }
             });
 
-            // Gerar os Thumbnails da Galeria de Imagens
             images = accountInfo.prints;
             const grid = document.getElementById('galleryGrid');
             grid.innerHTML = '';
@@ -423,7 +392,6 @@
             }
         }
 
-        // ── SISTEMA DE LIGHTBOX COM INTERAÇÃO E GESTOS ────────────────
         const lb = document.getElementById('lightbox');
         const lbImg = document.getElementById('lbImg');
         const lbWrap = document.getElementById('lbWrap');
@@ -462,7 +430,6 @@
             updateLightbox();
         }
 
-        // --- SISTEMA DE ZOOM E PAN (ARRASTAR) ---
         function resetZoom() {
             scale = 1;
             translateX = 0;
@@ -474,7 +441,6 @@
             lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
         }
 
-        // 1. Zoom com Roda do Rato
         lbWrap.addEventListener('wheel', (e) => {
             e.preventDefault();
             const zoomSensitivity = 0.15;
@@ -493,7 +459,6 @@
             applyTransform();
         }, { passive: false });
 
-        // 2. Arrastar a Imagem (Pointer API - Teclado/Rato/Touch unificados)
         lbWrap.addEventListener('pointerdown', (e) => {
             if (scale > 1) {
                 isDragging = true;
@@ -516,7 +481,6 @@
             lbWrap.classList.remove('no-transition');
         });
 
-        // 3. Pinch-to-Zoom (Telemóvel)
         lbWrap.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 e.preventDefault();
@@ -548,7 +512,6 @@
             }
         }, { passive: false });
 
-        // Associar eventos dos botões do Lightbox
         document.getElementById('lbClose').addEventListener('click', closeLightbox);
         document.getElementById('lbPrev').addEventListener('click', prevImage);
         document.getElementById('lbNext').addEventListener('click', nextImage);
@@ -566,7 +529,6 @@
             if (e.key === 'ArrowRight') nextImage();
         });
 
-        // Swipe adaptado para mobile
         let touchStartX = 0;
         lb.addEventListener('touchstart', e => {
             if (e.touches.length === 1) {
@@ -580,7 +542,6 @@
             if (Math.abs(diff) > 50) diff > 0 ? nextImage() : prevImage();
         });
 
-        // Inicializar a página procurando pela conta correspondente no Sheets
         window.onload = fetchAccountDetails;
     </script>
 </body>
