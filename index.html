@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mamako Loko Shop | Contas de Raid Shadow Legends</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Ícones Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PapaParse para ler o Google Sheets de forma segura e sem erros de vírgula -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            gold: '#FFD700',
+                            orange: '#E65C00',
+                            dark: '#070708',
+                            card: '#0F0F12',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glow-gold:hover {
+            box-shadow: 0 0 25px rgba(230, 92, 0, 0.5);
+        }
+
+        /* Banner responsivo desenhado especificamente para a proporção 1920x375 */
+        .hero-banner {
+            position: relative;
+            background-image: linear-gradient(180deg, rgba(7, 7, 8, 0.3) 0%, rgba(7, 7, 8, 0.95) 100%),
+                url('https://simp6.cuckcapital.cr/images4/AA5AbUB3kjraz1JI7xj6GIdpLrzNoiu0Ou8p3IcSiw9nyD6jFQD6RNqtBIj12Xw2utDcXWpv__bJVfJ92wm_wIiNY_hpoiorJeFsua_6ItLnAh4T9ToODvgJqf5cln113w_1zOYzHe4BKyp9PIE-HMRh9Y3ytSc2TbBJVC3f4GYwlBbpA8QJwpc8b1c0f93683e1a1ab.png');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body class="bg-brand-dark text-gray-100 font-inter antialiased">
+
+    <!-- BARRA DE NAVEGAÇÃO -->
+    <nav class="sticky top-0 z-50 bg-brand-dark/95 backdrop-blur-md border-b border-neutral-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logótipo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-full overflow-hidden shadow-lg shadow-brand-orange/20">
+                        <img src="https://simp6.cuckcapital.cr/images4/AA5AbUBpVdSBqvvBp2kcKLIbKz6GwG_eEvxNc8DHoKVk14En6GaEiEKmPlCr7qaKl_trsy4gXF9GmKC6ASeuDWVbonMFuWjDHhQE2RodKNiVFqwGpWfYC9zsIqMjvCPIDgS603HIrnhDXQxK9K9XZezP9E-G8oPNV1gH10kjSAaMk_iX88Lo3D3e8749fb9f26430ab7.png"
+                            alt="Mamako Loko" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <span
+                            class="font-cinzel font-black text-xl tracking-wider bg-gradient-to-r from-brand-gold via-brand-orange to-red-500 bg-clip-text text-transparent">MAMAKO
+                            LOKO</span>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-widest -mt-1">Raid Store</p>
+                    </div>
+                </div>
+
+                <!-- Ligações de Navegação e Seletor de Moeda (Desktop) -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#catalogo"
+                        class="text-gray-300 hover:text-brand-gold transition-colors font-medium">Catálogo</a>
+                    <a href="#faq" class="text-gray-300 hover:text-brand-gold transition-colors font-medium">Como
+                        Funciona</a>
+
+                    <div class="flex bg-neutral-900 border border-neutral-800 rounded-full p-1 text-sm font-semibold">
+                        <button id="btn-brl"
+                            class="px-3 py-1 rounded-full bg-brand-orange text-white transition-all">R$</button>
+                        <button id="btn-usd"
+                            class="px-3 py-1 rounded-full text-gray-400 hover:text-white transition-all">US$</button>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação / Hambúrguer no Mobile -->
+                <div class="flex items-center space-x-4">
+                    <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá Mamako! Acessei o catálogo e gostaria de falar com você sobre as contas."
+                        target="_blank"
+                        class="hidden sm:inline-flex items-center space-x-2 bg-gradient-to-r from-brand-orange to-red-600 text-white font-bold px-5 py-2.5 rounded-full hover:scale-105 transition-transform duration-200 shadow-lg shadow-brand-orange/20">
+                        <i class="fab fa-whatsapp text-lg"></i>
+                        <span>Contacto Direto</span>
+                    </a>
+
+                    <!-- Botão Hambúrguer -->
+                    <button id="hamburgerBtn"
+                        class="md:hidden text-gray-400 hover:text-white focus:outline-none p-2 rounded-lg border border-neutral-700">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENU MOBILE DROPDOWN -->
+        <div id="mobileMenu"
+            class="hidden md:hidden bg-brand-card border-b border-neutral-800 px-4 pt-2 pb-6 space-y-4">
+            <a href="#catalogo" id="menu-link-catalogo"
+                class="block text-gray-300 hover:text-brand-gold font-semibold py-2 border-b border-neutral-900">Catálogo</a>
+            <a href="#faq" id="menu-link-faq"
+                class="block text-gray-300 hover:text-brand-gold font-semibold py-2 border-b border-neutral-900">Como
+                Funciona</a>
+
+            <div class="flex items-center justify-between pt-2">
+                <span class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Moeda de Exibição:</span>
+                <div class="flex bg-neutral-900 border border-neutral-800 rounded-full p-1 text-xs font-semibold">
+                    <button id="btn-brl-mob"
+                        class="px-4 py-1.5 rounded-full bg-brand-orange text-white transition-all">R$</button>
+                    <button id="btn-usd-mob"
+                        class="px-4 py-1.5 rounded-full text-gray-400 hover:text-white transition-all">US$</button>
+                </div>
+            </div>
+
+            <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá Mamako! Acessei o catálogo e gostaria de falar com você sobre as contas."
+                target="_blank"
+                class="flex sm:hidden items-center justify-center space-x-2 bg-gradient-to-r from-brand-orange to-red-600 text-white font-bold py-3 rounded-xl">
+                <i class="fab fa-whatsapp text-lg"></i>
+                <span>Contacto Direto WhatsApp</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- SECÇÃO PRINCIPAL (CABEÇALHO) -->
+    <header
+        class="hero-banner w-full flex items-center justify-center text-center h-[180px] sm:h-[260px] md:h-[320px] lg:h-[375px]">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <h1
+                class="font-cinzel font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white leading-tight tracking-wide drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)]">
+                Catálogo de Contas<br>
+                <span
+                    class="bg-gradient-to-r from-brand-gold via-brand-orange to-red-500 bg-clip-text text-transparent">Raid
+                    Shadow Legends</span>
+            </h1>
+        </div>
+    </header>
+
+    <!-- SECÇÃO DE SUPORTE E CONVERSÃO -->
+    <section class="bg-gradient-to-b from-brand-dark to-neutral-950 py-8 border-b border-neutral-900">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+
+            <div
+                class="flex flex-col md:flex-row items-center justify-between gap-6 bg-brand-card/60 p-5 rounded-2xl border border-neutral-800/60 backdrop-blur-sm">
+                <div class="flex items-center space-x-3">
+                    <span class="flex h-3 w-3 relative">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                    </span>
+                    <div>
+                        <p class="text-sm font-bold text-white">Estoque Exclusivo</p>
+                        <p class="text-xs text-gray-400">Contas validadas com entrega rápida</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                    <a href="#catalogo"
+                        class="w-full sm:w-auto bg-gradient-to-r from-brand-orange to-red-600 text-white font-extrabold px-8 py-3.5 rounded-xl hover:scale-105 transition-transform duration-200 text-center text-sm shadow-lg shadow-brand-orange/20">
+                        <i class="fas fa-th-list mr-2"></i>Ver Contas
+                    </a>
+                    <a href="#faq"
+                        class="w-full sm:w-auto bg-black/40 hover:bg-neutral-900 border border-neutral-800 text-gray-300 font-bold px-6 py-3.5 rounded-xl text-center text-sm transition-all">
+                        Como Funciona?
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 max-w-lg mx-auto text-center">
+                <div class="bg-neutral-900/40 border border-neutral-800/40 p-2.5 rounded-xl">
+                    <p class="text-lg font-black text-brand-gold font-cinzel">100%</p>
+                    <p class="text-[9px] uppercase tracking-widest text-gray-500 mt-0.5">Seguro</p>
+                </div>
+                <div class="bg-neutral-900/40 border border-neutral-800/40 p-2.5 rounded-xl">
+                    <p class="text-lg font-black text-brand-gold font-cinzel">&lt; 15 min</p>
+                    <p class="text-[9px] uppercase tracking-widest text-gray-500 mt-0.5">Envio Rápido</p>
+                </div>
+                <div class="bg-neutral-900/40 border border-neutral-800/40 p-2.5 rounded-xl">
+                    <p class="text-lg font-black text-brand-gold font-cinzel">+100</p>
+                    <p class="text-[9px] uppercase tracking-widest text-gray-500 mt-0.5">Vendas</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- GRELHA DE CONTAS DO CATÁLOGO -->
+    <section id="catalogo" class="py-16 bg-brand-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="font-cinzel font-black text-2xl sm:text-3xl text-white tracking-wider">ESTOQUE ATUALIZADO
+                </h2>
+                <div class="h-1 w-20 bg-brand-orange mx-auto my-3 rounded-full"></div>
+                <p class="text-gray-400 text-sm">Contas premium e exclusivas com envio imediato. Toque na conta
+                    pretendida para fechar negócio diretamente através do WhatsApp.</p>
+            </div>
+
+            <!-- Efeito de Loading Visual enquanto lê os dados do Google Sheets -->
+            <div id="loading" class="text-center py-12">
+                <i class="fas fa-spinner animate-spin text-brand-orange text-4xl mb-4"></i>
+                <p class="text-gray-400">A carregar catálogo em tempo real...</p>
+            </div>
+
+            <div id="accountsContainer" class="grid md:grid-cols-2 gap-8 hidden">
+                <!-- Cartões preenchidos dinamicamente via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SECÇÃO FAQ -->
+    <section id="faq" class="py-16 bg-brand-dark border-t border-neutral-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="font-cinzel font-black text-2xl text-white tracking-wider">Perguntas Frequentes</h2>
+                <div class="h-1 w-16 bg-brand-orange mx-auto my-3 rounded-full"></div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-brand-card border border-neutral-800/80 rounded-xl overflow-hidden transition-colors">
+                    <button
+                        class="faq-btn w-full flex items-center justify-between p-5 font-semibold text-left text-white hover:bg-neutral-900 transition-colors"
+                        data-index="1">
+                        <span class="text-sm sm:text-base">Como é feita a entrega da conta?</span>
+                        <i class="faq-icon fas fa-chevron-down text-brand-orange transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-ans max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                        <div
+                            class="p-5 border-t border-neutral-800/60 text-xs sm:text-sm text-gray-400 leading-relaxed bg-neutral-950/45">
+                            A entrega é feita de forma prática através do WhatsApp. Enviamos as credenciais necessárias
+                            (Plarium ID ou e-mail atual da conta e palavra-passe). Prestamos suporte passo a passo para
+                            a
+                            vinculação do seu próprio e-mail e alteração da palavra-passe para garantir segurança total.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-brand-card border border-neutral-800/80 rounded-xl overflow-hidden transition-colors">
+                    <button
+                        class="faq-btn w-full flex items-center justify-between p-5 font-semibold text-left text-white hover:bg-neutral-900 transition-colors"
+                        data-index="2">
+                        <span class="text-sm sm:text-base">Quais são os métodos de pagamento aceitos?</span>
+                        <i class="faq-icon fas fa-chevron-down text-brand-orange transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-ans max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                        <div
+                            class="p-5 border-t border-neutral-800/60 text-xs sm:text-sm text-gray-400 leading-relaxed bg-neutral-950/45">
+                            Aceitamos pagamentos via <strong>Pix</strong> (para compradores brasileiros),
+                            <strong>PayPal</strong>, <strong>Saldo Plarium</strong> ou <strong>Criptomoedas</strong>
+                            para transações internacionais.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-brand-card border border-neutral-800/80 rounded-xl overflow-hidden transition-colors">
+                    <button
+                        class="faq-btn w-full flex items-center justify-between p-5 font-semibold text-left text-white hover:bg-neutral-900 transition-colors"
+                        data-index="3">
+                        <span class="text-sm sm:text-base">Como sei que posso confiar?</span>
+                        <i class="faq-icon fas fa-chevron-down text-brand-orange transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-ans max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                        <div
+                            class="p-5 border-t border-neutral-800/60 text-xs sm:text-sm text-gray-400 leading-relaxed bg-neutral-950/45">
+                            A Mamako Loko Shop possuí diversas referências em vendas de contas pelos grupos de Raid BR
+                            através do seu criador Sergio Galdino.
+                            Todas as contas são validadas antes da venda e oferecemos suporte total pós-compra.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOTÃO FLUTUANTE DO WHATSAPP -->
+    <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá Mamako! Gostaria de consultar contas disponíveis para o Raid."
+        target="_blank"
+        class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-200 glow-gold"
+        title="Contactar via WhatsApp">
+        <i class="fab fa-whatsapp text-3xl"></i>
+    </a>
+
+    <!-- RODAPÉ -->
+    <footer class="bg-neutral-950 border-t border-neutral-900 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+
+            <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá Mamako! Vi o catálogo e quero negociar uma conta."
+                target="_blank"
+                class="block max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl hover:scale-[1.02] hover:shadow-brand-orange/20 transition-all duration-300">
+                <img src="https://simp6.cuckcapital.cr/images4/aaaa6d6ec5adc6ba3d07.png"
+                    alt="Fale com o Mamako no WhatsApp" class="w-full h-auto block">
+            </a>
+
+            <div
+                class="border-t border-neutral-900 pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+                <div class="flex items-center space-x-2">
+                    <span class="font-cinzel font-bold text-sm tracking-wider text-brand-gold">MAMAKO LOKO SHOP</span>
+                    <span>&copy; 2026. Todos os direitos reservados.</span>
+                </div>
+                <div>
+                    <span class="text-gray-400 text-[10px]">Raid: Shadow Legends é uma marca registada da Plarium Global
+                        Ltd.</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // LINK PÚBLICO DO GOOGLE SHEETS EM FORMATO CSV (Substitua pela sua planilha publicada)
+        // Como obter: No Google Sheets, clique em Ficheiro -> Partilhar -> Publicar na Web. Escolha "Documento Inteiro" e o formato "Valores separados por vírgulas (.csv)". Copie o link gerado e cole aqui!
+        const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGMz9XAk5spv5FFN585VM6g6toC79iulNUFqYB76MQmRTuhjnyTjRSybOuyhZ5FImNompOX0eFjZI0/pub?output=csv";
+
+        let accountsData = [];
+        let currentCurrency = 'BRL';
+
+        // Carregar dados de forma assíncrona do Google Sheets
+        async function fetchSheetData() {
+            try {
+                const response = await fetch(googleSheetCsvUrl);
+                const csvText = await response.text();
+
+                // Parser robusto com o PapaParse que suporta quebras de linha e vírgulas no meio das células
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function (results) {
+                        accountsData = results.data.map(row => ({
+                            id: row.id.trim(),
+                            title: row.title.trim(),
+                            power: row.power.trim(),
+                            tagline: row.tagline.trim(),
+                            image: row.image.trim(),
+                            priceBrl: parseFloat(row.priceBrl) || 0,
+                            priceUsd: parseFloat(row.priceUsd) || 0,
+                            label: row.label.trim(),
+                            status: row.status ? row.status.trim().toUpperCase() : 'DISPONÍVEL'
+                        }));
+
+                        // Oculta loading e renderiza as contas na tela
+                        document.getElementById('loading').classList.add('hidden');
+                        document.getElementById('accountsContainer').classList.remove('hidden');
+                        renderAccounts();
+                    },
+                    error: function (err) {
+                        console.error("Erro ao processar o CSV: ", err);
+                        fallbackToDefault(); // Se falhar, usa os dados estáticos antigos
+                    }
+                });
+            } catch (error) {
+                console.error("Erro ao buscar planilha do Google Sheets: ", error);
+                fallbackToDefault();
+            }
+        }
+
+        // Fallback de segurança caso a planilha fique offline ou o link esteja errado
+        function fallbackToDefault() {
+            accountsData = [
+                {
+                    id: "001",
+                    title: "Conta Void Premium",
+                    power: "7.1M",
+                    tagline: "Embrys, Mikage, Yumeko, Arbitra 6★, Leonardo, Nekhret, 2x Cardiel, Rakka, Titus e +++",
+                    image: "https://simp6.cuckcapital.cr/images4/imagef1c3452b07898ab2.png",
+                    priceBrl: 1000,
+                    priceUsd: 200,
+                    label: "Cód: 001",
+                    status: "DISPONÍVEL"
+                }
+            ];
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('accountsContainer').classList.remove('hidden');
+            renderAccounts();
+        }
+
+        // ── Menu Mobile ──────────────────────────────────────────────
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        hamburgerBtn.addEventListener('click', function () {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.getElementById('menu-link-catalogo').addEventListener('click', function () {
+            mobileMenu.classList.add('hidden');
+        });
+        document.getElementById('menu-link-faq').addEventListener('click', function () {
+            mobileMenu.classList.add('hidden');
+        });
+
+        // ── Seletor de Moeda ─────────────────────────────────────────
+        function setCurrency(curr) {
+            currentCurrency = curr;
+
+            const btnBrl = document.getElementById('btn-brl');
+            const btnUsd = document.getElementById('btn-usd');
+            const btnBrlMob = document.getElementById('btn-brl-mob');
+            const btnUsdMob = document.getElementById('btn-usd-mob');
+
+            const active = ['bg-brand-orange', 'text-white'];
+            const inactive = ['text-gray-400', 'hover:text-white'];
+
+            if (curr === 'BRL') {
+                btnBrl.classList.add(...active); btnBrl.classList.remove(...inactive);
+                btnUsd.classList.remove(...active); btnUsd.classList.add(...inactive);
+                btnBrlMob.classList.add(...active); btnBrlMob.classList.remove(...inactive);
+                btnUsdMob.classList.remove(...active); btnUsdMob.classList.add(...inactive);
+            } else {
+                btnUsd.classList.add(...active); btnUsd.classList.remove(...inactive);
+                btnBrl.classList.remove(...active); btnBrl.classList.add(...inactive);
+                btnUsdMob.classList.add(...active); btnUsdMob.classList.remove(...inactive);
+                btnBrlMob.classList.remove(...active); btnBrlMob.classList.add(...inactive);
+            }
+
+            renderAccounts();
+        }
+
+        document.getElementById('btn-brl').addEventListener('click', () => setCurrency('BRL'));
+        document.getElementById('btn-usd').addEventListener('click', () => setCurrency('USD'));
+        document.getElementById('btn-brl-mob').addEventListener('click', () => setCurrency('BRL'));
+        document.getElementById('btn-usd-mob').addEventListener('click', () => setCurrency('USD'));
+
+        // ── Renderização dos Cartões ──────────────────────────────────
+        function renderAccounts() {
+            const container = document.getElementById('accountsContainer');
+            container.innerHTML = '';
+
+            accountsData.forEach(acc => {
+                const priceFormatted = currentCurrency === 'BRL'
+                    ? `R$ ${acc.priceBrl.toLocaleString('pt-BR')}`
+                    : `US$ ${acc.priceUsd.toLocaleString('en-US')}`;
+
+                // Link DINÂMICO para a página única de galeria de prints passando o ID como parâmetro
+                const printsLink = `galeria.html?id=${acc.id}`;
+
+                const encodedMessage = encodeURIComponent(
+                    `Olá Mamako! Gostaria de fechar negócio na conta [Código ${acc.id}] - ${acc.title} (${acc.tagline}) no valor de ${priceFormatted}. Ainda está disponível?`
+                );
+                const whatsappLink = `https://api.whatsapp.com/send?phone=5561993935402&text=${encodedMessage}`;
+
+                // Trata visualmente se a conta foi vendida
+                const isSold = acc.status === 'VENDIDO';
+                const statusBadge = isSold
+                    ? `<span class="bg-red-500/15 border border-red-500/30 text-red-400 text-[10px] font-bold px-2.5 py-1 rounded">VENDIDO</span>`
+                    : `<span class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded">DISPONÍVEL</span>`;
+
+                const clickAction = isSold
+                    ? '#'
+                    : whatsappLink;
+
+                const card = `
+                    <div class="bg-brand-card border border-neutral-800/80 rounded-2xl overflow-hidden shadow-xl hover:scale-[1.02] hover:border-brand-orange/40 transition-all duration-300 flex flex-col justify-between group ${isSold ? 'opacity-65 grayscale' : ''}">
+                        
+                        <div class="relative h-72 flex items-center justify-center overflow-hidden border-b border-neutral-900 bg-black">
+                            <img src="${acc.image}" alt="${acc.title}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent z-10"></div>
+                            <span class="absolute top-3 left-3 bg-brand-orange/20 border border-brand-orange/50 text-brand-gold text-[10px] font-bold font-mono px-3 py-1 rounded-full shadow-lg z-20 backdrop-blur-sm">
+                                ${acc.label}
+                            </span>
+                        </div>
+
+                        <div class="p-6 space-y-5 flex-1 flex flex-col justify-between bg-[#0e0e11]">
+                            <div class="space-y-4">
+                                <div class="space-y-1">
+                                    <h3 class="font-cinzel text-brand-gold font-black text-lg tracking-wide uppercase transition-colors group-hover:text-white">${acc.title}</h3>
+                                    <p class="text-gray-400 text-xs font-semibold">${acc.tagline}</p>
+                                </div>
+
+                                <div class="flex items-center justify-between text-xs bg-black/60 p-2.5 rounded-lg border border-neutral-900">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-chart-line text-brand-orange"></i>
+                                        <span class="text-gray-400">Poder de Conta:</span>
+                                    </div>
+                                    <span class="font-bold text-white font-mono">${acc.power}</span>
+                                </div>
+
+                                <!-- Direciona para a galeria unificada e dinâmica de imagens -->
+                                <a href="${printsLink}" 
+                                   class="w-full inline-flex items-center justify-center space-x-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800/80 hover:border-brand-orange/30 text-gray-300 hover:text-white text-xs font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm">
+                                    <i class="fas fa-images text-brand-orange"></i>
+                                    <span>Veja todos os prints</span>
+                                </a>
+                            </div>
+
+                            <div class="pt-5 border-t border-neutral-900 mt-2">
+                                <div class="flex items-end justify-between mb-4">
+                                    <div>
+                                        <p class="text-[9px] text-gray-500 uppercase tracking-widest font-semibold">Valor do Investimento</p>
+                                        <p class="text-2xl font-black text-white font-cinzel mt-0.5">${priceFormatted}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        ${statusBadge}
+                                    </div>
+                                </div>
+
+                                <a href="${clickAction}" 
+                                   target="${isSold ? '' : '_blank'}"
+                                   class="w-full inline-flex items-center justify-center space-x-2 bg-gradient-to-r ${isSold ? 'from-neutral-700 to-neutral-800 cursor-not-allowed' : 'from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500'} text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-md active:scale-95 duration-200">
+                                    <i class="${isSold ? 'fas fa-ban' : 'fab fa-whatsapp'} text-base"></i>
+                                    <span>${isSold ? 'Vendida' : 'Comprar via WhatsApp'}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        // ── FAQ ───────────────────────────────────────────────────────
+        document.querySelectorAll('.faq-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const ans = this.nextElementSibling;
+                const icon = this.querySelector('.faq-icon');
+                const isOpen = ans.style.maxHeight && ans.style.maxHeight !== '0px';
+
+                document.querySelectorAll('.faq-ans').forEach(function (a) { a.style.maxHeight = '0px'; });
+                document.querySelectorAll('.faq-icon').forEach(function (i) { i.style.transform = 'rotate(0deg)'; });
+
+                if (!isOpen) {
+                    ans.style.maxHeight = ans.scrollHeight + 'px';
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+
+        // Inicializar lendo do Google Sheets
+        window.onload = fetchSheetData;
+    </script>
+</body>
+
+</html>

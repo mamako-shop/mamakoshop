@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Admin - Mamako Loko</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: #fff;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: #1c1c1c;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-grupo {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        input,
+        textarea,
+        select {
+            padding: 10px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #3ecf8e;
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #3ecf8e;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #34b279;
+        }
+
+        .status-carregando {
+            color: #ffbc00;
+            font-weight: bold;
+            display: none;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="conteudo-painel" style="display: none;">
+        <div class="container">
+            <h2>Cadastrar Nova Conta (Baseado no Google Sheets)</h2>
+            <p style="color: #888; font-size: 13px; margin-top: -10px; margin-bottom: 25px;">Insira os dados da conta.
+                Os campos de links de imagens, moedas e formatações de códigos serão calculados sozinhos.</p>
+
+            <div class="form-row">
+                <div class="form-grupo">
+                    <label>ID da Conta (Apenas o número):</label>
+                    <input type="number" id="idConta" placeholder="Ex: 001" min="1">
+                </div>
+                <div class="form-grupo">
+                    <label>Fase / Level do Jogo:</label>
+                    <select id="level">
+                        <option value="Early Game">Early Game</option>
+                        <option value="Early/Mid Game">Early/Mid Game</option>
+                        <option value="Mid Game">Mid Game</option>
+                        <option value="Mid/End Game">Mid/End Game</option>
+                        <option value="End Game">End Game</option>
+                    </select>
+                </div>
+                <div class="form-grupo">
+                    <label>Poder da Conta (Power):</label>
+                    <input type="text" id="power" placeholder="Ex: 7.12M ou 20M">
+                </div>
+            </div>
+
+            <div class="form-grupo" style="margin-bottom: 15px;">
+                <label>Título da Conta (title):</label>
+                <input type="text" id="titulo" placeholder="Ex: Conta Void Premium / Conta Triplo Mítico">
+            </div>
+
+            <div class="form-grupo" style="margin-bottom: 15px;">
+                <label>Tagline (Resumo dos principais destaques):</label>
+                <input type="text" id="tagline" placeholder="Ex: Embrys, Mikage, Yumeko, Arbitra 6★ e +++">
+            </div>
+
+            <div class="form-row">
+                <div class="form-grupo">
+                    <label>Preço em R$ (priceBrl):</label>
+                    <input type="number" id="precobrl" placeholder="Ex: 1000">
+                </div>
+                <div class="form-grupo">
+                    <label>Aceita Código Promocional? (promo_code):</label>
+                    <select id="promoCode">
+                        <option value="">Não / Deixar em Branco</option>
+                        <option value="✓ Aceita">✓ Aceita</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-grupo">
+                    <label>Status do E-mail (email_status):</label>
+                    <input type="text" id="emailStatus" value="✓ Alterável">
+                </div>
+                <div class="form-grupo">
+                    <label>Status de Vínculos (links_status):</label>
+                    <input type="text" id="linksStatus" value="✓ Sem vínculos">
+                </div>
+            </div>
+
+            <div class="form-grupo" style="margin-bottom: 15px;">
+                <label>Campeões Míticos (miticos):</label>
+                <textarea id="miticos" rows="2" placeholder="Ex: Embrys, Mikage"></textarea>
+            </div>
+            <div class="form-grupo" style="margin-bottom: 15px;">
+                <label>Principais Lendários (principais_lendarios):</label>
+                <textarea id="principaisLendarios" rows="3"
+                    placeholder="Ex: Yumeko, Arbitra Bless 6★, Leonardo, Nekhret..."></textarea>
+            </div>
+            <div class="form-grupo" style="margin-bottom: 15px;">
+                <label>Outros Lendários (outros_lendarios):</label>
+                <textarea id="outrosLendarios" rows="3"
+                    placeholder="Ex: Gnut, Hilvi, Gurptuk, Rotos, Lilitu..."></textarea>
+            </div>
+
+            <div class="form-grupo" style="margin-bottom: 20px;">
+                <label>Selecionar Prints da Conta (Máx. 20 imagens):</label>
+                <input type="file" id="printsConta" accept="image/*" multiple>
+            </div>
+
+            <button onclick="salvarConta()">Cadastrar no Supabase</button>
+            <div id="status" class="status-carregando">Enviando dados e imagens... Aguarde.</div>
+        </div>
+    </div>
+
+    <script>
+        // 1. ABA DE SEGURANÇA LOCAL PARA O GITHUB PAGES
+        const SENHA_SISTEMA = "";
+        const tentativa = prompt("Digite a senha do painel Mamako Loko:");
+
+        if (tentativa !== SENHA_SISTEMA) {
+            alert("Acesso negado.");
+            window.location.href = "about:blank";
+        } else {
+            document.getElementById('conteudo-painel').style.display = 'block';
+        }
+
+        // 2. CREDENCIAIS DO SUPABASE (Troque pelos dados do seu projeto)
+        const SUPABASE_URL = "https://mhwkkpvjthlnlbaeprcq.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1od2trcHZqdGhsbmxiYWVwcmNxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTYyNDk4NiwiZXhwIjoyMDk3MjAwOTg2fQ.puJ7gehUBDMXctLtafuqnXIGM2oCQ3q3CUiyJU5EMPc";
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // 3. ENVIAR DADOS COM AS REGRAS DO EXCEL
+        async function salvarConta() {
+            const idInformado = document.getElementById('idConta').value;
+            const precobrl = parseFloat(document.getElementById('precobrl').value);
+            const printsInput = document.getElementById('printsConta');
+            const statusDiv = document.getElementById('status');
+
+            if (!idInformado || isNaN(precobrl) || printsInput.files.length === 0) {
+                alert("Campos obrigatórios: ID, Preço em BRL e pelo menos 1 Print da conta.");
+                return;
+            }
+
+            statusDiv.style.display = "block";
+            let linksDasImagens = [];
+            const arquivos = printsInput.files;
+
+            try {
+                // Sobe as imagens selecionadas uma por uma para o Storage do Supabase
+                for (let i = 0; i < arquivos.length; i++) {
+                    const arquivo = arquivos[i];
+                    statusDiv.innerText = `Processando foto ${i + 1} de ${arquivos.length}...`;
+
+                    const ext = arquivo.name.split('.').pop();
+                    // Organiza em pastas dentro do bucket: ex: conta-007/print_1.png
+                    const formatIdPasta = idInformado.padStart(3, '0');
+                    const nomeArquivo = `conta-${formatIdPasta}/print_${i + 1}_${Date.now()}.${ext}`;
+
+                    const { data: uploadData, error: uploadError } = await _supabase
+                        .storage
+                        .from('fotos-contas')
+                        .upload(nomeArquivo, arquivo);
+
+                    if (uploadError) throw new Error(`Erro na imagem ${i + 1}: ` + uploadError.message);
+
+                    const { data: urlData } = _supabase
+                        .storage
+                        .from('fotos-contas')
+                        .getPublicUrl(nomeArquivo);
+
+                    linksDasImagens.push(urlData.publicUrl);
+                }
+
+                // REGRAS DE AUTOMAÇÃO BASEADAS NO SEU EXCEL:
+                const idPlanilha = idInformado.padStart(3, '0'); // Garante que o ID salve como "007" em vez de "7"
+                const labelPlanilha = `Cód: ${idPlanilha}`; // Monta automaticamente o padrão "Cód: 007"
+                const fotoCapa = linksDasImagens[0]; // A primeira imagem vira a capa da conta (coluna image)
+                const stringPrintsComVirgula = linksDasImagens.join(', '); // Junta todos os links com vírgula para a coluna prints
+                const precousd = Math.round(precobrl / 5.20); // Calcula automaticamente o preço aproximado em USD
+
+                // MONTAGEM DO MODELO DE DADOS EXATO DO SEU GOOGLE SHEETS
+                const dadosPlanilha = {
+                    id: idPlanilha,
+                    title: document.getElementById('titulo').value,
+                    power: document.getElementById('power').value,
+                    tagline: document.getElementById('tagline').value,
+                    image: fotoCapa,
+                    priceBrl: precobrl,
+                    priceUsd: precousd,
+                    label: labelPlanilha,
+                    status: "DISPONÍVEL",
+                    miticos: document.getElementById('miticos').value,
+                    principais_lendarios: document.getElementById('principaisLendarios').value,
+                    outros_lendarios: document.getElementById('outrosLendarios').value,
+                    prints: stringTodosOsPrints = stringPrintsComVirgula,
+                    email_status: document.getElementById('emailStatus').value,
+                    links_status: document.getElementById('linksStatus').value,
+                    promo_code: document.getElementById('promoCode').value,
+                    level: document.getElementById('level').value
+                };
+
+                statusDiv.innerText = "Salvando registro na tabela de dados...";
+
+                // Salva a linha inteira diretamente na tabela 'contas'
+                const { error: errorTabela } = await _supabase
+                    .from('contas')
+                    .insert([dadosPlanilha]);
+
+                if (errorTabela) throw new Error("Erro na gravação dos dados: " + errorTabela.message);
+
+                alert(`Conta código ${idPlanilha} registrada com sucesso na nuvem!`);
+                window.location.reload();
+
+            } catch (erro) {
+                alert(erro.message);
+            } finally {
+                statusDiv.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>
