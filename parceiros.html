@@ -320,9 +320,10 @@
                             <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent z-10"></div>
                             
                             <!-- Código da Conta -->
-                            <span class="absolute top-3 left-3 bg-brand-orange/20 border border-brand-orange/50 text-brand-gold text-[10px] font-bold font-mono px-3 py-1 rounded-full shadow-lg z-20 backdrop-blur-sm">
-                                ${acc.label}
-                            </span>
+                            ${acc.label === 'Sim'
+                                ? `<img src="promo.png" alt="Promoção" class="absolute top-3 right-3 w-36 z-20 drop-shadow-2xl hover:scale-110 transition-transform duration-300">`
+                                : ''
+                            }
 
                             <!-- DONO DA CONTA (Selo de Vendedor) -->
                             <span class="absolute top-3 right-3 bg-black/60 border border-neutral-700 text-gray-300 text-[10px] font-semibold px-3 py-1 rounded-full shadow-lg z-20 backdrop-blur-sm">
