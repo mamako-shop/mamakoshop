@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="favicon.png" type="image/x-icon">
+    <link rel="icon" href="imgs/favicon.png" type="image/x-icon">
     <title>Mamako Loko Shop | Contas de Raid Shadow Legends</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,6 +14,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="api.js"></script>
 
     <script>
         tailwind.config = {
@@ -44,7 +45,7 @@
         .hero-banner {
             position: relative;
             background-image: linear-gradient(180deg, rgba(7, 7, 8, 0.3) 0%, rgba(7, 7, 8, 0.95) 100%),
-                url('banner.png');
+                url('imgs/banner.png');
             background-position: center center;
             background-repeat: no-repeat;
             background-size: cover;
@@ -63,11 +64,11 @@
             <div class="flex items-center justify-between h-20">
                 <div class="flex items-center space-x-3">
                     <div class="w-12 h-12 rounded-full overflow-hidden shadow-lg shadow-brand-orange/20">
-                        <a href="/mamakoshop"><img src="logo.png"
+                        <a href="/mamacolokostore"><img src="imgs/logo.png"
                             alt="Mamako Loko" class="w-full h-full object-cover"></a>
                     </div>
                     <div>
-                        <a href="/mamakoshop"><span
+                        <a href="/mamacolokostore"><span
                             class="font-cinzel font-black text-xl tracking-wider bg-gradient-to-r from-brand-gold via-brand-orange to-red-500 bg-clip-text text-transparent">MAMAKO
                             LOKO</span>
                         <p class="text-[10px] text-gray-400 uppercase tracking-widest -mt-1">Raid Store</p></a>
@@ -77,7 +78,7 @@
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#catalogo"
                         class="text-gray-300 hover:text-brand-gold transition-colors font-medium">Catálogo</a>
-                    <a href="parceiros.html" 
+                    <a href="#catalogo" id="nav-parceiros"
                         class="text-gray-300 hover:text-brand-gold transition-colors font-medium flex items-center space-x-1">
                         <i class="fas fa-handshake text-brand-orange text-xs mr-1"></i>Parceiros
                     </a>
@@ -111,7 +112,7 @@
             class="hidden md:hidden bg-brand-card border-b border-neutral-800 px-4 pt-2 pb-6 space-y-4">
             <a href="#catalogo" id="menu-link-catalogo"
                 class="block text-gray-300 hover:text-brand-gold font-semibold py-2 border-b border-neutral-900">Catálogo</a>
-            <a href="parceiros.html"
+            <a href="#catalogo" id="menu-link-parceiros"
                 class="block text-gray-300 hover:text-brand-gold font-semibold py-2 border-b border-neutral-900 flex items-center">
                 <i class="fas fa-handshake text-brand-orange mr-2"></i>Contas de Parceiros
             </a>
@@ -206,6 +207,19 @@
                     pretendida para fechar negócio diretamente através do WhatsApp.</p>
             </div>
 
+            <!-- Seletor de Abas (Estoque Oficial / Vendedores Parceiros) -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12 max-w-xl mx-auto">
+                <button id="tab-propria" class="w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold font-cinzel text-xs tracking-wider transition-all duration-300 border border-brand-orange/40 bg-gradient-to-r from-brand-orange to-red-600 text-white shadow-lg shadow-brand-orange/15 hover:scale-105">
+                    Estoque Oficial <span id="count-propria" class="ml-1.5 text-[10px] bg-black/35 px-2 py-0.5 rounded-full text-brand-gold font-sans font-semibold">...</span>
+                </button>
+                <button id="tab-parceiros" class="w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold font-cinzel text-xs tracking-wider transition-all duration-300 border border-neutral-800 bg-neutral-900/60 text-gray-400 hover:text-white hover:border-neutral-700 hover:scale-105">
+                    Contas de Parceiros <span id="count-parceiros" class="ml-1.5 text-[10px] bg-black/35 px-2 py-0.5 rounded-full text-gray-400 font-sans font-semibold">...</span>
+                </button>
+                <button id="tab-vendidas" class="w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold font-cinzel text-xs tracking-wider transition-all duration-300 border border-neutral-800 bg-neutral-900/60 text-gray-400 hover:text-white hover:border-neutral-700 hover:scale-105">
+                    Vendidas <span id="count-vendidas" class="ml-1.5 text-[10px] bg-black/35 px-2 py-0.5 rounded-full text-gray-400 font-sans font-semibold">...</span>
+                </button>
+            </div>
+
             <div id="loading" class="text-center py-12">
                 <i class="fas fa-spinner animate-spin text-brand-orange text-4xl mb-4"></i>
                 <p class="text-gray-400">A carregar catálogo em tempo real...</p>
@@ -277,34 +291,7 @@
         </div>
     </section>
 
-    <section class="py-12 bg-gradient-to-b from-brand-dark to-neutral-950 border-t border-neutral-900">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="relative bg-gradient-to-r from-neutral-900 via-brand-card to-neutral-900 border border-neutral-800 p-8 sm:p-10 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 group hover:border-brand-orange/40 transition-all duration-300">
-                <div class="absolute -right-16 -bottom-16 w-44 h-44 bg-brand-orange/10 rounded-full blur-3xl group-hover:bg-brand-orange/20 transition-all duration-500"></div>
-                
-                <div class="space-y-3 text-center md:text-left z-10">
-                    <span class="bg-brand-orange/10 border border-brand-orange/30 text-brand-gold text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">
-                        Estoque Cooperativo
-                    </span>
-                    <h3 class="font-cinzel text-xl sm:text-2xl font-black text-white tracking-wide">
-                        Procurando mais opções?<br>
-                        <span class="bg-gradient-to-r from-brand-gold to-brand-orange bg-clip-text text-transparent">Explore as contas dos nossos parceiros</span>
-                    </h3>
-                    <p class="text-xs text-gray-400 max-w-md leading-relaxed">
-                        Trabalhamos com fornecedores e jogadores selecionados para trazer ainda mais diversidade ao catálogo. Segurança total garantida e intermediada por nós!
-                    </p>
-                </div>
 
-                <div class="w-full md:w-auto text-center z-10 shrink-0">
-                    <a href="parceiros.html" 
-                       class="inline-flex items-center space-x-2 bg-gradient-to-r from-brand-orange to-red-600 hover:scale-105 text-white text-sm font-bold px-6 py-3.5 rounded-xl shadow-lg shadow-brand-orange/20 transition-all duration-200 w-full sm:w-auto justify-center">
-                        <span>Ver Contas Parceiros</span>
-                        <i class="fas fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá Mamako! Gostaria de consultar contas disponíveis para o Raid."
         target="_blank"
@@ -319,7 +306,7 @@
             <a href="https://api.whatsapp.com/send?phone=5561993935402&text=Olá Mamako! Vi o catálogo e quero negociar uma conta."
                 target="_blank"
                 class="block max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl hover:scale-[1.02] hover:shadow-brand-orange/20 transition-all duration-300">
-                <img src="whatsapp.png"
+                <img src="imgs/whatsapp.png"
                     alt="Fale com o Mamako no WhatsApp" class="w-full h-auto block">
             </a>
 
@@ -335,45 +322,76 @@
             </div>
         </div>
     </footer>
-
     <script>
-        const googleSheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGMz9XAk5spv5FFN585VM6g6toC79iulNUFqYB76MQmRTuhjnyTjRSybOuyhZ5FImNompOX0eFjZI0/pub?output=csv";
-
-        let accountsData = [];
+        console.log("Mamako Loko Shop script block executing...");
+        let rawAccountsData = [];
+        let accountsData = []; // Estoque filtrado exibido atualmente
+        let activeTab = 'propria'; // 'propria' ou 'parceiro'
         let currentCurrency = 'BRL';
 
-        // Carregar dados do Google Sheets filtrando por 'propria'
+        // ── VARIÁVEIS DO MODAL E LIGHTBOX ──────────────────────────────
+        let currentModalAccount = null;
+        let images = [];
+        let currentImageIndex = 0;
+        let scale = 1, isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+        let initialDistance = null, initialScale = 1;
+
+        // Função para obter parâmetros da URL (Deep-linking)
+        function getUrlParameter(name) {
+            const results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+            return results ? decodeURIComponent(results[1]) : null;
+        }
+
+        // Carregar dados do Google Sheets
         async function fetchSheetData() {
+            console.log("fetchSheetData started. URL:", googleSheetCsvUrl);
             try {
                 const response = await fetch(googleSheetCsvUrl);
+                console.log("Fetch response received. Status:", response.status);
                 const csvText = await response.text();
+                console.log("CSV text length:", csvText.length);
 
                 Papa.parse(csvText, {
                     header: true,
                     skipEmptyLines: true,
                     complete: function (results) {
-                        // FILTRO INVERSO: Só exibe se tipo for 'propria' (ou caso esteja em branco, assumindo como sua)
-                        const apenasMinhas = results.data.filter(row => {
-                            const tipoConta = row.tipo ? row.tipo.trim().toLowerCase() : '';
-                            return tipoConta === 'propria' || tipoConta === '';
-                        });
+                        console.log("Papa.parse complete. Data length:", results.data ? results.data.length : 0);
+                        // Mapeia todas as linhas usando a função centralizada do api.js
+                        rawAccountsData = results.data.map(mapRow);
+                        console.log("Mapped rawAccountsData. Length:", rawAccountsData.length);
+                        
+                        // Atualiza os contadores das abas
+                        updateTabCounters();
+                        console.log("Tab counters updated.");
 
-                        accountsData = apenasMinhas.map(row => ({
-                            id: row.id ? row.id.trim() : '',
-                            title: row.title ? row.title.trim() : '',
-                            power: row.power ? row.power.trim() : '',
-                            tagline: row.tagline ? row.tagline.trim() : '',
-                            image: row.image ? row.image.trim() : '',
-                            priceBrl: parseFloat(row.priceBrl) || 0,
-                            priceUsd: parseFloat(row.priceUsd) || 0,
-                            label: row.label ? row.label.trim() : '',
-                            status: row.status ? row.status.trim().toUpperCase() : 'DISPONÍVEL',
-                            recursos: row.recursos ? row.recursos.trim() : ''
-                        }));
-
+                        // Oculta o loading e exibe os cartões
                         document.getElementById('loading').classList.add('hidden');
                         document.getElementById('accountsContainer').classList.remove('hidden');
-                        renderAccounts();
+                        
+                        // Checar se há deep-linking por ID na URL
+                        const urlId = getUrlParameter('id');
+                        console.log("URL ID parameter:", urlId);
+                        if (urlId) {
+                            const targetAcc = rawAccountsData.find(a => a.id === urlId);
+                            if (targetAcc) {
+                                if (targetAcc.status === 'VENDIDO') {
+                                    activeTab = 'vendida';
+                                } else if (targetAcc.tipo === 'parceiro') {
+                                    activeTab = 'parceiro';
+                                }
+                            }
+                        }
+
+                        // Aplica o filtro inicial e renderiza
+                        console.log("Switching tab to:", activeTab);
+                        switchTab(activeTab);
+
+                        // Abre o modal se tiver id na URL
+                        if (urlId) {
+                            console.log("Opening details modal for URL ID:", urlId);
+                            openDetailsModal(urlId);
+                        }
                     },
                     error: function (err) {
                         console.error("Erro ao processar o CSV: ", err);
@@ -387,7 +405,7 @@
         }
 
         function fallbackToDefault() {
-            accountsData = [
+            rawAccountsData = [
                 {
                     id: "001",
                     title: "Conta Void Premium",
@@ -397,11 +415,63 @@
                     priceBrl: 1000,
                     priceUsd: 200,
                     label: "Cód: 001",
-                    status: "DISPONÍVEL"
+                    status: "DISPONÍVEL",
+                    tipo: "propria"
                 }
             ];
+            updateTabCounters();
             document.getElementById('loading').classList.add('hidden');
             document.getElementById('accountsContainer').classList.remove('hidden');
+            switchTab('propria');
+        }
+
+        function updateTabCounters() {
+            const countPropria = rawAccountsData.filter(acc => (acc.tipo === 'propria' || acc.tipo === '') && acc.status !== 'VENDIDO').length;
+            const countParceiros = rawAccountsData.filter(acc => acc.tipo === 'parceiro' && acc.status !== 'VENDIDO').length;
+            const countVendidas = rawAccountsData.filter(acc => acc.status === 'VENDIDO').length;
+
+            document.getElementById('count-propria').textContent = countPropria;
+            document.getElementById('count-parceiros').textContent = countParceiros;
+            document.getElementById('count-vendidas').textContent = countVendidas;
+        }
+
+        // Função para alterar abas
+        function switchTab(tab) {
+            activeTab = tab;
+            const tabPropria = document.getElementById('tab-propria');
+            const tabParceiros = document.getElementById('tab-parceiros');
+            const tabVendidas = document.getElementById('tab-vendidas');
+
+            const activeClasses = ['bg-gradient-to-r', 'from-brand-orange', 'to-red-600', 'text-white', 'border-brand-orange/40', 'shadow-lg', 'shadow-brand-orange/15'];
+            const inactiveClasses = ['bg-neutral-900/60', 'text-gray-400', 'border-neutral-800', 'hover:text-white', 'hover:border-neutral-700'];
+
+            [tabPropria, tabParceiros, tabVendidas].forEach(btn => {
+                if (btn) {
+                    btn.className = "w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold font-cinzel text-xs tracking-wider transition-all duration-300 border hover:scale-105";
+                    btn.classList.add(...inactiveClasses);
+                }
+            });
+
+            if (tab === 'propria') {
+                if (tabPropria) {
+                    tabPropria.classList.remove(...inactiveClasses);
+                    tabPropria.classList.add(...activeClasses);
+                }
+                accountsData = rawAccountsData.filter(acc => (acc.tipo === 'propria' || acc.tipo === '') && acc.status !== 'VENDIDO');
+            } else if (tab === 'parceiro') {
+                if (tabParceiros) {
+                    tabParceiros.classList.remove(...inactiveClasses);
+                    tabParceiros.classList.add(...activeClasses);
+                }
+                accountsData = rawAccountsData.filter(acc => acc.tipo === 'parceiro' && acc.status !== 'VENDIDO');
+            } else if (tab === 'vendida') {
+                if (tabVendidas) {
+                    tabVendidas.classList.remove(...inactiveClasses);
+                    tabVendidas.classList.add(...activeClasses);
+                }
+                accountsData = rawAccountsData.filter(acc => acc.status === 'VENDIDO');
+            }
+
             renderAccounts();
         }
 
@@ -462,12 +532,30 @@
                     ? `R$ ${acc.priceBrl.toLocaleString('pt-BR')}`
                     : `US$ ${acc.priceUsd.toLocaleString('en-US')}`;
 
-                const printsLink = `galeria.html?id=${acc.id}`;
+                const printsLink = `javascript:openDetailsModal('${acc.id}')`;
+
+                // Determina o número de WhatsApp e nome do vendedor
+                let numWhats = whatsappPadrao;
+                let nomeVendedor = vendedorPadrao;
+
+                if (acc.tipo === 'parceiro') {
+                    if (acc.whatsapp && acc.whatsapp.trim() !== '') {
+                        numWhats = acc.whatsapp.replace(/\D/g, "");
+                        if (numWhats.length === 11 || numWhats.length === 10) {
+                            numWhats = "55" + numWhats;
+                        }
+                    }
+                    if (acc.vendedor && acc.vendedor.trim() !== '') {
+                        nomeVendedor = acc.vendedor.trim();
+                    }
+                }
 
                 const encodedMessage = encodeURIComponent(
-                    `Olá Mamako! Gostaria de fechar negócio na conta [Código ${acc.id}] - ${acc.title} (${acc.tagline}) no valor de ${priceFormatted}. Ainda está disponível?`
+                    acc.tipo === 'parceiro'
+                        ? `Olá! Vi o anúncio da conta [Código ${acc.id}] na página de parceiros do Mamako Loko e gostaria de negociar.`
+                        : `Olá Mamako! Gostaria de fechar negócio na conta [Código ${acc.id}] - ${acc.title} (${acc.tagline}) no valor de ${priceFormatted}. Ainda está disponível?`
                 );
-                const whatsappLink = `https://api.whatsapp.com/send?phone=5561993935402&text=${encodedMessage}`;
+                const whatsappLink = `https://api.whatsapp.com/send?phone=${numWhats}&text=${encodedMessage}`;
 
                 const isSold = acc.status === 'VENDIDO';
                 const statusBadge = isSold
@@ -475,6 +563,13 @@
                     : `<span class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded">DISPONÍVEL</span>`;
 
                 const clickAction = isSold ? '#' : whatsappLink;
+
+                // Selo do vendedor parceiro se aplicável
+                const sellerBadge = acc.tipo === 'parceiro' && acc.vendedor
+                    ? `<span class="absolute top-3 left-3 bg-black/60 border border-neutral-700 text-gray-300 text-[10px] font-semibold px-3 py-1 rounded-full shadow-lg z-20 backdrop-blur-sm">
+                           <i class="fas fa-user text-brand-orange mr-1"></i>Vendedor: ${acc.vendedor}
+                       </span>`
+                    : '';
 
                 const card = `
                     <div class="bg-brand-card border border-neutral-800/80 rounded-2xl overflow-hidden shadow-xl hover:scale-[1.02] hover:border-brand-orange/40 transition-all duration-300 flex flex-col justify-between group ${isSold ? 'opacity-65 grayscale' : ''}">
@@ -484,9 +579,10 @@
                             <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent z-10"></div>
                             
                             ${(acc.label === 'Sim' || acc.label === 'Promoção')
-                                ? `<img src="promo.png" alt="Promoção" class="absolute top-3 right-3 w-36 z-20 drop-shadow-2xl hover:scale-110 transition-transform duration-300">`
+                                ? `<img src="imgs/promo.png" alt="Promoção" class="absolute top-3 right-3 w-36 z-20 drop-shadow-2xl hover:scale-110 transition-transform duration-300">`
                                 : ''
                             }
+                            ${sellerBadge}
                         </div>
 
                         <div class="p-6 space-y-5 flex-1 flex flex-col justify-between bg-[#0e0e11]">
@@ -526,7 +622,7 @@
                                    target="${isSold ? '' : '_blank'}"
                                    class="w-full inline-flex items-center justify-center space-x-2 bg-gradient-to-r ${isSold ? 'from-neutral-700 to-neutral-800 cursor-not-allowed' : 'from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500'} text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-md active:scale-95 duration-200">
                                     <i class="${isSold ? 'fas fa-ban' : 'fab fa-whatsapp'} text-base"></i>
-                                    <span>${isSold ? 'Vendida' : 'Comprar via WhatsApp'}</span>
+                                    <span>${isSold ? 'Vendida' : (acc.tipo === 'parceiro' ? `Comprar com ${nomeVendedor}` : 'Comprar via WhatsApp')}</span>
                                 </a>
                             </div>
                         </div>
@@ -553,8 +649,412 @@
             });
         });
 
-        window.onload = fetchSheetData;
+        // Eventos das abas do catálogo
+        document.getElementById('tab-propria').addEventListener('click', () => switchTab('propria'));
+        document.getElementById('tab-parceiros').addEventListener('click', () => switchTab('parceiro'));
+        document.getElementById('tab-vendidas').addEventListener('click', () => switchTab('vendida'));
+
+        // Rolagem e ativação da aba de parceiros ao clicar nos links
+        const handleParceirosClick = (e) => {
+            e.preventDefault();
+            switchTab('parceiro');
+            document.getElementById('catalogo').scrollIntoView({ behavior: 'smooth' });
+            mobileMenu.classList.add('hidden');
+        };
+
+        const navParceiros = document.getElementById('nav-parceiros');
+        if (navParceiros) navParceiros.addEventListener('click', handleParceirosClick);
+
+        const menuLinkParceiros = document.getElementById('menu-link-parceiros');
+        if (menuLinkParceiros) menuLinkParceiros.addEventListener('click', handleParceirosClick);
+
+
+
+        // ── LÓGICA DE ABRIR E FECHAR O MODAL DE DETALHES ────────────────
+        function openDetailsModal(id) {
+            const acc = rawAccountsData.find(a => a.id === id);
+            if (!acc) return;
+
+            currentModalAccount = acc;
+            images = acc.prints || [];
+            currentImageIndex = 0;
+
+            // Atualiza dados no Modal
+            document.getElementById('modalCodeHeader').textContent = `Código: ${acc.id}`;
+            document.getElementById('modalTitle').textContent = acc.title;
+
+            // Formatação de Preço
+            const priceFormatted = currentCurrency === 'BRL'
+                ? `R$ ${acc.priceBrl.toLocaleString('pt-BR')}`
+                : `US$ ${acc.priceUsd.toLocaleString('en-US')}`;
+            document.getElementById('modalPriceLabel').textContent = priceFormatted;
+
+            // Status Badge do Modal
+            const isSold = acc.status === 'VENDIDO';
+            const badge = document.getElementById('modalAvailabilityBadge');
+            const ctaBtn = document.getElementById('modalBuyCtaBtn');
+
+            if (isSold) {
+                badge.className = "bg-red-500/15 border border-red-500/30 text-red-400 text-[10px] font-bold px-2.5 py-1 rounded";
+                badge.textContent = "VENDIDO";
+                ctaBtn.className = "w-full inline-flex items-center justify-center space-x-2 bg-neutral-700 text-white font-bold py-4 px-4 rounded-xl cursor-not-allowed";
+                ctaBtn.innerHTML = `<i class="fas fa-ban"></i> <span>Vendida</span>`;
+                ctaBtn.href = "#";
+            } else {
+                badge.className = "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded";
+                badge.textContent = "DISPONÍVEL";
+                
+                // Lógica de Direcionamento do WhatsApp do modal
+                let numWhats = whatsappPadrao;
+                let nomeVendedor = vendedorPadrao;
+
+                if (acc.tipo === 'parceiro') {
+                    if (acc.whatsapp && acc.whatsapp.trim() !== "") {
+                        numWhats = acc.whatsapp.replace(/\D/g, "");
+                        if (numWhats.length === 11 || numWhats.length === 10) {
+                            numWhats = "55" + numWhats;
+                        }
+                    }
+                    if (acc.vendedor && acc.vendedor.trim() !== "") {
+                        nomeVendedor = acc.vendedor.trim();
+                    }
+                }
+
+                const msg = encodeURIComponent(
+                    acc.tipo === 'parceiro'
+                        ? `Olá! Vi o anúncio da conta [Código ${acc.id}] na página de parceiros do Mamako Loko e gostaria de negociar.`
+                        : `Olá Mamako! Gostaria de fechar negócio na conta [Código ${acc.id}] - ${acc.title} (${acc.tagline}) no valor de ${priceFormatted}. Ainda está disponível?`
+                );
+                ctaBtn.className = "w-full inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-md active:scale-95 duration-200";
+                ctaBtn.innerHTML = `<i class="fab fa-whatsapp text-lg"></i> <span>${acc.tipo === 'parceiro' ? 'Comprar com ' + nomeVendedor : 'Comprar via WhatsApp'}</span>`;
+                ctaBtn.href = `https://api.whatsapp.com/send?phone=${numWhats}&text=${msg}`;
+            }
+
+            // Pills de especificações
+            const pills = [
+                { label: 'E-mail',     value: acc.email_status,  color: 'text-emerald-400' },
+                { label: 'Vínculos',    value: acc.links_status,   color: 'text-emerald-400' },
+                { label: 'Promo Code',  value: acc.promo_code,     color: 'text-emerald-400' },
+                { label: 'Nível',       value: acc.level,          color: 'text-brand-gold'  },
+            ];
+            if (acc.vendedor && acc.tipo === 'parceiro') {
+                pills.push({ label: 'Vendedor', value: acc.vendedor, color: 'text-orange-400' });
+            }
+
+            const pillsArea = document.getElementById('modalStatusPillsArea');
+            pillsArea.innerHTML = pills
+                .filter(p => p.value)
+                .map(p => `
+                    <div class="bg-white/5 border border-neutral-800/60 p-2.5 rounded-lg">
+                        <p class="text-[8px] text-gray-500 uppercase tracking-widest font-bold">${p.label}</p>
+                        <p class="${p.color} text-xs font-bold mt-1">${p.value}</p>
+                    </div>`)
+                .join('');
+
+            // Seções de campeões e recursos
+            const detailsArea = document.getElementById('modalDetailsSections');
+            const heroSections = [
+                { title: 'Heróis Míticos',        icon: 'fa-star',  color: 'text-red-500',  data: acc.miticos },
+                { title: 'Lendários Principais',   icon: 'fa-gem',   color: 'text-orange-500', data: acc.principais_lendarios },
+                { title: 'Lendários Destaque',     icon: 'fa-crown', color: 'text-yellow-500', data: acc.outros_lendarios },
+            ];
+            detailsArea.innerHTML = heroSections
+                .filter(s => s.data.length > 0)
+                .map(s => `
+                    <div class="space-y-2 border-t border-neutral-800 pt-4">
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest ${s.color} flex items-center space-x-1.5">
+                            <i class="fas ${s.icon}"></i><span>${s.title}</span>
+                        </h4>
+                        <ul class="space-y-1.5 pl-1">
+                            ${s.data.map(item => `
+                                <li class="flex items-start space-x-2 text-xs text-gray-300">
+                                    <span class="text-brand-orange select-none">•</span>
+                                    <span class="leading-relaxed">${item}</span>
+                                </li>`).join('')}
+                        </ul>
+                    </div>`)
+                .join('');
+
+            if (acc.recursos) {
+                detailsArea.innerHTML += `
+                    <div class="space-y-2 border-t border-neutral-800 pt-4">
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest text-sky-400 flex items-center space-x-1.5">
+                            <i class="fas fa-boxes-stacked"></i><span>Recursos & Itens</span>
+                        </h4>
+                        <p class="text-xs text-gray-300 leading-relaxed whitespace-pre-line">${acc.recursos}</p>
+                    </div>`;
+            }
+
+            // Grade de prints
+            const grid = document.getElementById('modalGalleryGrid');
+            grid.innerHTML = '';
+
+            if (images.length > 0) {
+                images.forEach((imgUrl, idx) => {
+                    const thumb = document.createElement('div');
+                    thumb.className = 'thumb relative bg-[#111] rounded-xl overflow-hidden border border-neutral-900 group aspect-[16/10] cursor-pointer transition-all duration-200 hover:border-brand-orange hover:scale-105';
+                    thumb.innerHTML = `
+                        <img src="${imgUrl}" loading="lazy" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i class="fas fa-expand text-white text-lg"></i>
+                        </div>
+                        <span class="absolute bottom-2 right-2 bg-black/75 text-[9px] font-mono font-bold text-gray-400 px-2 py-0.5 rounded">
+                            ${idx + 1} / ${images.length}
+                        </span>`;
+                    thumb.addEventListener('click', () => openLightbox(idx));
+                    grid.appendChild(thumb);
+                });
+            } else {
+                grid.innerHTML = `<p class="col-span-full text-center text-gray-500 text-sm py-12">Nenhum print adicional foi adicionado para esta conta.</p>`;
+            }
+
+            // Exibe o modal
+            const modal = document.getElementById('detailsModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
+            // Atualiza a URL sem recarregar a página (Deep-linking)
+            history.pushState(null, '', `?id=${acc.id}`);
+        }
+
+        // Fechar Modal de Detalhes
+        function closeDetailsModal() {
+            const modal = document.getElementById('detailsModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+            currentModalAccount = null;
+
+            // Restaura URL original (remove o id da query)
+            history.pushState(null, '', window.location.pathname);
+            closeLightbox();
+        }
+
+        function init() {
+            // Inicializar variáveis do DOM que são declaradas após o script
+            lb = document.getElementById('lightbox');
+            lbImg = document.getElementById('lbImg');
+            lbWrap = document.getElementById('lbWrap');
+            lbCount = document.getElementById('lbCounter');
+
+            // Eventos do modal de detalhes
+            const modalClose = document.getElementById('modalClose');
+            if (modalClose) modalClose.addEventListener('click', closeDetailsModal);
+            
+            const detailsModal = document.getElementById('detailsModal');
+            if (detailsModal) {
+                detailsModal.addEventListener('click', e => {
+                    if (e.target === detailsModal) closeDetailsModal();
+                });
+            }
+
+            // Eventos do Lightbox
+            const lbClose = document.getElementById('lbClose');
+            if (lbClose) lbClose.addEventListener('click', closeLightbox);
+
+            const lbPrev = document.getElementById('lbPrev');
+            if (lbPrev) lbPrev.addEventListener('click', prevImage);
+
+            const lbNext = document.getElementById('lbNext');
+            if (lbNext) lbNext.addEventListener('click', nextImage);
+
+            const lbPrev2 = document.getElementById('lbPrev2');
+            if (lbPrev2) lbPrev2.addEventListener('click', prevImage);
+
+            const lbNext2 = document.getElementById('lbNext2');
+            if (lbNext2) lbNext2.addEventListener('click', nextImage);
+
+            if (lb) {
+                lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+
+                lb.addEventListener('touchstart', e => { if (e.touches.length === 1) touchStartX = e.changedTouches[0].clientX; });
+                lb.addEventListener('touchend', e => {
+                    if (scale > 1 || e.changedTouches.length !== 1) return;
+                    const diff = touchStartX - e.changedTouches[0].clientX;
+                    if (Math.abs(diff) > 50) diff > 0 ? nextImage() : prevImage();
+                });
+            }
+
+            if (lbWrap) {
+                lbWrap.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    let newScale = scale + (Math.sign(e.deltaY) * -0.15 * scale);
+                    scale = Math.min(5, Math.max(1, newScale));
+                    if (scale === 1) { translateX = 0; translateY = 0; }
+                    applyTransform();
+                }, { passive: false });
+
+                lbWrap.addEventListener('pointerdown', (e) => {
+                    if (scale > 1) { isDragging = true; lbWrap.classList.add('no-transition'); startX = e.clientX - translateX; startY = e.clientY - translateY; }
+                });
+
+                lbWrap.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 2) { e.preventDefault(); isDragging = false; initialDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); initialScale = scale; }
+                }, { passive: false });
+
+                lbWrap.addEventListener('touchmove', (e) => {
+                    if (e.touches.length === 2) {
+                        e.preventDefault();
+                        const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+                        scale = Math.min(5, Math.max(1, initialScale * (d / initialDistance)));
+                        if (scale === 1) { translateX = 0; translateY = 0; }
+                        applyTransform();
+                    }
+                }, { passive: false });
+            }
+
+            window.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                applyTransform();
+            });
+            window.addEventListener('pointerup', () => { isDragging = false; if (lbWrap) lbWrap.classList.remove('no-transition'); });
+
+            document.addEventListener('keydown', e => {
+                if (lb && lb.classList.contains('hidden')) return;
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') prevImage();
+                if (e.key === 'ArrowRight') nextImage();
+            });
+
+            // Chamar fetchSheetData imediatamente após carregar o DOM
+            fetchSheetData();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // ── LIGHTBOX LOGIC ─────────────────────────────────────────────
+        let lb, lbImg, lbWrap, lbCount;
+
+        function openLightbox(i) {
+            currentImageIndex = i;
+            resetZoom();
+            updateLightbox();
+            if (lb) {
+                lb.classList.remove('hidden');
+                lb.classList.add('flex');
+            }
+        }
+        function closeLightbox() {
+            if (lb) {
+                lb.classList.add('hidden');
+                lb.classList.remove('flex');
+            }
+            resetZoom();
+        }
+        function updateLightbox() {
+            if (lbImg) lbImg.src = images[currentImageIndex];
+            if (lbCount) lbCount.textContent = `${currentImageIndex + 1} / ${images.length}`;
+        }
+        function prevImage() { currentImageIndex = (currentImageIndex - 1 + images.length) % images.length; resetZoom(); updateLightbox(); }
+        function nextImage() { currentImageIndex = (currentImageIndex + 1) % images.length; resetZoom(); updateLightbox(); }
+
+        function resetZoom() { scale = 1; translateX = 0; translateY = 0; applyTransform(); }
+        function applyTransform() { if (lbImg) lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`; }
     </script>
+
+    <!-- MODAL DE DETALHES DA CONTA -->
+    <div id="detailsModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden items-start justify-center overflow-y-auto py-8 px-4">
+        <!-- Container do Modal -->
+        <div class="relative bg-brand-dark border border-neutral-800 w-full max-w-6xl rounded-3xl overflow-hidden shadow-2xl my-auto flex flex-col">
+            <!-- Botão de Fechar Modal -->
+            <button id="modalClose" class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/5 border border-white/10 text-white flex items-center justify-center hover:bg-brand-orange hover:border-brand-orange/50 transition-colors z-30">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <!-- Cabeçalho do Modal -->
+            <div class="bg-gradient-to-br from-neutral-950 to-amber-950/20 p-6 sm:p-8 border-b border-neutral-800">
+                <div class="flex items-center space-x-2.5 mb-3">
+                    <span class="bg-brand-orange/15 border border-brand-orange/30 text-brand-gold text-[10px] font-bold px-3 py-1 rounded-full shadow-lg">
+                        <i class="fas fa-id-card mr-1"></i> Ficha Técnica
+                    </span>
+                    <span id="modalCodeHeader" class="text-gray-500 text-xs font-mono">Cód: 000</span>
+                </div>
+                <h2 id="modalTitle" class="font-cinzel font-black text-xl sm:text-2xl lg:text-3xl text-white">CONTA DO...</h2>
+            </div>
+
+            <!-- Corpo do Modal -->
+            <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                <!-- Coluna da Esquerda (Galeria de Prints) -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-[#0e0e11] border border-neutral-800/80 p-5 sm:p-6 rounded-2xl">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <i class="fas fa-images text-brand-orange"></i>
+                            <h4 class="font-cinzel text-brand-gold font-bold text-xs tracking-wider">GALERIA DE PRINTS</h4>
+                        </div>
+                        <div id="modalGalleryGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            <!-- Inserido dinamicamente via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coluna da Direita (Detalhes e Ficha Técnica) -->
+                <div class="space-y-6">
+                    <div class="bg-brand-card border border-neutral-800/80 p-5 rounded-2xl space-y-6 shadow-xl">
+                        <!-- Especificações Rápidas (Pills) -->
+                        <div id="modalStatusPillsArea" class="grid grid-cols-2 gap-2 text-center">
+                            <!-- Inserido dinamicamente via JS -->
+                        </div>
+
+                        <!-- Seções de Campeões (Míticos, Lendários, Recursos) -->
+                        <div id="modalDetailsSections" class="space-y-6">
+                            <!-- Inserido dinamicamente via JS -->
+                        </div>
+
+                        <!-- Área de Preço e Compra -->
+                        <div class="bg-brand-orange/5 border border-brand-orange/25 p-4 rounded-xl flex items-center justify-between">
+                            <div>
+                                <p class="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Investimento</p>
+                                <p id="modalPriceLabel" class="text-2xl font-black text-white font-cinzel mt-1">R$ 0</p>
+                            </div>
+                            <span id="modalAvailabilityBadge" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded">DISPONÍVEL</span>
+                        </div>
+
+                        <!-- Botão de Compra -->
+                        <a id="modalBuyCtaBtn" href="#" target="_blank"
+                            class="w-full inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-md active:scale-95 duration-200">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                            <span>Comprar via WhatsApp</span>
+                        </a>
+
+                        <p class="text-[10px] text-gray-500 text-center leading-relaxed">
+                            Conta autenticada e gerida de forma segura.<br>Entrega rápida e acompanhamento total do processo de vinculação.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX DO MODAL -->
+    <div id="lightbox" class="fixed inset-0 bg-black/95 z-[60] hidden items-center justify-center p-4 backdrop-blur-md">
+        <button id="lbClose" class="fixed top-5 right-5 w-11 h-11 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center hover:bg-white/20 transition-colors z-[70]">
+            <i class="fas fa-times text-lg"></i>
+        </button>
+        <button id="lbPrev" class="fixed left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/5 border border-white/10 hover:border-brand-orange hover:bg-brand-orange/20 text-white flex items-center justify-center z-40 transition-colors">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="lbNext" class="fixed right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/5 border border-white/10 hover:border-brand-orange hover:bg-brand-orange/20 text-white flex items-center justify-center z-40 transition-colors">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <div class="max-w-5xl w-full flex flex-col items-center space-y-4">
+            <div id="lbWrap" class="relative w-full rounded-2xl overflow-hidden border border-neutral-800 bg-black max-h-[75vh] flex items-center justify-center touch-action-none">
+                <img id="lbImg" src="" alt="Print em tamanho grande" class="max-h-[75vh] w-full object-contain cursor-grab active:cursor-grabbing">
+            </div>
+            <div class="flex items-center space-x-6 z-10">
+                <button id="lbPrev2" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-white flex items-center justify-center"><i class="fas fa-chevron-left"></i></button>
+                <span id="lbCounter" class="text-xs font-mono text-gray-400">1 / 1</span>
+                <button id="lbNext2" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-white flex items-center justify-center"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

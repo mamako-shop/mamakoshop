@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Administrativo V2 | Mamako Loko Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -16,303 +17,909 @@
         }
     </script>
     <style>
-        /* Bloqueia a visualização do painel até que a senha seja validada */
         #protectedContent { display: none; }
+
+        /* Transições entre views */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0F0F12; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #E65C00; }
+
+        /* Card de conta na lista */
+        .account-card {
+            background: #0F0F12;
+            border: 1px solid #1a1a1f;
+            border-radius: 16px;
+            padding: 18px;
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+        .account-card:hover {
+            border-color: #E65C00;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(230, 92, 0, 0.12);
+        }
+
+        /* Badge de status */
+        .badge-disponivel { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+        .badge-vendido    { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+        .badge-reservado  { background: rgba(234,179,8,0.12);  color: #facc15; border: 1px solid rgba(234,179,8,0.25); }
+
+        /* Input e select estilo padrão */
+        .field {
+            width: 100%;
+            background: #000;
+            border: 1px solid #1f1f1f;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.875rem;
+            color: #fff;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .field:focus { border-color: #E65C00; }
+        .field:disabled { opacity: 0.5; cursor: not-allowed; }
+        .field-label {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #6b7280;
+            margin-bottom: 6px;
+        }
+
+        /* Botão principal */
+        .btn-primary {
+            background: linear-gradient(135deg, #E65C00, #c0392b);
+            color: #fff;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .btn-secondary {
+            background: #111;
+            color: #9ca3af;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: 1px solid #222;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-secondary:hover { background: #1a1a1a; color: #fff; border-color: #333; }
+
+        /* Animação de loading */
+        @keyframes shimmer {
+            0% { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
+            background-size: 400px 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 8px;
+        }
+
+        /* Search input */
+        #searchInput {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px 16px 10px 40px;
+            font-size: 0.875rem;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+        #searchInput:focus { border-color: #E65C00; }
+        #searchInput::placeholder { color: #4b5563; }
+
+        /* Seção do formulário */
+        .form-section {
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 0;
+        }
+        .section-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding-left: 10px;
+            border-left: 2px solid;
+            margin-bottom: 16px;
+        }
+
+        /* Textarea */
+        textarea.field { resize: vertical; min-height: 70px; }
     </style>
 </head>
-<body class="bg-brand-dark text-gray-100 min-h-screen flex flex-col justify-between font-sans">
+<body class="bg-brand-dark text-gray-100 min-h-screen font-sans">
 
-    <!-- Conteúdo Protegido -->
+    <!-- ═══ CONTEÚDO PROTEGIDO ═══ -->
     <div id="protectedContent" class="max-w-5xl w-full mx-auto px-4 py-8">
-        <div class="flex items-center justify-between border-b border-neutral-800 pb-6 mb-8">
+
+        <!-- Cabeçalho fixo -->
+        <div class="flex items-center justify-between border-b border-neutral-800 pb-5 mb-8">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-full overflow-hidden border border-brand-orange">
-                    <a href="/mamakoshop"><img src="logo.png" class="w-full h-full object-cover"></a>
+                    <a href="/mamakoshop"><img src="imgs/logo.png" class="w-full h-full object-cover" alt="Logo"></a>
                 </div>
                 <div>
-                    <a href="/mamakoshop"><h1 class="text-xl font-bold text-white">Gerenciador do Catálogo <span class="text-brand-orange text-sm">V2</span></h1>
-                    <p class="text-xs text-gray-400">Gerenciamento completo</p></a>
+                    <a href="/mamakoshop">
+                        <h1 class="text-xl font-bold text-white">Gerenciador do Catálogo <span class="text-brand-orange text-sm">V2</span></h1>
+                        <p class="text-xs text-gray-500">Painel Administrativo</p>
+                    </a>
                 </div>
             </div>
             <span class="bg-neutral-900 border border-neutral-800 text-brand-gold text-xs px-3 py-1 rounded-full font-mono">Modo Live</span>
         </div>
 
-        <div class="bg-brand-card border border-neutral-800 rounded-2xl p-6 md:p-8 shadow-xl">
-            <form id="adminForm" class="space-y-8">
-                
-                <div class="bg-black/40 p-4 rounded-xl border border-neutral-900 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Ação do Sistema</label>
-                        <select id="formAction" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white font-medium">
-                            <option value="CREATE">Cadastrar Nova Conta</option>
-                            <option value="UPDATE">Atualizar Conta Existente</option>
-                        </select>
+        <!-- ══════════════════════════════════════════════════
+             VIEW 1 — LISTA DE CONTAS
+        ══════════════════════════════════════════════════ -->
+        <div id="viewLista" class="view active">
+
+            <!-- Toolbar -->
+            <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-lg font-bold text-white">Contas Cadastradas</h2>
+                    <p id="countLabel" class="text-xs text-gray-500 mt-0.5">Carregando...</p>
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button onclick="recarregarLista()" class="btn-secondary text-xs py-2 px-3" title="Recarregar lista">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button onclick="abrirFormNovo()" class="btn-primary text-sm">
+                        <i class="fas fa-plus"></i> Nova Conta
+                    </button>
+                </div>
+            </div>
+
+            <!-- Busca -->
+            <div class="relative mb-5">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 text-sm pointer-events-none"></i>
+                <input type="text" id="searchInput" placeholder="Buscar por ID, título ou status..." oninput="filtrarContas(this.value)">
+            </div>
+
+            <!-- Filtros rápidos -->
+            <div class="flex gap-2 mb-6 flex-wrap">
+                <button onclick="setFiltro('todos')" id="filtro-todos" class="filter-btn active-filter text-xs px-3 py-1.5 rounded-full border border-neutral-700 text-gray-300 hover:border-brand-orange transition-all">Todos</button>
+                <button onclick="setFiltro('DISPONÍVEL')" id="filtro-disponivel" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-neutral-700 text-gray-300 hover:border-green-500 transition-all">✦ Disponíveis</button>
+                <button onclick="setFiltro('VENDIDO')" id="filtro-vendido" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-neutral-700 text-gray-300 hover:border-red-500 transition-all">✦ Vendidos</button>
+            </div>
+
+            <!-- Grid de cards -->
+            <div id="accountsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Skeletons enquanto carrega -->
+                <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
+                <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
+                <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
+            </div>
+
+            <!-- Estado vazio -->
+            <div id="emptyState" class="hidden text-center py-16">
+                <i class="fas fa-inbox text-4xl text-gray-700 mb-4"></i>
+                <p class="text-gray-500 text-sm">Nenhuma conta encontrada.</p>
+            </div>
+
+        </div><!-- /viewLista -->
+
+
+        <!-- ══ MODAL DE CONFIRMAÇÃO DE EXCLUSÃO ══ -->
+        <div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.75);backdrop-filter:blur(4px)">
+            <div class="bg-[#0F0F12] border border-red-500/30 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-red-500/10 animate-none">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center shrink-0">
+                        <i class="fas fa-trash-alt text-red-400"></i>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Código da Conta (ID)</label>
-                        <input type="text" id="accId" placeholder="Ex: 001" required class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white font-mono">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Etiqueta de Promoção?</label>
-                        <select id="accLabel" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
-                            <option value="">Não</option>
-                            <option value="Promoção">Sim</option>
-                        </select>
+                        <h3 class="text-white font-bold text-sm">Excluir conta?</h3>
+                        <p class="text-gray-500 text-xs">Esta ação não pode ser desfeita.</p>
                     </div>
                 </div>
+                <div class="bg-black/50 rounded-xl px-4 py-3 mb-5 border border-neutral-800">
+                    <p id="deleteModalTitle" class="text-white text-sm font-semibold truncate"></p>
+                    <p id="deleteModalId" class="text-gray-500 font-mono text-xs mt-0.5"></p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="fecharModalExclusao()" class="btn-secondary flex-1 justify-center text-sm">
+                        Cancelar
+                    </button>
+                    <button id="btnConfirmarExclusao" onclick="confirmarExclusao()" class="flex-1 justify-center text-sm font-bold py-2.5 px-4 rounded-xl border-0 cursor-pointer transition-all flex items-center gap-2" style="background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff">
+                        <i class="fas fa-trash-alt"></i> Excluir
+                    </button>
+                </div>
+                <div id="deleteStatusBox" class="hidden mt-3 p-3 rounded-xl text-xs font-medium flex items-center gap-2"></div>
+            </div>
+        </div>
 
-                <!-- SEÇÃO ADICIONADA: Vendedor e Atendimento -->
-                <div class="space-y-4 bg-brand-orange/5 p-4 rounded-xl border border-brand-orange/20">
-                    <h3 class="text-sm font-bold text-brand-orange uppercase tracking-wider border-l-2 border-brand-gold pl-2">Atribuição e Contato</h3>
+
+        <!-- ══════════════════════════════════════════════════
+             VIEW 2 — FORMULÁRIO DE CADASTRO / EDIÇÃO
+        ══════════════════════════════════════════════════ -->
+        <div id="viewForm" class="view">
+
+            <!-- Breadcrumb / Navegação -->
+            <div class="flex items-center gap-3 mb-6">
+                <button onclick="voltarParaLista()" class="btn-secondary text-xs">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+                <div class="text-xs text-gray-500 flex items-center gap-1.5">
+                    <span class="text-gray-600">Lista</span>
+                    <i class="fas fa-chevron-right text-gray-700 text-[10px]"></i>
+                    <span id="breadcrumbLabel" class="text-brand-orange font-semibold">Nova Conta</span>
+                </div>
+            </div>
+
+            <!-- Alerta modo edição -->
+            <div id="editAlert" class="hidden mb-5 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/25 text-blue-300 text-xs flex items-start gap-2.5">
+                <i class="fas fa-info-circle mt-0.5 shrink-0"></i>
+                <span>Modo <strong>Edição</strong>: campos deixados em <strong>branco</strong> preservam o valor atual na planilha. Para zerar um campo, mantenha-o vazio e salve.</span>
+            </div>
+
+            <form id="adminForm" class="space-y-5">
+
+                <!-- ── SISTEMA ── -->
+                <input type="hidden" id="formAction" value="CREATE">
+
+                <div class="form-section bg-black/40 border border-neutral-900">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Vendedor responsável</label>
-                            <input type="text" id="accVendedor" placeholder="Ex: Gabriel Leal" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
+                            <label class="field-label">Código da Conta (ID)</label>
+                            <input type="text" id="accId" placeholder="Ex: 001" class="field font-mono" required>
+                            <p id="idHint" class="text-xs text-gray-600 mt-1.5 hidden"><i class="fas fa-lock mr-1"></i>ID bloqueado no modo edição</p>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">WhatsApp do Vendedor</label>
-                            <input type="text" id="accWhatsapp" placeholder="Ex: 41999999999" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Tipo de Conta</label>
-                            <input type="text" id="accTipo" placeholder="Ex: Parceiro (em branco para deixar padrão)" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-                    <h3 class="text-sm font-bold text-brand-gold uppercase tracking-wider border-l-2 border-brand-orange pl-2">Informações Gerais</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Título da Conta</label>
-                            <input type="text" id="accTitle" placeholder="Ex: Conta Void Premium" required class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Poder de Conta</label>
-                            <input type="text" id="accPower" placeholder="Ex: 7.12M" required class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
-                        </div>
-                        <div class="md:col-span-3">
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Descrição Curta (Tagline)</label>
-                            <input type="text" id="accTagline" placeholder="Resumo rápido para os cards da vitrine..." class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-                    <h3 class="text-sm font-bold text-brand-gold uppercase tracking-wider border-l-2 border-brand-orange pl-2">Campeões em Destaque</h3>
-                    <div class="grid grid-cols-1 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Míticos (Separados por vírgula)</label>
-                            <textarea id="accMiticos" rows="2" placeholder="Ex: Embrys, Mikage" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white resize-none"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Principais Lendários (Separados por vírgula)</label>
-                            <textarea id="accPrLendarios" rows="2" placeholder="Ex: Yumeko, Arbitra Bless 6★, Graazur, Leonardo" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white resize-none"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Outros Lendários</label>
-                            <textarea id="accOutrosLendarios" rows="3" placeholder="Ex: Gnut, Hilvi, Gurptuk, Rotos, Lilitu..." class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white resize-none"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-4 bg-black/20 p-4 rounded-xl border border-neutral-900">
-                    <h3 class="text-sm font-bold text-brand-orange uppercase tracking-wider border-l-2 border-brand-gold pl-2">Recursos Importantes</h3>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Bens, Itens e Informações Adicionais</label>
-                        <textarea id="accRecursos" rows="4" placeholder="Descreva aqui os detalhes técnicos de recursos da conta (Ex: Livros de Habilidade, Gemas, Energia estocada, Moedas da Arena, etc...)" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white font-sans resize-y"></textarea>
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-                    <h3 class="text-sm font-bold text-brand-gold uppercase tracking-wider border-l-2 border-brand-orange pl-2">Especificações e Status</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Status da Conta</label>
-                            <select id="accStatus" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white font-medium">
+                            <label class="field-label">Status da Conta</label>
+                            <select id="accStatus" class="field font-medium">
                                 <option value="DISPONÍVEL">DISPONÍVEL</option>
                                 <option value="VENDIDO">VENDIDO</option>
+                                <option value="RESERVADO">RESERVADO</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Status do E-mail</label>
-                            <input type="text" id="accEmailStatus" placeholder="Ex: ✓ Alterável" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Status de Vínculos</label>
-                            <input type="text" id="accLinksStatus" placeholder="Ex: ✓ Sem vínculos" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Tipo / Promo Code</label>
-                            <input type="text" id="accPromoCode" placeholder="Ex: ✓ Aceita" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Level da Conta</label>
-                            <input type="text" id="accLevel" placeholder="Ex: Mid/End Game" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Preço (BRL)</label>
-                            <input type="number" id="priceBrl" placeholder="1000" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Preço (USD)</label>
-                            <input type="number" id="priceUsd" placeholder="200" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:border-brand-orange outline-none text-white font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Galeria de Prints (Até 20)</label>
-                            <input type="file" id="imageFiles" accept="image/*" multiple class="w-full text-xs text-gray-400 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-neutral-900 file:text-brand-gold hover:file:bg-neutral-800 cursor-pointer pt-1">
+                            <label class="field-label">Etiqueta de Promoção</label>
+                            <select id="accLabel" class="field">
+                                <option value="">Não</option>
+                                <option value="Promoção">Sim — Promoção</option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
-                <button type="submit" id="btnSubmit" class="w-full bg-gradient-to-r from-brand-orange to-red-600 text-white font-bold py-4 rounded-xl hover:scale-[1.01] active:scale-95 transition-all shadow-lg shadow-brand-orange/10 flex items-center justify-center space-x-2">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span id="btnText">Enviar para o Google Sheets</span>
-                </button>
+                <!-- ── ATRIBUIÇÃO ── -->
+                <div class="form-section bg-brand-orange/5 border border-brand-orange/20">
+                    <p class="section-title text-brand-orange border-brand-gold">Atribuição e Contato</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="field-label">Vendedor Responsável</label>
+                            <input type="text" id="accVendedor" placeholder="Ex: Gabriel Leal" class="field">
+                        </div>
+                        <div>
+                            <label class="field-label">WhatsApp do Vendedor</label>
+                            <input type="text" id="accWhatsapp" placeholder="Ex: 41999999999" class="field font-mono">
+                        </div>
+                        <div>
+                            <label class="field-label">Tipo de Conta</label>
+                            <input type="text" id="accTipo" placeholder="Ex: Parceiro (em branco = padrão)" class="field">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── INFORMAÇÕES GERAIS ── -->
+                <div class="form-section bg-transparent border border-neutral-900">
+                    <p class="section-title text-brand-gold border-brand-orange">Informações Gerais</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="field-label">Título da Conta</label>
+                            <input type="text" id="accTitle" placeholder="Ex: Conta Void Premium" class="field" required>
+                        </div>
+                        <div>
+                            <label class="field-label">Poder de Conta</label>
+                            <input type="text" id="accPower" placeholder="Ex: 7.12M" class="field" required>
+                        </div>
+                        <div class="md:col-span-3">
+                            <label class="field-label">Descrição Curta (Tagline)</label>
+                            <input type="text" id="accTagline" placeholder="Resumo rápido para os cards da vitrine..." class="field">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── CAMPEÕES ── -->
+                <div class="form-section bg-transparent border border-neutral-900">
+                    <p class="section-title text-brand-gold border-brand-orange">Campeões em Destaque</p>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="field-label">Míticos (separados por vírgula)</label>
+                            <textarea id="accMiticos" rows="2" placeholder="Ex: Embrys, Mikage" class="field"></textarea>
+                        </div>
+                        <div>
+                            <label class="field-label">Principais Lendários (separados por vírgula)</label>
+                            <textarea id="accPrLendarios" rows="2" placeholder="Ex: Yumeko, Arbitra Bless 6★, Graazur" class="field"></textarea>
+                        </div>
+                        <div>
+                            <label class="field-label">Outros Lendários</label>
+                            <textarea id="accOutrosLendarios" rows="3" placeholder="Ex: Gnut, Hilvi, Gurptuk, Rotos, Lilitu..." class="field"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── RECURSOS ── -->
+                <div class="form-section bg-black/20 border border-neutral-900">
+                    <p class="section-title text-brand-orange border-brand-gold">Recursos Importantes</p>
+                    <div>
+                        <label class="field-label">Bens, Itens e Informações Adicionais</label>
+                        <textarea id="accRecursos" rows="4" placeholder="Descreva detalhes técnicos (Ex: Livros de Habilidade, Gemas, Energia estocada, Moedas da Arena...)" class="field" style="resize:vertical"></textarea>
+                    </div>
+                </div>
+
+                <!-- ── ESPECIFICAÇÕES ── -->
+                <div class="form-section bg-transparent border border-neutral-900">
+                    <p class="section-title text-brand-gold border-brand-orange">Especificações e Status</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="field-label">Status do E-mail</label>
+                            <input type="text" id="accEmailStatus" placeholder="Ex: ✓ Alterável" class="field">
+                        </div>
+                        <div>
+                            <label class="field-label">Status de Vínculos</label>
+                            <input type="text" id="accLinksStatus" placeholder="Ex: ✓ Sem vínculos" class="field">
+                        </div>
+                        <div>
+                            <label class="field-label">Promo Code</label>
+                            <input type="text" id="accPromoCode" placeholder="Ex: ✓ Aceita" class="field">
+                        </div>
+                        <div>
+                            <label class="field-label">Level da Conta</label>
+                            <input type="text" id="accLevel" placeholder="Ex: Mid/End Game" class="field">
+                        </div>
+                        <div>
+                            <label class="field-label">Preço (BRL)</label>
+                            <input type="number" id="priceBrl" placeholder="1000" class="field font-mono">
+                        </div>
+                        <div>
+                            <label class="field-label">Preço (USD)</label>
+                            <input type="number" id="priceUsd" placeholder="200" class="field font-mono">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── IMAGENS ── -->
+                <div class="form-section bg-transparent border border-neutral-900">
+                    <p class="section-title text-brand-gold border-brand-orange">Galeria de Imagens</p>
+
+                    <!-- Preview das imagens atuais (só exibido em modo edição) -->
+                    <div id="currentImagesSection" class="hidden mb-4">
+                        <label class="field-label text-blue-400 mb-2">Imagens atuais na planilha (somente leitura)</label>
+                        <div id="currentImagesPreview" class="flex flex-wrap gap-2 mb-1"></div>
+                        <p class="text-xs text-gray-600 mt-1"><i class="fas fa-info-circle mr-1"></i>Para substituir, envie novas imagens abaixo. Se não enviar, as atuais são mantidas.</p>
+                    </div>
+
+                    <div>
+                        <label class="field-label">Enviar Novas Imagens (até 20)</label>
+                        <input type="file" id="imageFiles" accept="image/*" multiple
+                            class="w-full text-xs text-gray-400 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-neutral-900 file:text-brand-gold hover:file:bg-neutral-800 cursor-pointer pt-1">
+                    </div>
+                </div>
+
+                <!-- ── ACTIONS ── -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button type="button" onclick="voltarParaLista()" class="btn-secondary flex-1 justify-center">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" id="btnSubmit" class="btn-primary flex-[3] justify-center text-base">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span id="btnText">Enviar para o Google Sheets</span>
+                    </button>
+                </div>
+
             </form>
 
-            <div id="statusBox" class="hidden mt-6 p-4 rounded-xl text-sm font-medium flex items-center space-x-2"></div>
-        </div>
-    </div>
+            <!-- Status box -->
+            <div id="statusBox" class="hidden mt-5 p-4 rounded-xl text-sm font-medium flex items-center gap-2"></div>
+
+        </div><!-- /viewForm -->
+
+    </div><!-- /protectedContent -->
+
 
     <script>
-        // ── CONFIGURAÇÃO DE SEGURANÇA (ALTERE SUA SENHA AQUI) ─────────
-        const ADMIN_PASSWORD = "admin123";
+    // ══════════════════════════════════════════════════════════════
+    //  CONFIGURAÇÕES
+    // ══════════════════════════════════════════════════════════════
+    const ADMIN_PASSWORD    = "admin123";
+    const IMGBB_API_KEY     = "25454de698b208b18802361e068be106";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywI1pkvR1RLxXiYFVKnfpDjjIcdVP6WCJLT7P_DkX94pnPKvX-IF2cGUzU9LXUDw/exec";
+    const CSV_URL           = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGMz9XAk5spv5FFN585VM6g6toC79iulNUFqYB76MQmRTuhjnyTjRSybOuyhZ5FImNompOX0eFjZI0/pub?output=csv";
 
-        // Executa imediatamente ao carregar a página
-        (function verificarAcesso() {
-            const senhaDigitada = prompt("Digite a senha do Painel Administrativo:");
-            if (senhaDigitada === ADMIN_PASSWORD) {
-                document.getElementById('protectedContent').style.display = 'block';
-            } else {
-                alert("Senha incorreta ou acesso cancelado!");
-                document.body.innerHTML = `
-                    <div class="min-h-screen flex flex-col items-center justify-center bg-brand-dark p-4 text-center">
-                        <i class="fas fa-lock text-red-500 text-5xl mb-4"></i>
-                        <h1 class="text-2xl font-bold text-white mb-2">Acesso Negado</h1>
-                        <p class="text-gray-400 text-sm mb-4">Você não tem permissão para visualizar este painel.</p>
-                        <button onclick="location.reload()" class="bg-brand-orange text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-orange-600 transition-all">Tentar Novamente</button>
-                    </div>
-                `;
+    // ── Proteção de senha ──────────────────────────────────────────
+    (function verificarAcesso() {
+        const senha = prompt("Digite a senha do Painel Administrativo:");
+        if (senha === ADMIN_PASSWORD) {
+            document.getElementById('protectedContent').style.display = 'block';
+            carregarLista();
+        } else {
+            alert("Senha incorreta ou acesso cancelado!");
+            document.body.innerHTML = `
+                <div class="min-h-screen flex flex-col items-center justify-center bg-[#070708] p-4 text-center">
+                    <i class="fas fa-lock text-red-500 text-5xl mb-4"></i>
+                    <h1 class="text-2xl font-bold text-white mb-2">Acesso Negado</h1>
+                    <p class="text-gray-400 text-sm mb-4">Você não tem permissão para visualizar este painel.</p>
+                    <button onclick="location.reload()" class="bg-[#E65C00] text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-orange-600 transition-all">
+                        Tentar Novamente
+                    </button>
+                </div>`;
+        }
+    })();
+
+    // ══════════════════════════════════════════════════════════════
+    //  DADOS E ESTADO
+    // ══════════════════════════════════════════════════════════════
+    let todasContas   = [];
+    let filtroAtivo   = 'todos';
+    let buscaAtiva    = '';
+
+    function safeStr(val) { return val ? String(val).trim() : ''; }
+    function splitList(val) { return val ? val.split(',').map(s => s.trim()).filter(Boolean) : []; }
+
+    function mapRow(row) {
+        return {
+            id:                  safeStr(row.id).replace(/^'+/, ''),
+            title:               safeStr(row.title),
+            power:               safeStr(row.power),
+            tagline:             safeStr(row.tagline),
+            image:               safeStr(row.image),
+            priceBrl:            parseFloat(row.priceBrl) || 0,
+            priceUsd:            parseFloat(row.priceUsd) || 0,
+            label:               safeStr(row.label),
+            status:              safeStr(row.status).toUpperCase() || 'DISPONÍVEL',
+            email_status:        safeStr(row.email_status),
+            links_status:        safeStr(row.links_status),
+            promo_code:          safeStr(row.promo_code),
+            level:               safeStr(row.level),
+            recursos:            safeStr(row.recursos),
+            miticos:             safeStr(row.miticos),
+            principais_lendarios: safeStr(row.principais_lendarios),
+            outros_lendarios:    safeStr(row.outros_lendarios),
+            prints:              safeStr(row.prints),
+            whatsapp:            safeStr(row.whatsapp),
+            vendedor:            safeStr(row.vendedor),
+            tipo:                safeStr(row.tipo),
+        };
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  VIEW — NAVEGAÇÃO
+    // ══════════════════════════════════════════════════════════════
+    function mostrarView(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function voltarParaLista() {
+        mostrarView('viewLista');
+        renderCards(); // atualiza caso tenha mudado
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  LISTA — Carregar e Renderizar
+    // ══════════════════════════════════════════════════════════════
+    function carregarLista() {
+        document.getElementById('countLabel').textContent = 'Carregando...';
+        document.getElementById('accountsGrid').innerHTML = `
+            <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
+            <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
+            <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
+        `;
+
+        Papa.parse(CSV_URL, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                todasContas = results.data.map(mapRow).filter(c => c.id);
+                renderCards();
+            },
+            error: function() {
+                document.getElementById('accountsGrid').innerHTML = `
+                    <div class="col-span-3 text-center py-10 text-red-400 text-sm">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>Erro ao carregar contas. Verifique a URL do CSV.
+                    </div>`;
+                document.getElementById('countLabel').textContent = 'Erro ao carregar.';
             }
-        })();
-
-        // ── CONFIGURAÇÕES DOS ENDPOINTS ──────────────────────────────
-        const IMGBB_API_KEY = "25454de698b208b18802361e068be106"; 
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywI1pkvR1RLxXiYFVKnfpDjjIcdVP6WCJLT7P_DkX94pnPKvX-IF2cGUzU9LXUDw/exec";
-
-        const form = document.getElementById('adminForm');
-        const btnSubmit = document.getElementById('btnSubmit');
-        const btnText = document.getElementById('btnText');
-        const statusBox = document.getElementById('statusBox');
-        const accIdInput = document.getElementById('accId');
-        const accLabelInput = document.getElementById('accLabel');
-
-        // Alternar campos obrigatórios dependendo da ação selecionada
-        document.getElementById('formAction').addEventListener('change', function() {
-            const isUpdate = this.value === 'UPDATE';
-            document.getElementById('accTitle').required = !isUpdate;
-            document.getElementById('accPower').required = !isUpdate;
-            btnText.innerText = isUpdate ? "Atualizar Conta no Google Sheets" : "Enviar para o Google Sheets";
         });
+    }
 
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            btnSubmit.disabled = true;
-            statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium flex items-center space-x-2 bg-neutral-900 text-brand-gold";
-            statusBox.innerHTML = `<i class="fas fa-spinner animate-spin"></i> <span>Iniciando processamento...</span>`;
+    function recarregarLista() {
+        carregarLista();
+    }
+
+    function filtrarContas(busca) {
+        buscaAtiva = busca.toLowerCase();
+        renderCards();
+    }
+
+    function setFiltro(tipo) {
+        filtroAtivo = tipo;
+        document.querySelectorAll('.filter-btn').forEach(b => {
+            b.classList.remove('active-filter', 'border-brand-orange', 'border-green-500', 'border-red-500', 'border-brand-gold', 'text-white');
+            b.classList.add('text-gray-300');
+        });
+        const btn = document.getElementById('filtro-' + (tipo === 'DISPONÍVEL' ? 'disponivel' : tipo === 'VENDIDO' ? 'vendido' : tipo === 'promo' ? 'promo' : 'todos'));
+        if (btn) {
+            btn.classList.add('active-filter', 'text-white');
+            if (tipo === 'todos')      btn.classList.add('border-brand-orange');
+            if (tipo === 'DISPONÍVEL') btn.classList.add('border-green-500');
+            if (tipo === 'VENDIDO')    btn.classList.add('border-red-500');
+            if (tipo === 'promo')      btn.classList.add('border-brand-gold');
+        }
+        renderCards();
+    }
+
+    function renderCards() {
+        let contas = todasContas;
+
+        // Filtro por tipo
+        if (filtroAtivo === 'DISPONÍVEL') contas = contas.filter(c => c.status === 'DISPONÍVEL');
+        else if (filtroAtivo === 'VENDIDO')    contas = contas.filter(c => c.status === 'VENDIDO');
+        else if (filtroAtivo === 'promo')      contas = contas.filter(c => c.label && c.label !== '');
+
+        // Filtro por busca
+        if (buscaAtiva) {
+            contas = contas.filter(c =>
+                c.id.toLowerCase().includes(buscaAtiva) ||
+                c.title.toLowerCase().includes(buscaAtiva) ||
+                c.status.toLowerCase().includes(buscaAtiva) ||
+                (c.vendedor && c.vendedor.toLowerCase().includes(buscaAtiva))
+            );
+        }
+
+        const grid = document.getElementById('accountsGrid');
+        const empty = document.getElementById('emptyState');
+        const countLabel = document.getElementById('countLabel');
+
+        countLabel.textContent = `${contas.length} de ${todasContas.length} conta${todasContas.length !== 1 ? 's' : ''}`;
+
+        if (contas.length === 0) {
+            grid.innerHTML = '';
+            empty.classList.remove('hidden');
+            return;
+        }
+        empty.classList.add('hidden');
+
+        // Badge de status
+        const statusBadge = (s) => {
+            if (s === 'DISPONÍVEL') return `<span class="badge-disponivel text-[10px] font-bold px-2 py-0.5 rounded-full">${s}</span>`;
+            if (s === 'VENDIDO')    return `<span class="badge-vendido text-[10px] font-bold px-2 py-0.5 rounded-full">${s}</span>`;
+            return `<span class="badge-reservado text-[10px] font-bold px-2 py-0.5 rounded-full">${s}</span>`;
+        };
+
+        grid.innerHTML = contas.map((c, _) => {
+            // Usar índice no array global para evitar problemas com aspas simples/duplas no JSON inline
+            const idx = todasContas.indexOf(c);
+            return `
+            <div class="account-card">
+                <div class="flex items-start justify-between gap-2 mb-3">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-mono text-xs text-gray-500 bg-black/60 px-2 py-0.5 rounded-md">#${c.id}</span>
+                        ${statusBadge(c.status)}
+                        ${c.label ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/25">⚡ ${c.label}</span>` : ''}
+                    </div>
+                </div>
+                <p class="text-white font-semibold text-sm leading-snug mb-1 line-clamp-2">${c.title || '<span class="text-gray-600 italic">Sem título</span>'}</p>
+                ${c.power ? `<p class="text-brand-orange text-xs font-mono mb-1">⚡ ${c.power}</p>` : ''}
+                ${c.vendedor ? `<p class="text-gray-600 text-xs mb-3"><i class="fas fa-user mr-1"></i>${c.vendedor}</p>` : '<div class="mb-3"></div>'}
+                <div class="flex gap-2 mt-auto pt-2 border-t border-neutral-900">
+                    <div class="text-xs text-gray-500">
+                        ${c.priceBrl ? `<span class="text-brand-gold font-bold">R$ ${c.priceBrl.toLocaleString('pt-BR')}</span>` : ''}
+                        ${c.priceUsd ? `<span class="text-gray-600 ml-1">/ $${c.priceUsd}</span>` : ''}
+                    </div>
+                    <button onclick="abrirFormEdicaoPorIndice(${idx})"
+                        class="ml-auto text-xs bg-neutral-900 hover:bg-brand-orange/20 border border-neutral-800 hover:border-brand-orange text-gray-400 hover:text-brand-orange px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
+                        <i class="fas fa-pencil-alt"></i> Editar
+                    </button>
+                    <button onclick="abrirModalExclusao(${idx})"
+                        class="text-xs bg-neutral-900 hover:bg-red-500/15 border border-neutral-800 hover:border-red-500/40 text-gray-600 hover:text-red-400 px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1" title="Excluir conta">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        }).join('');
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  FORMULÁRIO — Abrir em modo NOVO
+    // ══════════════════════════════════════════════════════════════
+    function abrirFormNovo() {
+        document.getElementById('adminForm').reset();
+        document.getElementById('formAction').value = 'CREATE';
+        document.getElementById('accId').disabled = false;
+        document.getElementById('accId').required = true;
+        document.getElementById('accTitle').required = true;
+        document.getElementById('accPower').required = true;
+        document.getElementById('idHint').classList.add('hidden');
+        document.getElementById('editAlert').classList.add('hidden');
+        document.getElementById('currentImagesSection').classList.add('hidden');
+        document.getElementById('breadcrumbLabel').textContent = 'Nova Conta';
+        document.getElementById('btnText').textContent = 'Cadastrar no Google Sheets';
+        document.getElementById('statusBox').classList.add('hidden');
+        mostrarView('viewForm');
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  FORMULÁRIO — Abrir em modo EDIÇÃO
+    // ══════════════════════════════════════════════════════════════
+    function abrirFormEdicao(conta) {
+        document.getElementById('adminForm').reset();
+        document.getElementById('formAction').value = 'UPDATE';
+        document.getElementById('statusBox').classList.add('hidden');
+
+        // Breadcrumb
+        document.getElementById('breadcrumbLabel').textContent = `Editando #${conta.id} — ${conta.title || 'sem título'}`;
+
+        // ID — bloqueado
+        document.getElementById('accId').value    = conta.id;
+        document.getElementById('accId').disabled = true;
+        document.getElementById('accId').required = false;
+        document.getElementById('idHint').classList.remove('hidden');
+        document.getElementById('editAlert').classList.remove('hidden');
+
+        // Campos não obrigatórios no UPDATE
+        document.getElementById('accTitle').required = false;
+        document.getElementById('accPower').required = false;
+
+        // Preencher campos
+        setVal('accStatus',        conta.status || 'DISPONÍVEL');
+        setVal('accLabel',         conta.label);
+        setVal('accVendedor',      conta.vendedor);
+        setVal('accWhatsapp',      conta.whatsapp);
+        setVal('accTipo',          conta.tipo);
+        setVal('accTitle',         conta.title);
+        setVal('accPower',         conta.power);
+        setVal('accTagline',       conta.tagline);
+        setVal('accMiticos',       conta.miticos);
+        setVal('accPrLendarios',   conta.principais_lendarios);
+        setVal('accOutrosLendarios', conta.outros_lendarios);
+        setVal('accRecursos',      conta.recursos);
+        setVal('accEmailStatus',   conta.email_status);
+        setVal('accLinksStatus',   conta.links_status);
+        setVal('accPromoCode',     conta.promo_code);
+        setVal('accLevel',         conta.level);
+        setVal('priceBrl',         conta.priceBrl || '');
+        setVal('priceUsd',         conta.priceUsd || '');
+
+        // Preview das imagens atuais
+        const prints = conta.prints ? conta.prints.split(',').map(s => s.trim()).filter(Boolean) : [];
+        const mainImg = conta.image;
+        const allImgs = mainImg ? [mainImg, ...prints.filter(p => p !== mainImg)] : prints;
+
+        if (allImgs.length > 0) {
+            document.getElementById('currentImagesSection').classList.remove('hidden');
+            document.getElementById('currentImagesPreview').innerHTML = allImgs.slice(0, 6).map((url, i) => `
+                <a href="${url}" target="_blank" class="relative group">
+                    <img src="${url}" alt="Print ${i+1}"
+                        class="w-16 h-16 object-cover rounded-lg border border-neutral-800 group-hover:border-brand-orange transition-all"
+                        onerror="this.parentElement.style.display='none'">
+                    ${i === 0 ? '<span class="absolute bottom-0.5 left-0.5 text-[9px] bg-black/80 text-brand-gold px-1 rounded">capa</span>' : ''}
+                </a>
+            `).join('') + (allImgs.length > 6 ? `<div class="w-16 h-16 rounded-lg border border-neutral-800 flex items-center justify-center text-gray-500 text-xs">+${allImgs.length - 6}</div>` : '');
+        } else {
+            document.getElementById('currentImagesSection').classList.add('hidden');
+        }
+
+        document.getElementById('btnText').textContent = 'Salvar Alterações no Sheets';
+        mostrarView('viewForm');
+    }
+
+    // Wrapper seguro chamado pelo onclick — evita problemas de JSON inline com aspas
+    function abrirFormEdicaoPorIndice(idx) {
+        const conta = todasContas[idx];
+        if (conta) abrirFormEdicao(conta);
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  EXCLUSÃO DE CONTA
+    // ══════════════════════════════════════════════════════════════
+    let indicePendenteExclusao = -1;
+
+    function abrirModalExclusao(idx) {
+        const conta = todasContas[idx];
+        if (!conta) return;
+        indicePendenteExclusao = idx;
+
+        document.getElementById('deleteModalTitle').textContent = conta.title || '(sem título)';
+        document.getElementById('deleteModalId').textContent    = 'ID: ' + conta.id;
+        document.getElementById('deleteStatusBox').classList.add('hidden');
+        document.getElementById('btnConfirmarExclusao').disabled = false;
+
+        const modal = document.getElementById('deleteModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function fecharModalExclusao() {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        indicePendenteExclusao = -1;
+    }
+
+    // Fecha o modal ao clicar fora do painel
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) fecharModalExclusao();
+    });
+
+    async function confirmarExclusao() {
+        if (indicePendenteExclusao === -1) return;
+        const conta = todasContas[indicePendenteExclusao];
+        if (!conta) return;
+
+        const btn = document.getElementById('btnConfirmarExclusao');
+        const statusBox = document.getElementById('deleteStatusBox');
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Excluindo...';
+        statusBox.classList.add('hidden');
+
+        const payload = { action: 'DELETE', id: conta.id };
+
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            // Remove localmente do array e fecha o modal
+            todasContas.splice(indicePendenteExclusao, 1);
+            fecharModalExclusao();
+            renderCards();
+
+            // Toast de sucesso breve na lista
+            document.getElementById('countLabel').innerHTML =
+                '<span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i>Conta excluída da planilha.</span>';
+            setTimeout(() => {
+                document.getElementById('countLabel').textContent =
+                    `${todasContas.length} conta${todasContas.length !== 1 ? 's' : ''}`;
+            }, 3000);
+
+        } catch (err) {
+            statusBox.className = 'mt-3 p-3 rounded-xl text-xs font-medium flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-400';
+            statusBox.innerHTML = `<i class="fas fa-exclamation-circle"></i> Erro: ${err.message}`;
             statusBox.classList.remove('hidden');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-trash-alt"></i> Excluir';
+        }
+    }
 
-            const action = document.getElementById('formAction').value;
-            const fileInput = document.getElementById('imageFiles');
-            let uploadedUrls = [];
+    function setVal(id, val) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.tagName === 'SELECT') {
+            // Tenta selecionar o option correspondente
+            const opt = Array.from(el.options).find(o => o.value === String(val || ''));
+            if (opt) el.value = opt.value;
+        } else {
+            el.value = val !== undefined && val !== null ? val : '';
+        }
+    }
 
-            // 1. Processar upload das múltiplas imagens (se existirem)
-            if (fileInput.files.length > 0) {
-                const totalFiles = Math.min(fileInput.files.length, 20);
-                
-                for(let i = 0; i < totalFiles; i++) {
-                    statusBox.innerHTML = `<i class="fas fa-image animate-pulse"></i> <span>Hospedando imagem ${i+1} de ${totalFiles} no ImgBB...</span>`;
-                    
-                    const formDataImage = new FormData();
-                    formDataImage.append("image", fileInput.files[i]);
+    // ══════════════════════════════════════════════════════════════
+    //  FORMULÁRIO — Submit
+    // ══════════════════════════════════════════════════════════════
+    const form      = document.getElementById('adminForm');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const btnText   = document.getElementById('btnText');
+    const statusBox = document.getElementById('statusBox');
 
-                    try {
-                        const imgbbResponse = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                            method: "POST",
-                            body: formDataImage
-                        });
-                        const imgbbData = await imgbbResponse.json();
-                        
-                        if (imgbbData.success) {
-                            uploadedUrls.push(imgbbData.data.url);
-                        } else {
-                            throw new Error(`Falha no envio do arquivo de índice ${i}.`);
-                        }
-                    } catch (error) {
-                        showError("Erro no envio das imagens: " + error.message);
-                        return;
-                    }
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        btnSubmit.disabled = true;
+        statusBox.className = "mt-5 p-4 rounded-xl text-sm font-medium flex items-center gap-2 bg-neutral-900 text-brand-gold";
+        statusBox.innerHTML = `<i class="fas fa-spinner animate-spin"></i> <span>Iniciando processamento...</span>`;
+        statusBox.classList.remove('hidden');
+
+        const action    = document.getElementById('formAction').value;
+        const fileInput = document.getElementById('imageFiles');
+        let uploadedUrls = [];
+
+        // 1. Upload de imagens
+        if (fileInput.files.length > 0) {
+            const totalFiles = Math.min(fileInput.files.length, 20);
+            for (let i = 0; i < totalFiles; i++) {
+                statusBox.innerHTML = `<i class="fas fa-image animate-pulse"></i> <span>Hospedando imagem ${i+1} de ${totalFiles} no ImgBB...</span>`;
+                const fd = new FormData();
+                fd.append("image", fileInput.files[i]);
+                try {
+                    const res  = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: fd });
+                    const data = await res.json();
+                    if (data.success) uploadedUrls.push(data.data.url);
+                    else throw new Error(`Falha no envio do arquivo ${i+1}.`);
+                } catch (err) {
+                    showError("Erro no envio das imagens: " + err.message);
+                    return;
                 }
             }
+        }
 
-            // 2. Preparação das Strings de Imagens
-            let mainImage = uploadedUrls.length > 0 ? uploadedUrls[0] : "";
-            let printsString = uploadedUrls.length > 0 ? uploadedUrls.join(", ") : "";
+        // 2. Montar payload
+        statusBox.innerHTML = `<i class="fas fa-database animate-pulse"></i> <span>Sincronizando com o Sheets...</span>`;
 
-            statusBox.innerHTML = `<i class="fas fa-database animate-pulse"></i> <span>Sincronizando todas as colunas com o Sheets...</span>`;
-            
-            // Montagem atualizada do Payload incluindo novos campos
-            const payload = {
-                action: action,
-                id: accIdInput.value.trim(),
-                vendedor: document.getElementById('accVendedor').value.trim(),
-                whatsapp: document.getElementById('accWhatsapp').value.trim(),
-                tipo: document.getElementById('accTipo').value.trim(),
-                title: document.getElementById('accTitle').value.trim(),
-                power: document.getElementById('accPower').value.trim(),
-                tagline: document.getElementById('accTagline').value.trim(),
-                image: mainImage, 
-                priceBrl: document.getElementById('priceBrl').value,
-                priceUsd: document.getElementById('priceUsd').value,
-                label: accLabelInput.value.trim(),
-                status: document.getElementById('accStatus').value,
-                miticos: document.getElementById('accMiticos').value.trim(),
-                principais_lendarios: document.getElementById('accPrLendarios').value.trim(),
-                outros_lendarios: document.getElementById('accOutrosLendarios').value.trim(),
-                prints: printsString,
-                email_status: document.getElementById('accEmailStatus').value.trim(),
-                links_status: document.getElementById('accLinksStatus').value.trim(),
-                promo_code: document.getElementById('accPromoCode').value.trim(),
-                level: document.getElementById('accLevel').value.trim(),
-                recursos: document.getElementById('accRecursos').value.trim()
-            };
+        const payload = {
+            action,
+            id:                  document.getElementById('accId').value.trim(),
+            vendedor:            document.getElementById('accVendedor').value.trim(),
+            whatsapp:            document.getElementById('accWhatsapp').value.trim(),
+            tipo:                document.getElementById('accTipo').value.trim(),
+            title:               document.getElementById('accTitle').value.trim(),
+            power:               document.getElementById('accPower').value.trim(),
+            tagline:             document.getElementById('accTagline').value.trim(),
+            image:               uploadedUrls.length > 0 ? uploadedUrls[0] : undefined,
+            priceBrl:            document.getElementById('priceBrl').value,
+            priceUsd:            document.getElementById('priceUsd').value,
+            label:               document.getElementById('accLabel').value.trim(),
+            status:              document.getElementById('accStatus').value,
+            miticos:             document.getElementById('accMiticos').value.trim(),
+            principais_lendarios: document.getElementById('accPrLendarios').value.trim(),
+            outros_lendarios:    document.getElementById('accOutrosLendarios').value.trim(),
+            prints:              uploadedUrls.length > 0 ? uploadedUrls.join(", ") : undefined,
+            email_status:        document.getElementById('accEmailStatus').value.trim(),
+            links_status:        document.getElementById('accLinksStatus').value.trim(),
+            promo_code:          document.getElementById('accPromoCode').value.trim(),
+            level:               document.getElementById('accLevel').value.trim(),
+            recursos:            document.getElementById('accRecursos').value.trim(),
+        };
 
-            try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
 
-                statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400";
-                statusBox.innerHTML = `<i class="fas fa-check-circle"></i> <span>Sucesso completo! Planilha e novos campos atualizados.</span>`;
-                form.reset();
+            statusBox.className = "mt-5 p-4 rounded-xl text-sm font-medium flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400";
+            statusBox.innerHTML = `<i class="fas fa-check-circle"></i> <span>Sucesso! Planilha atualizada. <button onclick="voltarParaLista()" class="underline ml-1 font-bold hover:text-emerald-300">← Voltar à lista</button></span>`;
+            form.reset();
+            document.getElementById('currentImagesSection').classList.add('hidden');
 
-            } catch (error) {
-                showError("Erro na gravação final do Sheets: " + error.message);
-            } finally {
-                btnSubmit.disabled = false;
-            }
-        });
-
-        function showError(msg) {
-            statusBox.className = "mt-6 p-4 rounded-xl text-sm font-medium flex items-center space-x-2 bg-red-500/10 border border-red-500/30 text-red-400";
-            statusBox.innerHTML = `<i class="fas fa-exclamation-circle"></i> <span>${msg}</span>`;
+        } catch (err) {
+            showError("Erro na gravação final do Sheets: " + err.message);
+        } finally {
             btnSubmit.disabled = false;
         }
+    });
+
+    function showError(msg) {
+        statusBox.className = "mt-5 p-4 rounded-xl text-sm font-medium flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-400";
+        statusBox.innerHTML = `<i class="fas fa-exclamation-circle"></i> <span>${msg}</span>`;
+        btnSubmit.disabled = false;
+    }
     </script>
+
 </body>
 </html>

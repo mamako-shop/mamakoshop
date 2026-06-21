@@ -1,0 +1,112 @@
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  
+  var id = String(data.id).trim();
+  var title = data.title;
+  var power = data.power;
+  var tagline = data.tagline;
+  var image = data.image; // Primeira imagem do array de prints
+  var priceBrl = data.priceBrl;
+  var priceUsd = data.priceUsd;
+  var label = data.label;
+  var status = data.status;
+  
+  // Novos Campos (Colunas J até R)
+  var miticos = data.miticos;
+  var principais_lendarios = data.principais_lendarios;
+  var outros_lendarios = data.outros_lendarios;
+  var prints = data.prints; // String com URLs separadas por vírgula
+  var email_status = data.email_status;
+  var links_status = data.links_status;
+  var promo_code = data.promo_code;
+  var level = data.level;
+  var recursos = data.recursos;
+  var vendedor = data.vendedor;
+  var whatsapp = data.whatsapp;
+  var tipo = data.tipo;
+  var destaque = data.destaque;
+  
+  // Obter todas as linhas atuais para verificar duplicatas
+  var rows = sheet.getDataRange().getValues();
+  var foundRowIndex = -1;
+  
+  // Procura se o ID enviado já existe na Coluna A
+  // Normaliza apóstrofes e converte string/número para garantir o match
+  for (var i = 1; i < rows.length; i++) {
+    var storedId = String(rows[i][0]).trim().replace(/^'+/, '');
+    var searchId = id.replace(/^'+/, '');
+    // Compara como string E como número (caso Sheets tenha convertido "001" para 1)
+    if (storedId === searchId || storedId === String(parseFloat(searchId)) || String(parseFloat(storedId)) === searchId) {
+      foundRowIndex = i + 1;
+      break;
+    }
+  }
+  
+  if (data.action === 'DELETE') {
+    // MODO EXCLUSÃO
+    if (foundRowIndex !== -1) {
+      sheet.deleteRow(foundRowIndex);
+    }
+  } else if (data.action === "UPDATE" || foundRowIndex !== -1) {
+    // MODO ATUALIZAÇÃO
+    if (foundRowIndex !== -1) {
+      // Força a aspa simples para tratar como texto no Sheets e não perder zeros à esquerda
+      if (id) sheet.getRange(foundRowIndex, 1).setValue("'" + id); 
+      if (title)  sheet.getRange(foundRowIndex, 2).setValue(title);
+      if (power)  sheet.getRange(foundRowIndex, 3).setValue(power);
+      if (tagline) sheet.getRange(foundRowIndex, 4).setValue(tagline);
+      if (image)  sheet.getRange(foundRowIndex, 5).setValue(image);
+      if (priceBrl) sheet.getRange(foundRowIndex, 6).setValue(priceBrl);
+      if (priceUsd) sheet.getRange(foundRowIndex, 7).setValue(priceUsd);
+      // label e status usam !== undefined para permitir zerar o valor (ex: remover promoção)
+      if (label  !== undefined && label  !== null) sheet.getRange(foundRowIndex, 8).setValue(label);
+      if (status !== undefined && status !== null) sheet.getRange(foundRowIndex, 9).setValue(status);
+      
+      // Atualização dos novos campos
+      if (miticos !== undefined) sheet.getRange(foundRowIndex, 10).setValue(miticos);
+      if (principais_lendarios !== undefined) sheet.getRange(foundRowIndex, 11).setValue(principais_lendarios);
+      if (outros_lendarios !== undefined) sheet.getRange(foundRowIndex, 12).setValue(outros_lendarios);
+      if (prints !== undefined) sheet.getRange(foundRowIndex, 13).setValue(prints);
+      if (email_status !== undefined) sheet.getRange(foundRowIndex, 14).setValue(email_status);
+      if (links_status !== undefined) sheet.getRange(foundRowIndex, 15).setValue(links_status);
+      if (promo_code !== undefined) sheet.getRange(foundRowIndex, 16).setValue(promo_code);
+      if (level !== undefined) sheet.getRange(foundRowIndex, 17).setValue(level);
+      if (recursos !== undefined) sheet.getRange(foundRowIndex, 18).setValue(recursos);
+      if (vendedor !== undefined) sheet.getRange(foundRowIndex, 19).setValue(vendedor);
+      if (whatsapp !== undefined) sheet.getRange(foundRowIndex, 20).setValue(whatsapp);
+      if (tipo !== undefined) sheet.getRange(foundRowIndex, 21).setValue(tipo);
+      if (destaque !== undefined) sheet.getRange(foundRowIndex, 22).setValue(destaque);
+    }
+  } else {
+    // MODO CRIAÇÃO (Nova Linha)
+    // Usamos o prefixo "'" para ID e Label para o Sheets aceitar o formato de texto puro de primeira
+    sheet.appendRow([
+      "'" + id, 
+      title, 
+      power, 
+      tagline, 
+      image, 
+      priceBrl, 
+      priceUsd, 
+      label, 
+      status,
+      miticos,
+      principais_lendarios,
+      outros_lendarios,
+      prints,
+      email_status,
+      links_status,
+      promo_code,
+      level,
+      recursos,
+      vendedor,
+      whatsapp,
+      tipo,
+      destaque
+    ]);
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({result: "success"}))
+                       .setMimeType(ContentService.MimeType.JSON);
+}
