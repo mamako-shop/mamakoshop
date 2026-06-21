@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,17 +18,36 @@
         }
     </script>
     <style>
-        #protectedContent { display: none; }
+        #protectedContent {
+            display: none;
+        }
 
         /* Transições entre views */
-        .view { display: none; }
-        .view.active { display: block; }
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
 
         /* Scrollbar personalizada */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0F0F12; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #E65C00; }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0F0F12;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #E65C00;
+        }
 
         /* Card de conta na lista */
         .account-card {
@@ -38,6 +58,7 @@
             transition: all 0.2s ease;
             cursor: default;
         }
+
         .account-card:hover {
             border-color: #E65C00;
             transform: translateY(-2px);
@@ -45,9 +66,23 @@
         }
 
         /* Badge de status */
-        .badge-disponivel { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
-        .badge-vendido    { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
-        .badge-reservado  { background: rgba(234,179,8,0.12);  color: #facc15; border: 1px solid rgba(234,179,8,0.25); }
+        .badge-disponivel {
+            background: rgba(34, 197, 94, 0.12);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.25);
+        }
+
+        .badge-vendido {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        .badge-reservado {
+            background: rgba(234, 179, 8, 0.12);
+            color: #facc15;
+            border: 1px solid rgba(234, 179, 8, 0.25);
+        }
 
         /* Input e select estilo padrão */
         .field {
@@ -61,8 +96,16 @@
             outline: none;
             transition: border-color 0.2s;
         }
-        .field:focus { border-color: #E65C00; }
-        .field:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .field:focus {
+            border-color: #E65C00;
+        }
+
+        .field:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .field-label {
             display: block;
             font-size: 0.65rem;
@@ -87,9 +130,21 @@
             align-items: center;
             gap: 8px;
         }
-        .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .btn-secondary {
             background: #111;
@@ -104,13 +159,24 @@
             align-items: center;
             gap: 8px;
         }
-        .btn-secondary:hover { background: #1a1a1a; color: #fff; border-color: #333; }
+
+        .btn-secondary:hover {
+            background: #1a1a1a;
+            color: #fff;
+            border-color: #333;
+        }
 
         /* Animação de loading */
         @keyframes shimmer {
-            0% { background-position: -400px 0; }
-            100% { background-position: 400px 0; }
+            0% {
+                background-position: -400px 0;
+            }
+
+            100% {
+                background-position: 400px 0;
+            }
         }
+
         .skeleton {
             background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
             background-size: 400px 100%;
@@ -130,8 +196,14 @@
             width: 100%;
             transition: border-color 0.2s;
         }
-        #searchInput:focus { border-color: #E65C00; }
-        #searchInput::placeholder { color: #4b5563; }
+
+        #searchInput:focus {
+            border-color: #E65C00;
+        }
+
+        #searchInput::placeholder {
+            color: #4b5563;
+        }
 
         /* Seção do formulário */
         .form-section {
@@ -139,6 +211,7 @@
             border-radius: 14px;
             margin-bottom: 0;
         }
+
         .section-title {
             font-size: 0.7rem;
             font-weight: 700;
@@ -150,13 +223,56 @@
         }
 
         /* Textarea */
-        textarea.field { resize: vertical; min-height: 70px; }
+        textarea.field {
+            resize: vertical;
+            min-height: 70px;
+        }
     </style>
 </head>
+
 <body class="bg-brand-dark text-gray-100 min-h-screen font-sans">
 
-    <!-- ═══ CONTEÚDO PROTEGIDO ═══ -->
+    <!-- TELA DE LOGIN -->
+    <div id="loginScreen" class="fixed inset-0 z-[100] flex items-center justify-center p-4" style="background:radial-gradient(ellipse at 55% 25%,rgba(230,92,0,0.09) 0%,transparent 65%),#070708">
+        <div class="w-full max-w-sm">
+            <div class="flex flex-col items-center mb-8">
+                <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-brand-orange mb-4" style="box-shadow:0 0 40px rgba(230,92,0,0.25)">
+                    <img src="imgs/logo.png" alt="Logo" class="w-full h-full object-cover">
+                </div>
+                <h1 class="font-cinzel font-black text-2xl tracking-wider bg-gradient-to-r from-brand-gold via-brand-orange to-red-500 bg-clip-text text-transparent">MAMAKO LOKO</h1>
+                <p class="text-gray-500 text-[10px] uppercase tracking-widest mt-1">Painel Administrativo</p>
+            </div>
+            <div class="bg-[#0F0F12] border border-neutral-800 rounded-2xl p-6 shadow-2xl">
+                <p class="text-white font-semibold text-sm mb-5 text-center">Acesso Restrito</p>
+                <div class="relative mb-3">
+                    <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 text-xs pointer-events-none"></i>
+                    <input type="password" id="loginPasswordInput" placeholder="Digite a senha de acesso"
+                        class="w-full bg-neutral-900 border border-neutral-700 rounded-xl pl-9 pr-10 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand-orange transition-all"
+                        onkeydown="if(event.key==='Enter') tentarLogin()">
+                    <button type="button" onclick="toggleSenhaLogin()" tabindex="-1"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-300 transition-colors">
+                        <i id="loginEyeIcon" class="fas fa-eye text-sm"></i>
+                    </button>
+                </div>
+                <div id="loginError" class="hidden mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/25 text-red-400 text-xs flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle shrink-0"></i>
+                    <span>Senha incorreta. Tente novamente.</span>
+                </div>
+                <button onclick="tentarLogin()" id="btnLogin"
+                    class="w-full py-3 mt-1 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2 transition-all hover:brightness-110 active:scale-95"
+                    style="background:linear-gradient(135deg,#E65C00,#c94e00);box-shadow:0 4px 20px rgba(230,92,0,0.2)">
+                    <i class="fas fa-unlock-alt"></i> Entrar
+                </button>
+                <p class="text-gray-700 text-[10px] text-center mt-5">
+                    <i class="fas fa-shield-alt mr-1"></i>Sessão salva por 7 dias neste dispositivo
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTEUDO PROTEGIDO -->
     <div id="protectedContent" class="max-w-5xl w-full mx-auto px-4 py-8">
+
 
         <!-- Cabeçalho fixo -->
         <div class="flex items-center justify-between border-b border-neutral-800 pb-5 mb-8">
@@ -166,12 +282,15 @@
                 </div>
                 <div>
                     <a href="/mamakoshop">
-                        <h1 class="text-xl font-bold text-white">Gerenciador do Catálogo <span class="text-brand-orange text-sm">V2</span></h1>
+                        <h1 class="text-xl font-bold text-white">Gerenciador do Catálogo <span
+                                class="text-brand-orange text-sm">V2</span></h1>
                         <p class="text-xs text-gray-500">Painel Administrativo</p>
                     </a>
                 </div>
             </div>
-            <span class="bg-neutral-900 border border-neutral-800 text-brand-gold text-xs px-3 py-1 rounded-full font-mono">Modo Live</span>
+            <span
+                class="bg-neutral-900 border border-neutral-800 text-brand-gold text-xs px-3 py-1 rounded-full font-mono">Modo
+                Live</span>
         </div>
 
         <!-- ══════════════════════════════════════════════════
@@ -186,7 +305,8 @@
                     <p id="countLabel" class="text-xs text-gray-500 mt-0.5">Carregando...</p>
                 </div>
                 <div class="flex gap-2 w-full sm:w-auto">
-                    <button onclick="recarregarLista()" class="btn-secondary text-xs py-2 px-3" title="Recarregar lista">
+                    <button onclick="recarregarLista()" class="btn-secondary text-xs py-2 px-3"
+                        title="Recarregar lista">
                         <i class="fas fa-sync-alt"></i>
                     </button>
                     <button onclick="abrirFormNovo()" class="btn-primary text-sm">
@@ -197,23 +317,45 @@
 
             <!-- Busca -->
             <div class="relative mb-5">
-                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 text-sm pointer-events-none"></i>
-                <input type="text" id="searchInput" placeholder="Buscar por ID, título ou status..." oninput="filtrarContas(this.value)">
+                <i
+                    class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 text-sm pointer-events-none"></i>
+                <input type="text" id="searchInput" placeholder="Buscar por ID, título ou status..."
+                    oninput="filtrarContas(this.value)">
             </div>
 
             <!-- Filtros rápidos -->
             <div class="flex gap-2 mb-6 flex-wrap">
-                <button onclick="setFiltro('todos')" id="filtro-todos" class="filter-btn active-filter text-xs px-3 py-1.5 rounded-full border border-neutral-700 text-gray-300 hover:border-brand-orange transition-all">Todos</button>
-                <button onclick="setFiltro('DISPONÍVEL')" id="filtro-disponivel" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-neutral-700 text-gray-300 hover:border-green-500 transition-all">✦ Disponíveis</button>
-                <button onclick="setFiltro('VENDIDO')" id="filtro-vendido" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-neutral-700 text-gray-300 hover:border-red-500 transition-all">✦ Vendidos</button>
+                <button onclick="setFiltro('todos')" id="filtro-todos"
+                    class="filter-btn active-filter text-xs px-3 py-1.5 rounded-full border border-neutral-700 text-gray-300 hover:border-brand-orange transition-all">Todos</button>
+                <button onclick="setFiltro('DISPONÍVEL')" id="filtro-disponivel"
+                    class="filter-btn text-xs px-3 py-1.5 rounded-full border border-neutral-700 text-gray-300 hover:border-green-500 transition-all">✦
+                    Disponíveis</button>
+                <button onclick="setFiltro('VENDIDO')" id="filtro-vendido"
+                    class="filter-btn text-xs px-3 py-1.5 rounded-full border border-neutral-700 text-gray-300 hover:border-red-500 transition-all">✦
+                    Vendidos</button>
             </div>
 
             <!-- Grid de cards -->
             <div id="accountsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Skeletons enquanto carrega -->
-                <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
-                <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
-                <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
+                <div class="account-card">
+                    <div class="skeleton h-4 w-16 mb-3"></div>
+                    <div class="skeleton h-5 w-full mb-2"></div>
+                    <div class="skeleton h-3 w-24 mb-4"></div>
+                    <div class="skeleton h-8 w-full"></div>
+                </div>
+                <div class="account-card">
+                    <div class="skeleton h-4 w-16 mb-3"></div>
+                    <div class="skeleton h-5 w-full mb-2"></div>
+                    <div class="skeleton h-3 w-24 mb-4"></div>
+                    <div class="skeleton h-8 w-full"></div>
+                </div>
+                <div class="account-card">
+                    <div class="skeleton h-4 w-16 mb-3"></div>
+                    <div class="skeleton h-5 w-full mb-2"></div>
+                    <div class="skeleton h-3 w-24 mb-4"></div>
+                    <div class="skeleton h-8 w-full"></div>
+                </div>
             </div>
 
             <!-- Estado vazio -->
@@ -226,10 +368,13 @@
 
 
         <!-- ══ MODAL DE CONFIRMAÇÃO DE EXCLUSÃO ══ -->
-        <div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.75);backdrop-filter:blur(4px)">
-            <div class="bg-[#0F0F12] border border-red-500/30 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-red-500/10 animate-none">
+        <div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+            style="background:rgba(0,0,0,0.75);backdrop-filter:blur(4px)">
+            <div
+                class="bg-[#0F0F12] border border-red-500/30 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-red-500/10 animate-none">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center shrink-0">
+                    <div
+                        class="w-10 h-10 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center shrink-0">
                         <i class="fas fa-trash-alt text-red-400"></i>
                     </div>
                     <div>
@@ -245,11 +390,14 @@
                     <button onclick="fecharModalExclusao()" class="btn-secondary flex-1 justify-center text-sm">
                         Cancelar
                     </button>
-                    <button id="btnConfirmarExclusao" onclick="confirmarExclusao()" class="flex-1 justify-center text-sm font-bold py-2.5 px-4 rounded-xl border-0 cursor-pointer transition-all flex items-center gap-2" style="background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff">
+                    <button id="btnConfirmarExclusao" onclick="confirmarExclusao()"
+                        class="flex-1 justify-center text-sm font-bold py-2.5 px-4 rounded-xl border-0 cursor-pointer transition-all flex items-center gap-2"
+                        style="background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff">
                         <i class="fas fa-trash-alt"></i> Excluir
                     </button>
                 </div>
-                <div id="deleteStatusBox" class="hidden mt-3 p-3 rounded-xl text-xs font-medium flex items-center gap-2"></div>
+                <div id="deleteStatusBox"
+                    class="hidden mt-3 p-3 rounded-xl text-xs font-medium flex items-center gap-2"></div>
             </div>
         </div>
 
@@ -272,9 +420,11 @@
             </div>
 
             <!-- Alerta modo edição -->
-            <div id="editAlert" class="hidden mb-5 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/25 text-blue-300 text-xs flex items-start gap-2.5">
+            <div id="editAlert"
+                class="hidden mb-5 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/25 text-blue-300 text-xs flex items-start gap-2.5">
                 <i class="fas fa-info-circle mt-0.5 shrink-0"></i>
-                <span>Modo <strong>Edição</strong>: campos deixados em <strong>branco</strong> preservam o valor atual na planilha. Para zerar um campo, mantenha-o vazio e salve.</span>
+                <span>Modo <strong>Edição</strong>: campos deixados em <strong>branco</strong> preservam o valor atual
+                    na planilha. Para zerar um campo, mantenha-o vazio e salve.</span>
             </div>
 
             <form id="adminForm" class="space-y-5">
@@ -287,7 +437,8 @@
                         <div>
                             <label class="field-label">Código da Conta (ID)</label>
                             <input type="text" id="accId" placeholder="Ex: 001" class="field font-mono" required>
-                            <p id="idHint" class="text-xs text-gray-600 mt-1.5 hidden"><i class="fas fa-lock mr-1"></i>ID bloqueado no modo edição</p>
+                            <p id="idHint" class="text-xs text-gray-600 mt-1.5 hidden"><i
+                                    class="fas fa-lock mr-1"></i>ID bloqueado no modo edição</p>
                         </div>
                         <div>
                             <label class="field-label">Status da Conta</label>
@@ -321,7 +472,8 @@
                         </div>
                         <div>
                             <label class="field-label">Tipo de Conta</label>
-                            <input type="text" id="accTipo" placeholder="Ex: Parceiro (em branco = padrão)" class="field">
+                            <input type="text" id="accTipo" placeholder="Ex: Parceiro (em branco = padrão)"
+                                class="field">
                         </div>
                     </div>
                 </div>
@@ -332,7 +484,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="md:col-span-2">
                             <label class="field-label">Título da Conta</label>
-                            <input type="text" id="accTitle" placeholder="Ex: Conta Void Premium" class="field" required>
+                            <input type="text" id="accTitle" placeholder="Ex: Conta Void Premium" class="field"
+                                required>
                         </div>
                         <div>
                             <label class="field-label">Poder de Conta</label>
@@ -340,7 +493,8 @@
                         </div>
                         <div class="md:col-span-3">
                             <label class="field-label">Descrição Curta (Tagline)</label>
-                            <input type="text" id="accTagline" placeholder="Resumo rápido para os cards da vitrine..." class="field">
+                            <input type="text" id="accTagline" placeholder="Resumo rápido para os cards da vitrine..."
+                                class="field">
                         </div>
                     </div>
                 </div>
@@ -351,15 +505,18 @@
                     <div class="grid grid-cols-1 gap-4">
                         <div>
                             <label class="field-label">Míticos (separados por vírgula)</label>
-                            <textarea id="accMiticos" rows="2" placeholder="Ex: Embrys, Mikage" class="field"></textarea>
+                            <textarea id="accMiticos" rows="2" placeholder="Ex: Embrys, Mikage"
+                                class="field"></textarea>
                         </div>
                         <div>
                             <label class="field-label">Principais Lendários (separados por vírgula)</label>
-                            <textarea id="accPrLendarios" rows="2" placeholder="Ex: Yumeko, Arbitra Bless 6★, Graazur" class="field"></textarea>
+                            <textarea id="accPrLendarios" rows="2" placeholder="Ex: Yumeko, Arbitra Bless 6★, Graazur"
+                                class="field"></textarea>
                         </div>
                         <div>
                             <label class="field-label">Outros Lendários</label>
-                            <textarea id="accOutrosLendarios" rows="3" placeholder="Ex: Gnut, Hilvi, Gurptuk, Rotos, Lilitu..." class="field"></textarea>
+                            <textarea id="accOutrosLendarios" rows="3"
+                                placeholder="Ex: Gnut, Hilvi, Gurptuk, Rotos, Lilitu..." class="field"></textarea>
                         </div>
                     </div>
                 </div>
@@ -369,7 +526,9 @@
                     <p class="section-title text-brand-orange border-brand-gold">Recursos Importantes</p>
                     <div>
                         <label class="field-label">Bens, Itens e Informações Adicionais</label>
-                        <textarea id="accRecursos" rows="4" placeholder="Descreva detalhes técnicos (Ex: Livros de Habilidade, Gemas, Energia estocada, Moedas da Arena...)" class="field" style="resize:vertical"></textarea>
+                        <textarea id="accRecursos" rows="4"
+                            placeholder="Descreva detalhes técnicos (Ex: Livros de Habilidade, Gemas, Energia estocada, Moedas da Arena...)"
+                            class="field" style="resize:vertical"></textarea>
                     </div>
                 </div>
 
@@ -410,9 +569,11 @@
 
                     <!-- Preview das imagens atuais (só exibido em modo edição) -->
                     <div id="currentImagesSection" class="hidden mb-4">
-                        <label class="field-label text-blue-400 mb-2">Imagens atuais na planilha (somente leitura)</label>
+                        <label class="field-label text-blue-400 mb-2">Imagens atuais na planilha (somente
+                            leitura)</label>
                         <div id="currentImagesPreview" class="flex flex-wrap gap-2 mb-1"></div>
-                        <p class="text-xs text-gray-600 mt-1"><i class="fas fa-info-circle mr-1"></i>Para substituir, envie novas imagens abaixo. Se não enviar, as atuais são mantidas.</p>
+                        <p class="text-xs text-gray-600 mt-1"><i class="fas fa-info-circle mr-1"></i>Para substituir,
+                            envie novas imagens abaixo. Se não enviar, as atuais são mantidas.</p>
                     </div>
 
                     <div>
@@ -444,181 +605,223 @@
 
 
     <script>
-    // ══════════════════════════════════════════════════════════════
-    //  CONFIGURAÇÕES
-    // ══════════════════════════════════════════════════════════════
-    const ADMIN_PASSWORD    = "admin123";
-    const IMGBB_API_KEY     = "25454de698b208b18802361e068be106";
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywI1pkvR1RLxXiYFVKnfpDjjIcdVP6WCJLT7P_DkX94pnPKvX-IF2cGUzU9LXUDw/exec";
-    const CSV_URL           = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGMz9XAk5spv5FFN585VM6g6toC79iulNUFqYB76MQmRTuhjnyTjRSybOuyhZ5FImNompOX0eFjZI0/pub?output=csv";
+        // ══════════════════════════════════════════════════════════════
+        //  CONFIGURAÇÕES
+        // ══════════════════════════════════════════════════════════════
+        const ADMIN_PASSWORD = "admin123";
+        const IMGBB_API_KEY = "25454de698b208b18802361e068be106";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywI1pkvR1RLxXiYFVKnfpDjjIcdVP6WCJLT7P_DkX94pnPKvX-IF2cGUzU9LXUDw/exec";
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGMz9XAk5spv5FFN585VM6g6toC79iulNUFqYB76MQmRTuhjnyTjRSybOuyhZ5FImNompOX0eFjZI0/pub?output=csv";
 
-    // ── Proteção de senha ──────────────────────────────────────────
-    (function verificarAcesso() {
-        const senha = prompt("Digite a senha do Painel Administrativo:");
-        if (senha === ADMIN_PASSWORD) {
+        // ── Sessão e Login ─────────────────────────────────────────
+        const SESSION_KEY = 'mamako_admin_session';
+        const SESSION_TTL = 7 * 24 * 60 * 60 * 1000; // 7 dias
+
+        function verificarSessao() {
+            try {
+                const raw = localStorage.getItem(SESSION_KEY);
+                if (!raw) return false;
+                const { ts } = JSON.parse(raw);
+                return (Date.now() - ts) < SESSION_TTL;
+            } catch (e) { return false; }
+        }
+
+        function salvarSessao() {
+            localStorage.setItem(SESSION_KEY, JSON.stringify({ ts: Date.now() }));
+        }
+
+        function entrarNoPainel() {
+            document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('protectedContent').style.display = 'block';
             carregarLista();
-        } else {
-            alert("Senha incorreta ou acesso cancelado!");
-            document.body.innerHTML = `
-                <div class="min-h-screen flex flex-col items-center justify-center bg-[#070708] p-4 text-center">
-                    <i class="fas fa-lock text-red-500 text-5xl mb-4"></i>
-                    <h1 class="text-2xl font-bold text-white mb-2">Acesso Negado</h1>
-                    <p class="text-gray-400 text-sm mb-4">Você não tem permissão para visualizar este painel.</p>
-                    <button onclick="location.reload()" class="bg-[#E65C00] text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-orange-600 transition-all">
-                        Tentar Novamente
-                    </button>
-                </div>`;
         }
-    })();
 
-    // ══════════════════════════════════════════════════════════════
-    //  DADOS E ESTADO
-    // ══════════════════════════════════════════════════════════════
-    let todasContas   = [];
-    let filtroAtivo   = 'todos';
-    let buscaAtiva    = '';
+        function tentarLogin() {
+            const input = document.getElementById('loginPasswordInput');
+            const err = document.getElementById('loginError');
+            const btn = document.getElementById('btnLogin');
 
-    function safeStr(val) { return val ? String(val).trim() : ''; }
-    function splitList(val) { return val ? val.split(',').map(s => s.trim()).filter(Boolean) : []; }
+            if (input.value === ADMIN_PASSWORD) {
+                btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Entrando...';
+                btn.disabled = true;
+                salvarSessao();
+                setTimeout(entrarNoPainel, 350);
+            } else {
+                err.classList.remove('hidden');
+                input.classList.add('border-red-500');
+                input.value = '';
+                input.focus();
+                setTimeout(() => input.classList.remove('border-red-500'), 1500);
+            }
+        }
 
-    function mapRow(row) {
-        return {
-            id:                  safeStr(row.id).replace(/^'+/, ''),
-            title:               safeStr(row.title),
-            power:               safeStr(row.power),
-            tagline:             safeStr(row.tagline),
-            image:               safeStr(row.image),
-            priceBrl:            parseFloat(row.priceBrl) || 0,
-            priceUsd:            parseFloat(row.priceUsd) || 0,
-            label:               safeStr(row.label),
-            status:              safeStr(row.status).toUpperCase() || 'DISPONÍVEL',
-            email_status:        safeStr(row.email_status),
-            links_status:        safeStr(row.links_status),
-            promo_code:          safeStr(row.promo_code),
-            level:               safeStr(row.level),
-            recursos:            safeStr(row.recursos),
-            miticos:             safeStr(row.miticos),
-            principais_lendarios: safeStr(row.principais_lendarios),
-            outros_lendarios:    safeStr(row.outros_lendarios),
-            prints:              safeStr(row.prints),
-            whatsapp:            safeStr(row.whatsapp),
-            vendedor:            safeStr(row.vendedor),
-            tipo:                safeStr(row.tipo),
-        };
-    }
+        function toggleSenhaLogin() {
+            const input = document.getElementById('loginPasswordInput');
+            const icon = document.getElementById('loginEyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash text-sm';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye text-sm';
+            }
+        }
 
-    // ══════════════════════════════════════════════════════════════
-    //  VIEW — NAVEGAÇÃO
-    // ══════════════════════════════════════════════════════════════
-    function mostrarView(id) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+        // Verifica sessão salva ao carregar
+        if (verificarSessao()) {
+            entrarNoPainel();
+        } else {
+            document.getElementById('loginPasswordInput').focus();
+        }
 
-    function voltarParaLista() {
-        mostrarView('viewLista');
-        renderCards(); // atualiza caso tenha mudado
-    }
 
-    // ══════════════════════════════════════════════════════════════
-    //  LISTA — Carregar e Renderizar
-    // ══════════════════════════════════════════════════════════════
-    function carregarLista() {
-        document.getElementById('countLabel').textContent = 'Carregando...';
-        document.getElementById('accountsGrid').innerHTML = `
+        // ══════════════════════════════════════════════════════════════
+        //  DADOS E ESTADO
+        // ══════════════════════════════════════════════════════════════
+        let todasContas = [];
+        let filtroAtivo = 'todos';
+        let buscaAtiva = '';
+
+        function safeStr(val) { return val ? String(val).trim() : ''; }
+        function splitList(val) { return val ? val.split(',').map(s => s.trim()).filter(Boolean) : []; }
+
+        function mapRow(row) {
+            return {
+                id: safeStr(row.id).replace(/^'+/, ''),
+                title: safeStr(row.title),
+                power: safeStr(row.power),
+                tagline: safeStr(row.tagline),
+                image: safeStr(row.image),
+                priceBrl: parseFloat(row.priceBrl) || 0,
+                priceUsd: parseFloat(row.priceUsd) || 0,
+                label: safeStr(row.label),
+                status: safeStr(row.status).toUpperCase() || 'DISPONÍVEL',
+                email_status: safeStr(row.email_status),
+                links_status: safeStr(row.links_status),
+                promo_code: safeStr(row.promo_code),
+                level: safeStr(row.level),
+                recursos: safeStr(row.recursos),
+                miticos: safeStr(row.miticos),
+                principais_lendarios: safeStr(row.principais_lendarios),
+                outros_lendarios: safeStr(row.outros_lendarios),
+                prints: safeStr(row.prints),
+                whatsapp: safeStr(row.whatsapp),
+                vendedor: safeStr(row.vendedor),
+                tipo: safeStr(row.tipo),
+            };
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        //  VIEW — NAVEGAÇÃO
+        // ══════════════════════════════════════════════════════════════
+        function mostrarView(id) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function voltarParaLista() {
+            mostrarView('viewLista');
+            renderCards(); // atualiza caso tenha mudado
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        //  LISTA — Carregar e Renderizar
+        // ══════════════════════════════════════════════════════════════
+        function carregarLista() {
+            document.getElementById('countLabel').textContent = 'Carregando...';
+            document.getElementById('accountsGrid').innerHTML = `
             <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
             <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
             <div class="account-card"><div class="skeleton h-4 w-16 mb-3"></div><div class="skeleton h-5 w-full mb-2"></div><div class="skeleton h-3 w-24 mb-4"></div><div class="skeleton h-8 w-full"></div></div>
         `;
 
-        Papa.parse(CSV_URL, {
-            download: true,
-            header: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                todasContas = results.data.map(mapRow).filter(c => c.id);
-                renderCards();
-            },
-            error: function() {
-                document.getElementById('accountsGrid').innerHTML = `
+            Papa.parse(CSV_URL, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function (results) {
+                    todasContas = results.data.map(mapRow).filter(c => c.id);
+                    renderCards();
+                },
+                error: function () {
+                    document.getElementById('accountsGrid').innerHTML = `
                     <div class="col-span-3 text-center py-10 text-red-400 text-sm">
                         <i class="fas fa-exclamation-triangle mr-2"></i>Erro ao carregar contas. Verifique a URL do CSV.
                     </div>`;
-                document.getElementById('countLabel').textContent = 'Erro ao carregar.';
+                    document.getElementById('countLabel').textContent = 'Erro ao carregar.';
+                }
+            });
+        }
+
+        function recarregarLista() {
+            carregarLista();
+        }
+
+        function filtrarContas(busca) {
+            buscaAtiva = busca.toLowerCase();
+            renderCards();
+        }
+
+        function setFiltro(tipo) {
+            filtroAtivo = tipo;
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('active-filter', 'border-brand-orange', 'border-green-500', 'border-red-500', 'border-brand-gold', 'text-white');
+                b.classList.add('text-gray-300');
+            });
+            const btn = document.getElementById('filtro-' + (tipo === 'DISPONÍVEL' ? 'disponivel' : tipo === 'VENDIDO' ? 'vendido' : tipo === 'promo' ? 'promo' : 'todos'));
+            if (btn) {
+                btn.classList.add('active-filter', 'text-white');
+                if (tipo === 'todos') btn.classList.add('border-brand-orange');
+                if (tipo === 'DISPONÍVEL') btn.classList.add('border-green-500');
+                if (tipo === 'VENDIDO') btn.classList.add('border-red-500');
+                if (tipo === 'promo') btn.classList.add('border-brand-gold');
             }
-        });
-    }
-
-    function recarregarLista() {
-        carregarLista();
-    }
-
-    function filtrarContas(busca) {
-        buscaAtiva = busca.toLowerCase();
-        renderCards();
-    }
-
-    function setFiltro(tipo) {
-        filtroAtivo = tipo;
-        document.querySelectorAll('.filter-btn').forEach(b => {
-            b.classList.remove('active-filter', 'border-brand-orange', 'border-green-500', 'border-red-500', 'border-brand-gold', 'text-white');
-            b.classList.add('text-gray-300');
-        });
-        const btn = document.getElementById('filtro-' + (tipo === 'DISPONÍVEL' ? 'disponivel' : tipo === 'VENDIDO' ? 'vendido' : tipo === 'promo' ? 'promo' : 'todos'));
-        if (btn) {
-            btn.classList.add('active-filter', 'text-white');
-            if (tipo === 'todos')      btn.classList.add('border-brand-orange');
-            if (tipo === 'DISPONÍVEL') btn.classList.add('border-green-500');
-            if (tipo === 'VENDIDO')    btn.classList.add('border-red-500');
-            if (tipo === 'promo')      btn.classList.add('border-brand-gold');
-        }
-        renderCards();
-    }
-
-    function renderCards() {
-        let contas = todasContas;
-
-        // Filtro por tipo
-        if (filtroAtivo === 'DISPONÍVEL') contas = contas.filter(c => c.status === 'DISPONÍVEL');
-        else if (filtroAtivo === 'VENDIDO')    contas = contas.filter(c => c.status === 'VENDIDO');
-        else if (filtroAtivo === 'promo')      contas = contas.filter(c => c.label && c.label !== '');
-
-        // Filtro por busca
-        if (buscaAtiva) {
-            contas = contas.filter(c =>
-                c.id.toLowerCase().includes(buscaAtiva) ||
-                c.title.toLowerCase().includes(buscaAtiva) ||
-                c.status.toLowerCase().includes(buscaAtiva) ||
-                (c.vendedor && c.vendedor.toLowerCase().includes(buscaAtiva))
-            );
+            renderCards();
         }
 
-        const grid = document.getElementById('accountsGrid');
-        const empty = document.getElementById('emptyState');
-        const countLabel = document.getElementById('countLabel');
+        function renderCards() {
+            let contas = todasContas;
 
-        countLabel.textContent = `${contas.length} de ${todasContas.length} conta${todasContas.length !== 1 ? 's' : ''}`;
+            // Filtro por tipo
+            if (filtroAtivo === 'DISPONÍVEL') contas = contas.filter(c => c.status === 'DISPONÍVEL');
+            else if (filtroAtivo === 'VENDIDO') contas = contas.filter(c => c.status === 'VENDIDO');
+            else if (filtroAtivo === 'promo') contas = contas.filter(c => c.label && c.label !== '');
 
-        if (contas.length === 0) {
-            grid.innerHTML = '';
-            empty.classList.remove('hidden');
-            return;
-        }
-        empty.classList.add('hidden');
+            // Filtro por busca
+            if (buscaAtiva) {
+                contas = contas.filter(c =>
+                    c.id.toLowerCase().includes(buscaAtiva) ||
+                    c.title.toLowerCase().includes(buscaAtiva) ||
+                    c.status.toLowerCase().includes(buscaAtiva) ||
+                    (c.vendedor && c.vendedor.toLowerCase().includes(buscaAtiva))
+                );
+            }
 
-        // Badge de status
-        const statusBadge = (s) => {
-            if (s === 'DISPONÍVEL') return `<span class="badge-disponivel text-[10px] font-bold px-2 py-0.5 rounded-full">${s}</span>`;
-            if (s === 'VENDIDO')    return `<span class="badge-vendido text-[10px] font-bold px-2 py-0.5 rounded-full">${s}</span>`;
-            return `<span class="badge-reservado text-[10px] font-bold px-2 py-0.5 rounded-full">${s}</span>`;
-        };
+            const grid = document.getElementById('accountsGrid');
+            const empty = document.getElementById('emptyState');
+            const countLabel = document.getElementById('countLabel');
 
-        grid.innerHTML = contas.map((c, _) => {
-            // Usar índice no array global para evitar problemas com aspas simples/duplas no JSON inline
-            const idx = todasContas.indexOf(c);
-            return `
+            countLabel.textContent = `${contas.length} de ${todasContas.length} conta${todasContas.length !== 1 ? 's' : ''}`;
+
+            if (contas.length === 0) {
+                grid.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            // Badge de status
+            const statusBadge = (s) => {
+                if (s === 'DISPONÍVEL') return `<span class="badge-disponivel text-[10px] font-bold px-2 py-0.5 rounded-full">${s}</span>`;
+                if (s === 'VENDIDO') return `<span class="badge-vendido text-[10px] font-bold px-2 py-0.5 rounded-full">${s}</span>`;
+                return `<span class="badge-reservado text-[10px] font-bold px-2 py-0.5 rounded-full">${s}</span>`;
+            };
+
+            grid.innerHTML = contas.map((c, _) => {
+                // Usar índice no array global para evitar problemas com aspas simples/duplas no JSON inline
+                const idx = todasContas.indexOf(c);
+                return `
             <div class="account-card">
                 <div class="flex items-start justify-between gap-2 mb-3">
                     <div class="flex items-center gap-2 flex-wrap">
@@ -646,280 +849,281 @@
                 </div>
             </div>
         `;
-        }).join('');
-    }
+            }).join('');
+        }
 
-    // ══════════════════════════════════════════════════════════════
-    //  FORMULÁRIO — Abrir em modo NOVO
-    // ══════════════════════════════════════════════════════════════
-    function abrirFormNovo() {
-        document.getElementById('adminForm').reset();
-        document.getElementById('formAction').value = 'CREATE';
-        document.getElementById('accId').disabled = false;
-        document.getElementById('accId').required = true;
-        document.getElementById('accTitle').required = true;
-        document.getElementById('accPower').required = true;
-        document.getElementById('idHint').classList.add('hidden');
-        document.getElementById('editAlert').classList.add('hidden');
-        document.getElementById('currentImagesSection').classList.add('hidden');
-        document.getElementById('breadcrumbLabel').textContent = 'Nova Conta';
-        document.getElementById('btnText').textContent = 'Cadastrar no Google Sheets';
-        document.getElementById('statusBox').classList.add('hidden');
-        mostrarView('viewForm');
-    }
+        // ══════════════════════════════════════════════════════════════
+        //  FORMULÁRIO — Abrir em modo NOVO
+        // ══════════════════════════════════════════════════════════════
+        function abrirFormNovo() {
+            document.getElementById('adminForm').reset();
+            document.getElementById('formAction').value = 'CREATE';
+            document.getElementById('accId').disabled = false;
+            document.getElementById('accId').required = true;
+            document.getElementById('accTitle').required = true;
+            document.getElementById('accPower').required = true;
+            document.getElementById('idHint').classList.add('hidden');
+            document.getElementById('editAlert').classList.add('hidden');
+            document.getElementById('currentImagesSection').classList.add('hidden');
+            document.getElementById('breadcrumbLabel').textContent = 'Nova Conta';
+            document.getElementById('btnText').textContent = 'Cadastrar no Google Sheets';
+            document.getElementById('statusBox').classList.add('hidden');
+            mostrarView('viewForm');
+        }
 
-    // ══════════════════════════════════════════════════════════════
-    //  FORMULÁRIO — Abrir em modo EDIÇÃO
-    // ══════════════════════════════════════════════════════════════
-    function abrirFormEdicao(conta) {
-        document.getElementById('adminForm').reset();
-        document.getElementById('formAction').value = 'UPDATE';
-        document.getElementById('statusBox').classList.add('hidden');
+        // ══════════════════════════════════════════════════════════════
+        //  FORMULÁRIO — Abrir em modo EDIÇÃO
+        // ══════════════════════════════════════════════════════════════
+        function abrirFormEdicao(conta) {
+            document.getElementById('adminForm').reset();
+            document.getElementById('formAction').value = 'UPDATE';
+            document.getElementById('statusBox').classList.add('hidden');
 
-        // Breadcrumb
-        document.getElementById('breadcrumbLabel').textContent = `Editando #${conta.id} — ${conta.title || 'sem título'}`;
+            // Breadcrumb
+            document.getElementById('breadcrumbLabel').textContent = `Editando #${conta.id} — ${conta.title || 'sem título'}`;
 
-        // ID — bloqueado
-        document.getElementById('accId').value    = conta.id;
-        document.getElementById('accId').disabled = true;
-        document.getElementById('accId').required = false;
-        document.getElementById('idHint').classList.remove('hidden');
-        document.getElementById('editAlert').classList.remove('hidden');
+            // ID — bloqueado
+            document.getElementById('accId').value = conta.id;
+            document.getElementById('accId').disabled = true;
+            document.getElementById('accId').required = false;
+            document.getElementById('idHint').classList.remove('hidden');
+            document.getElementById('editAlert').classList.remove('hidden');
 
-        // Campos não obrigatórios no UPDATE
-        document.getElementById('accTitle').required = false;
-        document.getElementById('accPower').required = false;
+            // Campos não obrigatórios no UPDATE
+            document.getElementById('accTitle').required = false;
+            document.getElementById('accPower').required = false;
 
-        // Preencher campos
-        setVal('accStatus',        conta.status || 'DISPONÍVEL');
-        setVal('accLabel',         conta.label);
-        setVal('accVendedor',      conta.vendedor);
-        setVal('accWhatsapp',      conta.whatsapp);
-        setVal('accTipo',          conta.tipo);
-        setVal('accTitle',         conta.title);
-        setVal('accPower',         conta.power);
-        setVal('accTagline',       conta.tagline);
-        setVal('accMiticos',       conta.miticos);
-        setVal('accPrLendarios',   conta.principais_lendarios);
-        setVal('accOutrosLendarios', conta.outros_lendarios);
-        setVal('accRecursos',      conta.recursos);
-        setVal('accEmailStatus',   conta.email_status);
-        setVal('accLinksStatus',   conta.links_status);
-        setVal('accPromoCode',     conta.promo_code);
-        setVal('accLevel',         conta.level);
-        setVal('priceBrl',         conta.priceBrl || '');
-        setVal('priceUsd',         conta.priceUsd || '');
+            // Preencher campos
+            setVal('accStatus', conta.status || 'DISPONÍVEL');
+            setVal('accLabel', conta.label);
+            setVal('accVendedor', conta.vendedor);
+            setVal('accWhatsapp', conta.whatsapp);
+            setVal('accTipo', conta.tipo);
+            setVal('accTitle', conta.title);
+            setVal('accPower', conta.power);
+            setVal('accTagline', conta.tagline);
+            setVal('accMiticos', conta.miticos);
+            setVal('accPrLendarios', conta.principais_lendarios);
+            setVal('accOutrosLendarios', conta.outros_lendarios);
+            setVal('accRecursos', conta.recursos);
+            setVal('accEmailStatus', conta.email_status);
+            setVal('accLinksStatus', conta.links_status);
+            setVal('accPromoCode', conta.promo_code);
+            setVal('accLevel', conta.level);
+            setVal('priceBrl', conta.priceBrl || '');
+            setVal('priceUsd', conta.priceUsd || '');
 
-        // Preview das imagens atuais
-        const prints = conta.prints ? conta.prints.split(',').map(s => s.trim()).filter(Boolean) : [];
-        const mainImg = conta.image;
-        const allImgs = mainImg ? [mainImg, ...prints.filter(p => p !== mainImg)] : prints;
+            // Preview das imagens atuais
+            const prints = conta.prints ? conta.prints.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const mainImg = conta.image;
+            const allImgs = mainImg ? [mainImg, ...prints.filter(p => p !== mainImg)] : prints;
 
-        if (allImgs.length > 0) {
-            document.getElementById('currentImagesSection').classList.remove('hidden');
-            document.getElementById('currentImagesPreview').innerHTML = allImgs.slice(0, 6).map((url, i) => `
+            if (allImgs.length > 0) {
+                document.getElementById('currentImagesSection').classList.remove('hidden');
+                document.getElementById('currentImagesPreview').innerHTML = allImgs.slice(0, 6).map((url, i) => `
                 <a href="${url}" target="_blank" class="relative group">
-                    <img src="${url}" alt="Print ${i+1}"
+                    <img src="${url}" alt="Print ${i + 1}"
                         class="w-16 h-16 object-cover rounded-lg border border-neutral-800 group-hover:border-brand-orange transition-all"
                         onerror="this.parentElement.style.display='none'">
                     ${i === 0 ? '<span class="absolute bottom-0.5 left-0.5 text-[9px] bg-black/80 text-brand-gold px-1 rounded">capa</span>' : ''}
                 </a>
             `).join('') + (allImgs.length > 6 ? `<div class="w-16 h-16 rounded-lg border border-neutral-800 flex items-center justify-center text-gray-500 text-xs">+${allImgs.length - 6}</div>` : '');
-        } else {
-            document.getElementById('currentImagesSection').classList.add('hidden');
+            } else {
+                document.getElementById('currentImagesSection').classList.add('hidden');
+            }
+
+            document.getElementById('btnText').textContent = 'Salvar Alterações no Sheets';
+            mostrarView('viewForm');
         }
 
-        document.getElementById('btnText').textContent = 'Salvar Alterações no Sheets';
-        mostrarView('viewForm');
-    }
-
-    // Wrapper seguro chamado pelo onclick — evita problemas de JSON inline com aspas
-    function abrirFormEdicaoPorIndice(idx) {
-        const conta = todasContas[idx];
-        if (conta) abrirFormEdicao(conta);
-    }
-
-    // ══════════════════════════════════════════════════════════════
-    //  EXCLUSÃO DE CONTA
-    // ══════════════════════════════════════════════════════════════
-    let indicePendenteExclusao = -1;
-
-    function abrirModalExclusao(idx) {
-        const conta = todasContas[idx];
-        if (!conta) return;
-        indicePendenteExclusao = idx;
-
-        document.getElementById('deleteModalTitle').textContent = conta.title || '(sem título)';
-        document.getElementById('deleteModalId').textContent    = 'ID: ' + conta.id;
-        document.getElementById('deleteStatusBox').classList.add('hidden');
-        document.getElementById('btnConfirmarExclusao').disabled = false;
-
-        const modal = document.getElementById('deleteModal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-
-    function fecharModalExclusao() {
-        const modal = document.getElementById('deleteModal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        indicePendenteExclusao = -1;
-    }
-
-    // Fecha o modal ao clicar fora do painel
-    document.getElementById('deleteModal').addEventListener('click', function(e) {
-        if (e.target === this) fecharModalExclusao();
-    });
-
-    async function confirmarExclusao() {
-        if (indicePendenteExclusao === -1) return;
-        const conta = todasContas[indicePendenteExclusao];
-        if (!conta) return;
-
-        const btn = document.getElementById('btnConfirmarExclusao');
-        const statusBox = document.getElementById('deleteStatusBox');
-
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Excluindo...';
-        statusBox.classList.add('hidden');
-
-        const payload = { action: 'DELETE', id: conta.id };
-
-        try {
-            await fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            // Remove localmente do array e fecha o modal
-            todasContas.splice(indicePendenteExclusao, 1);
-            fecharModalExclusao();
-            renderCards();
-
-            // Toast de sucesso breve na lista
-            document.getElementById('countLabel').innerHTML =
-                '<span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i>Conta excluída da planilha.</span>';
-            setTimeout(() => {
-                document.getElementById('countLabel').textContent =
-                    `${todasContas.length} conta${todasContas.length !== 1 ? 's' : ''}`;
-            }, 3000);
-
-        } catch (err) {
-            statusBox.className = 'mt-3 p-3 rounded-xl text-xs font-medium flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-400';
-            statusBox.innerHTML = `<i class="fas fa-exclamation-circle"></i> Erro: ${err.message}`;
-            statusBox.classList.remove('hidden');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-trash-alt"></i> Excluir';
+        // Wrapper seguro chamado pelo onclick — evita problemas de JSON inline com aspas
+        function abrirFormEdicaoPorIndice(idx) {
+            const conta = todasContas[idx];
+            if (conta) abrirFormEdicao(conta);
         }
-    }
 
-    function setVal(id, val) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if (el.tagName === 'SELECT') {
-            // Tenta selecionar o option correspondente
-            const opt = Array.from(el.options).find(o => o.value === String(val || ''));
-            if (opt) el.value = opt.value;
-        } else {
-            el.value = val !== undefined && val !== null ? val : '';
+        // ══════════════════════════════════════════════════════════════
+        //  EXCLUSÃO DE CONTA
+        // ══════════════════════════════════════════════════════════════
+        let indicePendenteExclusao = -1;
+
+        function abrirModalExclusao(idx) {
+            const conta = todasContas[idx];
+            if (!conta) return;
+            indicePendenteExclusao = idx;
+
+            document.getElementById('deleteModalTitle').textContent = conta.title || '(sem título)';
+            document.getElementById('deleteModalId').textContent = 'ID: ' + conta.id;
+            document.getElementById('deleteStatusBox').classList.add('hidden');
+            document.getElementById('btnConfirmarExclusao').disabled = false;
+
+            const modal = document.getElementById('deleteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         }
-    }
 
-    // ══════════════════════════════════════════════════════════════
-    //  FORMULÁRIO — Submit
-    // ══════════════════════════════════════════════════════════════
-    const form      = document.getElementById('adminForm');
-    const btnSubmit = document.getElementById('btnSubmit');
-    const btnText   = document.getElementById('btnText');
-    const statusBox = document.getElementById('statusBox');
+        function fecharModalExclusao() {
+            const modal = document.getElementById('deleteModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            indicePendenteExclusao = -1;
+        }
 
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
+        // Fecha o modal ao clicar fora do painel
+        document.getElementById('deleteModal').addEventListener('click', function (e) {
+            if (e.target === this) fecharModalExclusao();
+        });
 
-        btnSubmit.disabled = true;
-        statusBox.className = "mt-5 p-4 rounded-xl text-sm font-medium flex items-center gap-2 bg-neutral-900 text-brand-gold";
-        statusBox.innerHTML = `<i class="fas fa-spinner animate-spin"></i> <span>Iniciando processamento...</span>`;
-        statusBox.classList.remove('hidden');
+        async function confirmarExclusao() {
+            if (indicePendenteExclusao === -1) return;
+            const conta = todasContas[indicePendenteExclusao];
+            if (!conta) return;
 
-        const action    = document.getElementById('formAction').value;
-        const fileInput = document.getElementById('imageFiles');
-        let uploadedUrls = [];
+            const btn = document.getElementById('btnConfirmarExclusao');
+            const statusBox = document.getElementById('deleteStatusBox');
 
-        // 1. Upload de imagens
-        if (fileInput.files.length > 0) {
-            const totalFiles = Math.min(fileInput.files.length, 20);
-            for (let i = 0; i < totalFiles; i++) {
-                statusBox.innerHTML = `<i class="fas fa-image animate-pulse"></i> <span>Hospedando imagem ${i+1} de ${totalFiles} no ImgBB...</span>`;
-                const fd = new FormData();
-                fd.append("image", fileInput.files[i]);
-                try {
-                    const res  = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: fd });
-                    const data = await res.json();
-                    if (data.success) uploadedUrls.push(data.data.url);
-                    else throw new Error(`Falha no envio do arquivo ${i+1}.`);
-                } catch (err) {
-                    showError("Erro no envio das imagens: " + err.message);
-                    return;
-                }
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Excluindo...';
+            statusBox.classList.add('hidden');
+
+            const payload = { action: 'DELETE', id: conta.id };
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                // Remove localmente do array e fecha o modal
+                todasContas.splice(indicePendenteExclusao, 1);
+                fecharModalExclusao();
+                renderCards();
+
+                // Toast de sucesso breve na lista
+                document.getElementById('countLabel').innerHTML =
+                    '<span class="text-emerald-400"><i class="fas fa-check-circle mr-1"></i>Conta excluída da planilha.</span>';
+                setTimeout(() => {
+                    document.getElementById('countLabel').textContent =
+                        `${todasContas.length} conta${todasContas.length !== 1 ? 's' : ''}`;
+                }, 3000);
+
+            } catch (err) {
+                statusBox.className = 'mt-3 p-3 rounded-xl text-xs font-medium flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-400';
+                statusBox.innerHTML = `<i class="fas fa-exclamation-circle"></i> Erro: ${err.message}`;
+                statusBox.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-trash-alt"></i> Excluir';
             }
         }
 
-        // 2. Montar payload
-        statusBox.innerHTML = `<i class="fas fa-database animate-pulse"></i> <span>Sincronizando com o Sheets...</span>`;
+        function setVal(id, val) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (el.tagName === 'SELECT') {
+                // Tenta selecionar o option correspondente
+                const opt = Array.from(el.options).find(o => o.value === String(val || ''));
+                if (opt) el.value = opt.value;
+            } else {
+                el.value = val !== undefined && val !== null ? val : '';
+            }
+        }
 
-        const payload = {
-            action,
-            id:                  document.getElementById('accId').value.trim(),
-            vendedor:            document.getElementById('accVendedor').value.trim(),
-            whatsapp:            document.getElementById('accWhatsapp').value.trim(),
-            tipo:                document.getElementById('accTipo').value.trim(),
-            title:               document.getElementById('accTitle').value.trim(),
-            power:               document.getElementById('accPower').value.trim(),
-            tagline:             document.getElementById('accTagline').value.trim(),
-            image:               uploadedUrls.length > 0 ? uploadedUrls[0] : undefined,
-            priceBrl:            document.getElementById('priceBrl').value,
-            priceUsd:            document.getElementById('priceUsd').value,
-            label:               document.getElementById('accLabel').value.trim(),
-            status:              document.getElementById('accStatus').value,
-            miticos:             document.getElementById('accMiticos').value.trim(),
-            principais_lendarios: document.getElementById('accPrLendarios').value.trim(),
-            outros_lendarios:    document.getElementById('accOutrosLendarios').value.trim(),
-            prints:              uploadedUrls.length > 0 ? uploadedUrls.join(", ") : undefined,
-            email_status:        document.getElementById('accEmailStatus').value.trim(),
-            links_status:        document.getElementById('accLinksStatus').value.trim(),
-            promo_code:          document.getElementById('accPromoCode').value.trim(),
-            level:               document.getElementById('accLevel').value.trim(),
-            recursos:            document.getElementById('accRecursos').value.trim(),
-        };
+        // ══════════════════════════════════════════════════════════════
+        //  FORMULÁRIO — Submit
+        // ══════════════════════════════════════════════════════════════
+        const form = document.getElementById('adminForm');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const btnText = document.getElementById('btnText');
+        const statusBox = document.getElementById('statusBox');
 
-        try {
-            await fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
 
-            statusBox.className = "mt-5 p-4 rounded-xl text-sm font-medium flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400";
-            statusBox.innerHTML = `<i class="fas fa-check-circle"></i> <span>Sucesso! Planilha atualizada. <button onclick="voltarParaLista()" class="underline ml-1 font-bold hover:text-emerald-300">← Voltar à lista</button></span>`;
-            form.reset();
-            document.getElementById('currentImagesSection').classList.add('hidden');
+            btnSubmit.disabled = true;
+            statusBox.className = "mt-5 p-4 rounded-xl text-sm font-medium flex items-center gap-2 bg-neutral-900 text-brand-gold";
+            statusBox.innerHTML = `<i class="fas fa-spinner animate-spin"></i> <span>Iniciando processamento...</span>`;
+            statusBox.classList.remove('hidden');
 
-        } catch (err) {
-            showError("Erro na gravação final do Sheets: " + err.message);
-        } finally {
+            const action = document.getElementById('formAction').value;
+            const fileInput = document.getElementById('imageFiles');
+            let uploadedUrls = [];
+
+            // 1. Upload de imagens
+            if (fileInput.files.length > 0) {
+                const totalFiles = Math.min(fileInput.files.length, 20);
+                for (let i = 0; i < totalFiles; i++) {
+                    statusBox.innerHTML = `<i class="fas fa-image animate-pulse"></i> <span>Hospedando imagem ${i + 1} de ${totalFiles} no ImgBB...</span>`;
+                    const fd = new FormData();
+                    fd.append("image", fileInput.files[i]);
+                    try {
+                        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: fd });
+                        const data = await res.json();
+                        if (data.success) uploadedUrls.push(data.data.url);
+                        else throw new Error(`Falha no envio do arquivo ${i + 1}.`);
+                    } catch (err) {
+                        showError("Erro no envio das imagens: " + err.message);
+                        return;
+                    }
+                }
+            }
+
+            // 2. Montar payload
+            statusBox.innerHTML = `<i class="fas fa-database animate-pulse"></i> <span>Sincronizando com o Sheets...</span>`;
+
+            const payload = {
+                action,
+                id: document.getElementById('accId').value.trim(),
+                vendedor: document.getElementById('accVendedor').value.trim(),
+                whatsapp: document.getElementById('accWhatsapp').value.trim(),
+                tipo: document.getElementById('accTipo').value.trim(),
+                title: document.getElementById('accTitle').value.trim(),
+                power: document.getElementById('accPower').value.trim(),
+                tagline: document.getElementById('accTagline').value.trim(),
+                image: uploadedUrls.length > 0 ? uploadedUrls[0] : undefined,
+                priceBrl: document.getElementById('priceBrl').value,
+                priceUsd: document.getElementById('priceUsd').value,
+                label: document.getElementById('accLabel').value.trim(),
+                status: document.getElementById('accStatus').value,
+                miticos: document.getElementById('accMiticos').value.trim(),
+                principais_lendarios: document.getElementById('accPrLendarios').value.trim(),
+                outros_lendarios: document.getElementById('accOutrosLendarios').value.trim(),
+                prints: uploadedUrls.length > 0 ? uploadedUrls.join(", ") : undefined,
+                email_status: document.getElementById('accEmailStatus').value.trim(),
+                links_status: document.getElementById('accLinksStatus').value.trim(),
+                promo_code: document.getElementById('accPromoCode').value.trim(),
+                level: document.getElementById('accLevel').value.trim(),
+                recursos: document.getElementById('accRecursos').value.trim(),
+            };
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                statusBox.className = "mt-5 p-4 rounded-xl text-sm font-medium flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400";
+                statusBox.innerHTML = `<i class="fas fa-check-circle"></i> <span>Sucesso! Planilha atualizada. <button onclick="voltarParaLista()" class="underline ml-1 font-bold hover:text-emerald-300">← Voltar à lista</button></span>`;
+                form.reset();
+                document.getElementById('currentImagesSection').classList.add('hidden');
+
+            } catch (err) {
+                showError("Erro na gravação final do Sheets: " + err.message);
+            } finally {
+                btnSubmit.disabled = false;
+            }
+        });
+
+        function showError(msg) {
+            statusBox.className = "mt-5 p-4 rounded-xl text-sm font-medium flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-400";
+            statusBox.innerHTML = `<i class="fas fa-exclamation-circle"></i> <span>${msg}</span>`;
             btnSubmit.disabled = false;
         }
-    });
-
-    function showError(msg) {
-        statusBox.className = "mt-5 p-4 rounded-xl text-sm font-medium flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-400";
-        statusBox.innerHTML = `<i class="fas fa-exclamation-circle"></i> <span>${msg}</span>`;
-        btnSubmit.disabled = false;
-    }
     </script>
 
 </body>
+
 </html>
